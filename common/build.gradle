@@ -1,0 +1,25 @@
+architectury {
+    common("fabric", "forge")
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/roadweaver_rpg.accesswidener")
+}
+
+dependencies {
+    // Fabric Loader（编译时）
+    compileOnly "net.fabricmc:fabric-loader:${rootProject.loader_version}"
+    
+    // TouhouLittleMaid 依赖（编译时）- 使用 Forge 版本作为通用 API
+    // 注意：实际运行时由各平台模块提供具体实现
+    modCompileOnly("maven.modrinth:touhou-little-maid:${rootProject.touhou_little_maid_version}") {
+        transitive = false
+    }
+    
+    // Mixin 注解处理器
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+}
+
+java {
+    withSourcesJar()
+}

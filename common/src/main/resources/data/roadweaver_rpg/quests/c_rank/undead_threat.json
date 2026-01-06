@@ -1,0 +1,40 @@
+{
+  "title": "亡灵威胁",
+  "description": "附近出现了大量亡灵生物，需要清理。",
+  "rank": "C",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:zombie",
+      "amount": 15,
+      "description": "消灭僵尸"
+    },
+    {
+      "type": "kill",
+      "target": "minecraft:skeleton",
+      "amount": 10,
+      "description": "消灭骷髅"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "coin",
+      "amount": 180
+    },
+    {
+      "type": "experience",
+      "amount": 120,
+      "levels": false
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 10
+    }
+  ],
+  "time_limit": 2400,
+  "repeatable": true,
+  "cooldown": 1200,
+  "difficulty": 1.4
+}

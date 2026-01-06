@@ -1,0 +1,11 @@
+{
+  "name": "chain.roadweaver_rpg.tutorial.name",
+  "description": "chain.roadweaver_rpg.tutorial.description",
+  "quests": [
+    "roadweaver_rpg:tutorial/first_collection",
+    "roadweaver_rpg:tutorial/monster_hunt",
+    "roadweaver_rpg:tutorial/road_guardian"
+  ],
+  "linear": true,
+  "chain_rewards": []
+}

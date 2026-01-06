@@ -1,0 +1,93 @@
+// 根项目配置 - 多模块项目
+plugins {
+	id 'architectury-plugin' version '3.4-SNAPSHOT'
+	id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
+}
+
+architectury {
+	minecraft = '1.20.1'
+}
+
+allprojects {
+	apply plugin: 'java'
+	apply plugin: 'architectury-plugin'
+	
+	group = 'net.shiroha233.roadweaverpg'
+	version = '1.0.0-1.20.1'
+	
+	repositories {
+		maven { url = 'https://maven.architectury.dev/' }
+		maven { url = 'https://maven.fabricmc.net/' }
+		maven { url = 'https://maven.minecraftforge.net/' }
+		maven { url = 'https://maven.shedaniel.me/' }
+		maven { url = 'https://maven.terraformersmc.com/' }
+		// Cardinal Components API (Touhou Little Maid Fabric 移植版依赖)
+		maven { url = 'https://maven.ladysnake.org/releases' }
+        // curseforge与modrinth平台仓库
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'CurseMaven'
+                    url = 'https://cursemaven.com'
+                }
+            }
+            filter {
+                includeGroup 'curse.maven'
+            }
+        }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Modrinth'
+                    url = 'https://api.modrinth.com/maven'
+                }
+            }
+            filter {
+                includeGroup 'maven.modrinth'
+            }
+        }
+		mavenCentral()
+	}
+	
+	tasks.withType(JavaCompile).configureEach {
+		options.encoding = 'UTF-8'
+		options.release = 17
+	}
+	
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(17)
+		}
+		withSourcesJar()
+	}
+	
+	// 关键：Gradle toolchain 默认只影响编译任务；runClient/Transformer 属于 JavaExec，
+	// 若系统默认 JDK 为 21 可能触发 Architectury Transformer 的已知崩溃。
+	// 这里强制所有 JavaExec 使用 Java 17 launcher，保证开发运行环境一致。
+	tasks.withType(JavaExec).configureEach {
+		javaLauncher = javaToolchains.launcherFor {
+			languageVersion = JavaLanguageVersion.of(17)
+		}
+	}
+}
+
+subprojects {
+	apply plugin: 'dev.architectury.loom'
+	
+	base {
+		archivesName = "${rootProject.name}-${project.name}"
+	}
+	
+	loom {
+		silentMojangMappingsLicense()
+	}
+	
+	dependencies {
+		minecraft "com.mojang:minecraft:1.20.1"
+		mappings loom.officialMojangMappings()
+        
+        // 添加对 RoadWeaver 主模组的依赖
+        // 注意：在实际发布时需要配置正确的依赖
+        // modImplementation "net.shiroha233.roadweaver:roadweaver-${project.name}:2.1.0-1.20.1"
+	}
+}

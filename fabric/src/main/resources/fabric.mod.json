@@ -1,0 +1,38 @@
+﻿{
+  "schemaVersion": 1,
+  "id": "roadweaver_rpg",
+  "version": "${version}",
+  "name": "RoadWeaver RPG",
+  "description": "RPG gameplay expansion for RoadWeaver - adds adventure elements to road networks.",
+  "authors": ["shiroha233"],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/roadweaver",
+    "sources": "https://github.com/shiroha-233/RoadWeaver",
+    "issues": "https://github.com/shiroha-233/RoadWeaver/issues"
+  },
+  "license": "License",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.shiroha233.roadweaverpg.RoadWeaverRPGFabric"
+    ],
+    "client": [
+      "net.shiroha233.roadweaverpg.RoadWeaverRPGFabricClient"
+    ]
+  },
+  "accessWidener": "roadweaver_rpg.accesswidener",
+  "mixins": [
+    "roadweaver_rpg.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.2",
+    "fabric-api": ">=0.92.2",
+    "minecraft": "1.20.1",
+    "touhou_little_maid": ">=0.5.1-forge1.4.6",
+    "forgeconfigapiport": ">=8.0.3",
+    "reach-entity-attributes": ">=2.4.0"
+  },
+  "suggests": {
+    "modmenu": ">=7.0.0"
+  }
+}

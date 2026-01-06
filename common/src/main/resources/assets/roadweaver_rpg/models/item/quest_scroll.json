@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "roadweaver_rpg:item/quest_scroll"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "roadweaver_rpg:has_quest": 1
+      },
+      "model": "roadweaver_rpg:item/quest_scroll_filled"
+    }
+  ]
+}

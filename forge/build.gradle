@@ -1,0 +1,88 @@
+plugins {
+    id 'dev.architectury.loom'
+    id 'com.gradleup.shadow' version '8.3.6'
+}
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+loom {
+    forge {
+        mixinConfig "roadweaver_rpg.mixins.json"
+    }
+}
+
+configurations {
+    common
+    shadowCommon // 用于打包 common 模块
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
+
+dependencies {
+    // Common 模块
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowCommon(project(path: ':common', configuration: 'transformProductionForge')) { transitive false }
+    
+    // Forge 平台
+    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    
+    // 森罗物语依赖
+    modImplementation "maven.modrinth:kaleidoscope-cookery:${rootProject.kaleidoscope_cookery_forge_version}"
+    
+    // Touhou Little Maid 依赖
+    modImplementation "maven.modrinth:touhou-little-maid:${rootProject.touhou_little_maid_version}"
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    def replaceProperties = [
+        minecraft_version: '1.20.1',
+        minecraft_version_range: '[1.20.1,1.21)',
+        forge_version: rootProject.forge_version,
+        forge_version_range: '[47,48)',
+        loader_version_range: '[47,)',
+        mod_id: 'roadweaver_rpg',
+        mod_name: 'RoadWeaver RPG',
+        mod_version: project.version,
+        mod_authors: 'shiroha233',
+        mod_description: 'RPG gameplay expansion for RoadWeaver - adds adventure elements to road networks.'
+    ]
+
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties
+    }
+}
+
+// Shadow JAR 配置 - 打包 common 模块
+shadowJar {
+    exclude "architectury.common.json"
+    exclude "fabric.mod.json"
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier.set("dev-shadow")
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
+    dependsOn shadowJar
+}
+
+jar {
+    archiveClassifier.set("dev")
+}
+
+// Source JAR 组装（合并 common 源码）
+sourcesJar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+java {
+    withSourcesJar()
+}

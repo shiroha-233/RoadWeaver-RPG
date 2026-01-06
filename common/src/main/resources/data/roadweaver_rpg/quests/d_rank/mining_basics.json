@@ -1,0 +1,44 @@
+{
+  "title": "基础采矿",
+  "description": "开采一些煤炭和铁矿石。",
+  "rank": "D",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:coal",
+      "amount": 16,
+      "description": "收集煤炭",
+      "consume_on_complete": true
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:raw_iron",
+      "amount": 8,
+      "description": "收集粗铁",
+      "consume_on_complete": true
+    }
+  ],
+  "rewards": [
+    {
+      "type": "coin",
+      "amount": 100
+    },
+    {
+      "type": "experience",
+      "amount": 50,
+      "levels": false
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 5
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": false,
+  "difficulty": 1.1,
+  "unlocks": [
+    "roadweaver_rpg:c_rank/deep_mining"
+  ]
+}

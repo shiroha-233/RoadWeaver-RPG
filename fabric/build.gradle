@@ -1,0 +1,52 @@
+plugins {
+    id 'dev.architectury.loom'
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+configurations {
+    common
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
+dependencies {
+    // Common 模块
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    
+    // Fabric 平台
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
+    
+    // Cardinal Components API - Touhou Little Maid Fabric 移植版的必需依赖
+    // Modrinth Maven 不提供传递依赖，需要手动添加
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_components_version}"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${rootProject.cardinal_components_version}"
+    
+    // 车万女maid依赖
+    modImplementation "maven.modrinth:touhoulittlemaid-orihime:${rootProject.touhou_little_maid_fabric_version}"
+    modImplementation "maven.modrinth:forge-config-api-port:${rootProject.forge_config_api_port_version}"
+    
+    // 森罗物语依赖
+    modImplementation "maven.modrinth:kaleidoscope-cookery:${rootProject.kaleidoscope_cookery_fabric_version}"
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+java {
+    withSourcesJar()
+}

@@ -1,0 +1,48 @@
+{
+  "title": "终极收藏",
+  "description": "收集世界上最稀有的材料，证明你是最顶尖的冒险者。",
+  "rank": "S",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:nether_star",
+      "amount": 3,
+      "description": "收集下界之星",
+      "consume_on_complete": true
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:dragon_egg",
+      "amount": 1,
+      "description": "收集龙蛋",
+      "consume_on_complete": false
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:netherite_block",
+      "amount": 10,
+      "description": "收集下界合金块",
+      "consume_on_complete": true
+    }
+  ],
+  "rewards": [
+    {
+      "type": "coin",
+      "amount": 8000
+    },
+    {
+      "type": "experience",
+      "amount": 3000,
+      "levels": false
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 150
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": false,
+  "difficulty": 5.5
+}

@@ -1,0 +1,37 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/shiroha-233/RoadWeaver/issues"
+
+[[mods]]
+modId = "roadweaver_rpg"
+version = "${mod_version}"
+displayName = "RoadWeaver RPG"
+displayURL = "https://modrinth.com/mod/roadweaver"
+credits = ""
+authors = "shiroha233"
+description = '''RPG gameplay expansion for RoadWeaver - adds adventure elements to road networks.'''
+
+[[mixins]]
+config = "roadweaver_rpg.mixins.json"
+
+[[dependencies.roadweaver_rpg]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,48)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.roadweaver_rpg]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.roadweaver_rpg]]
+modId = "touhou_little_maid"
+mandatory = true
+versionRange = "[1.4.6,)"
+ordering = "AFTER"
+side = "BOTH"

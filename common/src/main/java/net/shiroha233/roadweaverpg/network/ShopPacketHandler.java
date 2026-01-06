@@ -1,0 +1,75 @@
+package net.shiroha233.roadweaverpg.network;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.shiroha233.roadweaverpg.entity.npc.ShopMaidEntity;
+import net.shiroha233.roadweaverpg.network.packet.*;
+import net.shiroha233.roadweaverpg.shop.ShopManager;
+
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+/**
+ * 商店数据包处理器 - 公共逻辑
+ */
+public final class ShopPacketHandler {
+    
+    private ShopPacketHandler() {}
+    
+    /**
+     * 处理商店对话响应
+     */
+    public static void handleShopDialogResponse(ServerPlayer player, ShopDialogResponsePacket packet,
+                                                 Consumer<ServerPlayer> openShopCallback) {
+        Entity entity = player.level().getEntity(packet.entityId());
+        if (!(entity instanceof ShopMaidEntity)) return;
+        
+        switch (packet.option()) {
+            case WHO_ARE_YOU -> player.displayClientMessage(
+                    Component.translatable("gui.roadweaver_rpg.shop_dialog.response.who_are_you"), false);
+            case OPEN_SHOP -> openShopCallback.accept(player);
+            case CANCEL -> {} // 客户端已关闭界面
+        }
+    }
+    
+    /**
+     * 处理购买请求
+     */
+    public static void handlePurchase(ServerPlayer player, ShopPurchasePacket packet,
+                                       BiConsumer<ServerPlayer, SyncCoinsPacket> syncCoins) {
+        Entity entity = player.level().getEntity(packet.entityId());
+        if (!(entity instanceof ShopMaidEntity)) return;
+        
+        ShopManager.PurchaseResult result = ShopManager.getInstance()
+                .purchase(player, packet.itemId(), packet.quantity());
+        
+        switch (result) {
+            case SUCCESS -> {
+                player.displayClientMessage(
+                        Component.translatable("gui.roadweaver_rpg.shop.purchase_success"), false);
+                // 同步金币数量
+                int coins = ShopManager.getInstance().countPlayerCoins(player);
+                syncCoins.accept(player, new SyncCoinsPacket(coins));
+            }
+            case INSUFFICIENT_COINS -> player.displayClientMessage(
+                    Component.translatable("gui.roadweaver_rpg.shop.insufficient_coins"), false);
+            case ITEM_NOT_FOUND -> player.displayClientMessage(
+                    Component.translatable("gui.roadweaver_rpg.shop.item_not_found"), false);
+            case INSUFFICIENT_LEVEL -> player.displayClientMessage(
+                    Component.translatable("gui.roadweaver_rpg.shop.insufficient_level"), false);
+            default -> {}
+        }
+    }
+    
+    /**
+     * 创建打开商店数据包
+     */
+    public static OpenShopPacket createOpenShopPacket(ServerPlayer player, int entityId) {
+        return new OpenShopPacket(
+                entityId,
+                ShopManager.getInstance().getAllItems(),
+                ShopManager.getInstance().countPlayerCoins(player)
+        );
+    }
+}

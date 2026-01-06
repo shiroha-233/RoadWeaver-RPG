@@ -1,0 +1,22 @@
+package net.shiroha233.roadweaverpg.forge.entity;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.shiroha233.roadweaverpg.entity.npc.GuildMaidEntity;
+import net.shiroha233.roadweaverpg.forge.network.NetworkHandlerForge;
+
+/**
+ * Forge 平台的公会女仆实体
+ */
+public class GuildMaidEntityForge extends GuildMaidEntity {
+    
+    public GuildMaidEntityForge(EntityType<? extends GuildMaidEntityForge> type, Level level) {
+        super(type, level);
+    }
+    
+    @Override
+    protected void openDialogForPlayer(ServerPlayer player) {
+        NetworkHandlerForge.sendOpenDialog(player, this.getId());
+    }
+}

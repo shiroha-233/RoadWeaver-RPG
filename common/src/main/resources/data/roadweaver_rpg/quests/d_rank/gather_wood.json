@@ -1,0 +1,35 @@
+{
+  "title": "木材采集",
+  "description": "为公会收集一些基础的木材资源。",
+  "rank": "D",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:oak_log",
+      "amount": 32,
+      "description": "收集橡木原木",
+      "consume_on_complete": true
+    }
+  ],
+  "rewards": [
+    {
+      "type": "coin",
+      "amount": 50
+    },
+    {
+      "type": "experience",
+      "amount": 30,
+      "levels": false
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 3
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 600,
+  "difficulty": 0.8
+}

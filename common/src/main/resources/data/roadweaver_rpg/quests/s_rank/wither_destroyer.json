@@ -1,0 +1,34 @@
+{
+  "title": "凋灵毁灭者",
+  "description": "召唤并击败恐怖的凋灵。需要极高的战斗技巧和准备。",
+  "rank": "S",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:wither",
+      "amount": 1,
+      "description": "击败凋灵"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "coin",
+      "amount": 3000
+    },
+    {
+      "type": "experience",
+      "amount": 1500,
+      "levels": false
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 80
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 43200,
+  "difficulty": 4.5
+}

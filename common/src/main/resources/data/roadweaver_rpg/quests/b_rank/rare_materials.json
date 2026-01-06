@@ -1,0 +1,42 @@
+{
+  "title": "稀有材料",
+  "description": "公会需要一些稀有的材料用于研究。",
+  "rank": "B",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:ender_pearl",
+      "amount": 12,
+      "description": "收集末影珍珠",
+      "consume_on_complete": true
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:blaze_rod",
+      "amount": 8,
+      "description": "收集烈焰棒",
+      "consume_on_complete": true
+    }
+  ],
+  "rewards": [
+    {
+      "type": "coin",
+      "amount": 500
+    },
+    {
+      "type": "experience",
+      "amount": 300,
+      "levels": false
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 20
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 3600,
+  "difficulty": 2.0
+}
