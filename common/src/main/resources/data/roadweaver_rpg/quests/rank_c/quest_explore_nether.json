@@ -1,0 +1,38 @@
+{
+  "title": "下界探索",
+  "description": "探索下界堡垒，记录那里的怪物分布和资源情况。",
+  "rank": "C",
+  "type": "EXPLORE",
+  "objectives": [
+    {
+      "id": "explore_nether_fortress",
+      "type": "EXPLORE",
+      "target": "minecraft:nether_fortress",
+      "amount": 1,
+      "description": "探索下界堡垒"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 300
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 70
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 12
+    }
+  ],
+  "time_limit": 7200,
+  "repeatable": true,
+  "cooldown": 14400,
+  "difficulty": 2.2,
+  "daily_quest": false,
+  "daily_weight": 4,
+  "one_time": false,
+  "min_reputation_level": 2,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

@@ -1,0 +1,38 @@
+{
+  "title": "烈焰棒收集",
+  "description": "公会炼金师需要烈焰棒来制作药剂和火焰相关道具。",
+  "rank": "C",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_blaze_rods",
+      "type": "COLLECT",
+      "target": "minecraft:blaze_rod",
+      "amount": 4,
+      "description": "收集烈焰棒"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 250
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 60
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 10
+    }
+  ],
+  "time_limit": 3600,
+  "repeatable": true,
+  "cooldown": 10800,
+  "difficulty": 2.0,
+  "daily_quest": true,
+  "daily_weight": 5,
+  "one_time": false,
+  "min_reputation_level": 2,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

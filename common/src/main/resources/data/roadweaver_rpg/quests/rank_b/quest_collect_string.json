@@ -1,0 +1,42 @@
+{
+  "title": "蛛丝收集",
+  "description": "铁匠铺需要大量的蛛丝来制作强韧的弓弦和防护装备。前往洞穴深处收集蜘蛛留下的蛛丝。",
+  "rank": "B",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_string",
+      "type": "COLLECT",
+      "target": "minecraft:string",
+      "amount": 40,
+      "description": "收集40个蛛丝"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 200
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 80
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 8
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 43200,
+  "difficulty": 1.1,
+  "daily_quest": true,
+  "daily_weight": 8,
+  "one_time": false,
+  "max_accept_per_period": 2,
+  "accept_period_seconds": 86400,
+  "prerequisites": [],
+  "unlocks": [],
+  "min_reputation_level": 3,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

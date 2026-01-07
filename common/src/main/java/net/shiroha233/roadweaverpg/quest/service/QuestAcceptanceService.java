@@ -70,12 +70,32 @@ public class QuestAcceptanceService {
                     cooldownResult.getErrorMessage().orElse("On cooldown"));
         }
 
+        // 验证声望等级
+        Result<Void> reputationResult = ValidationUtils.validateReputationLevel(definition, playerData);
+        if (reputationResult.isFailure()) {
+            return Result.failure(reputationResult.getErrorCode().orElse(QuestException.ErrorCode.REPUTATION_TOO_LOW),
+                    reputationResult.getErrorMessage().orElse("Reputation too low"));
+        }
         
         // 验证可重复性
         Result<Void> repeatResult = ValidationUtils.validateRepeatable(definition, playerData);
         if (repeatResult.isFailure()) {
             return Result.failure(repeatResult.getErrorCode().orElse(QuestException.ErrorCode.QUEST_NOT_REPEATABLE),
                     repeatResult.getErrorMessage().orElse("Not repeatable"));
+        }
+        
+        // 验证单次任务
+        Result<Void> oneTimeResult = ValidationUtils.validateOneTimeQuest(definition, playerData);
+        if (oneTimeResult.isFailure()) {
+            return Result.failure(oneTimeResult.getErrorCode().orElse(QuestException.ErrorCode.QUEST_ONE_TIME_COMPLETED),
+                    oneTimeResult.getErrorMessage().orElse("One-time quest already completed"));
+        }
+        
+        // 验证周期内领取次数限制
+        Result<Void> acceptLimitResult = ValidationUtils.validateAcceptLimit(definition, playerData);
+        if (acceptLimitResult.isFailure()) {
+            return Result.failure(acceptLimitResult.getErrorCode().orElse(QuestException.ErrorCode.QUEST_ACCEPT_LIMIT_REACHED),
+                    acceptLimitResult.getErrorMessage().orElse("Accept limit reached"));
         }
         
         // 创建委托实例
@@ -87,6 +107,12 @@ public class QuestAcceptanceService {
         
         // 添加到玩家数据
         playerData.addActiveQuest(instance);
+        
+        // 记录领取时间（用于周期限制）
+        if (definition.hasAcceptLimit()) {
+            playerData.recordAcceptance(questId);
+        }
+        
         dataAccessor.markDirty(player);
         
         // 给予委托书
@@ -157,9 +183,9 @@ public class QuestAcceptanceService {
     private float calculateDifficulty(ServerPlayer player, QuestDefinition definition, PlayerQuestData data) {
         float base = definition.getBaseDifficulty();
         int playerLevel = player.experienceLevel;
-        float levelMod = 1.0f + (playerLevel / 100.0f);
+        float levelMod = 1.0f + (playerLevel * net.shiroha233.roadweaverpg.config.QuestSystemConfig.DIFFICULTY_PER_LEVEL);
         int completions = data.getCompletionCount(definition.getId());
-        float repeatMod = 1.0f + (completions * 0.1f);
+        float repeatMod = 1.0f + (completions * net.shiroha233.roadweaverpg.config.QuestSystemConfig.DIFFICULTY_PER_REPEAT);
         return base * levelMod * repeatMod;
     }
 }

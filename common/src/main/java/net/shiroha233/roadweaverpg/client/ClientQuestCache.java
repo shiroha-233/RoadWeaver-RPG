@@ -9,6 +9,9 @@ import java.util.*;
 /**
  * 客户端委托缓存
  * 缓存委托定义和当前委托实例
+ * 
+ * 线程安全：客户端单线程，无需同步
+ * 内存管理：在玩家登出或切换世界时调用 clear()
  */
 public class ClientQuestCache {
     
@@ -63,6 +66,10 @@ public class ClientQuestCache {
     }
     // endregion
     
+    /**
+     * 清理所有缓存
+     * 在玩家登出或切换世界时调用
+     */
     public static void clear() {
         cachedQuests.clear();
         cachedInstances.clear();

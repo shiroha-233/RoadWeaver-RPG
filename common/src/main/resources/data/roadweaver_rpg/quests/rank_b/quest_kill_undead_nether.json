@@ -1,0 +1,54 @@
+{
+  "title": "亡灵猎人",
+  "description": "下界是危险的亡灵国度，需要勇敢的冒险者消灭大量的亡灵生物。",
+  "rank": "B",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_zombie_piglin",
+      "type": "KILL",
+      "target": "minecraft:zombie_pigman",
+      "amount": 20,
+      "description": "击杀20个僵尸猪人"
+    },
+    {
+      "id": "kill_wither_skeleton",
+      "type": "KILL",
+      "target": "minecraft:wither_skeleton",
+      "amount": 8,
+      "description": "击杀8个凋零骷髅"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 350
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 150
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 12
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:gold_ingot",
+      "count": 8
+    }
+  ],
+  "time_limit": 600,
+  "repeatable": true,
+  "cooldown": 3600,
+  "difficulty": 1.45,
+  "daily_quest": true,
+  "daily_weight": 15,
+  "one_time": false,
+  "max_accept_per_period": 3,
+  "accept_period_seconds": 86400,
+  "prerequisites": ["quest_collect_gold"],
+  "unlocks": [],
+  "min_reputation_level": 3,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

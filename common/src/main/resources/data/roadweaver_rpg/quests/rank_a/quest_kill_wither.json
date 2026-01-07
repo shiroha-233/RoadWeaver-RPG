@@ -1,0 +1,38 @@
+{
+  "title": "凋灵之首",
+  "description": "凋灵是下界最危险的存在之一。公会需要它的力量来制作强大的武器。",
+  "rank": "A",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_wither",
+      "type": "KILL",
+      "target": "minecraft:wither",
+      "amount": 1,
+      "description": "消灭凋灵"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 5000
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 800
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 150
+    }
+  ],
+  "time_limit": 18000,
+  "repeatable": true,
+  "cooldown": 432000,
+  "difficulty": 4.8,
+  "daily_quest": false,
+  "daily_weight": 1,
+  "one_time": false,
+  "min_reputation_level": 6,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

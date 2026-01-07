@@ -72,6 +72,10 @@ public class PlayerQuestService {
     public void setOnSyncReputation(BiConsumer<ServerPlayer, PlayerQuestData> callback) {
         rewardService.setOnSyncReputation(callback);
     }
+    
+    public void setOnSyncDailyQuests(BiConsumer<ServerPlayer, java.util.List<net.minecraft.resources.ResourceLocation>> callback) {
+        syncService.setOnSyncDailyQuests(callback);
+    }
     // endregion
     
     // region 委托接取/放弃
@@ -130,8 +134,12 @@ public class PlayerQuestService {
         syncService.validateInventoryScrolls(player);
     }
     
-    public void retrieveLostScrolls(ServerPlayer player) {
-        syncService.retrieveLostScrolls(player);
+    public void retrieveLostScrolls(ServerPlayer player, com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid maid) {
+        syncService.retrieveLostScrolls(player, maid);
+    }
+    
+    public void syncDailyQuestsToClient(ServerPlayer player) {
+        syncService.syncDailyQuestsToClient(player);
     }
     // endregion
     

@@ -2,6 +2,7 @@ package net.shiroha233.roadweaverpg.forge;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraft.server.level.ServerPlayer;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
+import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
 import net.shiroha233.roadweaverpg.forge.entity.ModEntitiesForge;
 import net.shiroha233.roadweaverpg.forge.item.ModItemsForge;
 import net.shiroha233.roadweaverpg.forge.network.NetworkHandlerForge;
@@ -86,6 +88,13 @@ public class RoadWeaverRPGForge {
         }
         
         @SubscribeEvent
+        public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                QuestEventHandler.onPlayerLogout(player);
+            }
+        }
+        
+        @SubscribeEvent
         public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
             if (event.phase == TickEvent.Phase.END && event.player instanceof ServerPlayer player) {
                 QuestEventHandler.onPlayerTick(player);
@@ -97,6 +106,11 @@ public class RoadWeaverRPGForge {
             if (event.getPlayer() instanceof ServerPlayer player) {
                 QuestEventHandler.onBlockBroken(player, event.getState());
             }
+        }
+        
+        @SubscribeEvent
+        public static void onRegisterCommands(RegisterCommandsEvent event) {
+            QuestDebugCommand.register(event.getDispatcher());
         }
     }
 }

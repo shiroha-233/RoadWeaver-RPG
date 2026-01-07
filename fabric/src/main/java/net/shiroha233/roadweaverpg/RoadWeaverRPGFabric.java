@@ -1,11 +1,13 @@
 package net.shiroha233.roadweaverpg;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
+import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
 import net.shiroha233.roadweaverpg.entity.ModEntitiesFabric;
 import net.shiroha233.roadweaverpg.event.QuestEventsFabric;
 import net.shiroha233.roadweaverpg.item.ModItemsFabric;
@@ -48,6 +50,10 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         // 注册委托事件监听
         QuestEventsFabric.register();
         registerBlockEvents();
+        
+        // 注册调试指令
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> 
+                QuestDebugCommand.register(dispatcher));
         
         // 检查前置依赖
         if (!RoadWeaverRPG.isRoadWeaverAvailable()) {

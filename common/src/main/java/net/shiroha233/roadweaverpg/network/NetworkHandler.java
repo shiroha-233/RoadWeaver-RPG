@@ -39,6 +39,10 @@ public class NetworkHandler {
     public static final ResourceLocation OPEN_REPUTATION_GUI = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_reputation_gui");
     
+    // 每日委托系统
+    public static final ResourceLocation SYNC_DAILY_QUESTS = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_daily_quests");
+    
     // 商店系统消息类型
     public static final ResourceLocation OPEN_SHOP_DIALOG = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_shop_dialog");

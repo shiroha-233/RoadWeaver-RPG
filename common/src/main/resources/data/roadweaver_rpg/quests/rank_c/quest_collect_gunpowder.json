@@ -1,0 +1,38 @@
+{
+  "title": "火药收集",
+  "description": "公会需要火药来制作TNT和火箭。消灭苦力怕获取火药。",
+  "rank": "C",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_gunpowder",
+      "type": "COLLECT",
+      "target": "minecraft:gunpowder",
+      "amount": 8,
+      "description": "收集火药"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 120
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 25
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 4
+    }
+  ],
+  "time_limit": 3600,
+  "repeatable": true,
+  "cooldown": 7200,
+  "difficulty": 1.4,
+  "daily_quest": true,
+  "daily_weight": 8,
+  "one_time": false,
+  "min_reputation_level": 1,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

@@ -28,6 +28,13 @@
   "gui.roadweaver_rpg.dialog.response.complete_quest": "让我看看...你还没有完成任何委托呢。",
   "gui.roadweaver_rpg.dialog.response.no_completed_quest": "你手上没有已完成的委托书哦。",
   
+  "npc.roadweaver_rpg.guild_maid.who_are_you": "我是冒险者公会的看板娘！",
+  "npc.roadweaver_rpg.guild_maid.greeting": "欢迎来到冒险者公会！有什么需要帮忙的吗？",
+  "npc.roadweaver_rpg.guild_maid.show_quests": "让我为你展示可用的委托。",
+  "npc.roadweaver_rpg.guild_maid.complete_quest": "让我检查一下你完成的委托。",
+  "npc.roadweaver_rpg.guild_maid.view_reputation": "这是你的声望状态。",
+  "npc.roadweaver_rpg.guild_maid.retrieve_scroll": "我来帮你找回丢失的委托书。",
+  
   "gui.roadweaver_rpg.quest_board.title": "委托看板",
   "gui.roadweaver_rpg.quest_board.accept": "接受委托",
   "gui.roadweaver_rpg.quest_board.description": "描述：",
@@ -39,6 +46,16 @@
   "gui.roadweaver_rpg.quest_board.time_limit": "时限：%s",
   "gui.roadweaver_rpg.quest_board.repeatable": "可重复",
   "gui.roadweaver_rpg.quest_board.cooldown": "冷却中：%s",
+  "gui.roadweaver_rpg.quest_board.reputation_required": "需要声望等级: %d",
+  "gui.roadweaver_rpg.quest_board.reputation_current": "当前等级: %d",
+  "gui.roadweaver_rpg.quest_board.locked": "声望等级不足，无法接取",
+  "gui.roadweaver_rpg.quest_board.daily_quest": "★ 今日委托",
+  "gui.roadweaver_rpg.quest_board.daily_refresh": "每日刷新倒计时: %s",
+  "gui.roadweaver_rpg.quest_board.one_time": "单次任务",
+  "gui.roadweaver_rpg.quest_board.one_time_completed": "已完成（不可再领取）",
+  "gui.roadweaver_rpg.quest_board.accept_limit": "领取限制: %d次/%s",
+  "gui.roadweaver_rpg.quest_board.accept_remaining": "剩余可领取: %d次",
+  "gui.roadweaver_rpg.quest_board.accept_cooldown": "下次可领取: %s后",
   
   "gui.roadweaver_rpg.time.minutes": "%d分钟",
   
@@ -115,6 +132,10 @@
   "gui.roadweaver_rpg.shop_dialog.open_shop": "看看有什么商品",
   "gui.roadweaver_rpg.shop_dialog.response.who_are_you": "我是公会商店的店员，专门出售冒险者需要的各种物品。完成委托获得的金币可以在这里消费哦！",
   
+  "npc.roadweaver_rpg.shop_maid.who_are_you": "我是商店店员！",
+  "npc.roadweaver_rpg.shop_maid.greeting": "欢迎光临！我这里有各种冒险者需要的物品。",
+  "npc.roadweaver_rpg.shop_maid.open_shop": "欢迎光临！请随意浏览。",
+  
   "shop.roadweaver_rpg.category.weapons": "武器",
   "shop.roadweaver_rpg.category.armor": "护甲",
   "shop.roadweaver_rpg.category.tools": "工具",
@@ -137,6 +158,10 @@
   "quest.error.prerequisites_not_met": "前置条件未满足",
   "quest.error.not_repeatable": "此委托不可重复",
   "quest.error.expired": "委托已过期",
+  "quest.error.reputation_too_low": "声望等级不足",
+  "quest.error.not_daily_quest": "该委托不在今日委托列表中",
+  "quest.error.one_time_completed": "此委托为单次任务，已完成无法再次领取",
+  "quest.error.accept_limit_reached": "已达到该委托的领取次数上限",
   "quest.error.scroll_invalid": "无效的委托书",
   "quest.error.scroll_not_found": "未找到委托书",
   "quest.error.item_not_registered": "物品未注册",
@@ -145,5 +170,21 @@
   "quest.error.data_save_failed": "数据保存失败",
   "quest.error.serialization_failed": "序列化失败",
   "quest.error.network_sync_failed": "网络同步失败",
-  "quest.error.unknown": "未知错误"
+  "quest.error.transaction_already_committed": "事务已提交",
+  "quest.error.transaction_execution_failed": "事务执行失败",
+  "quest.error.transaction_rollback_failed": "事务回滚失败",
+  "quest.error.unknown": "未知错误",
+  
+  "command.rwquest.reputation.set.success": "§a设置 %s 的 %s 声望等级为 %d",
+  "command.rwquest.reputation.add.success": "§a为 %s 添加 %d 点 %s 声望",
+  "command.rwquest.reputation.get.info": "§6%s 的 %s 声望信息:\n§e等级: %d\n§e当前XP: %d",
+  "command.rwquest.reputation.get.info_with_next": "§6%s 的 %s 声望信息:\n§e等级: %d\n§e当前XP: %d\n§e下级需要XP: %d",
+  "command.rwquest.daily.refresh.success": "§a已刷新 %s 的每日委托",
+  "command.rwquest.daily.list.title": "§6今日委托列表:",
+  "command.rwquest.daily.list.empty": "§c无",
+  "command.rwquest.daily.list.item": "§e- %s",
+  "command.rwquest.data.clear.success": "§a已清除 %s 的所有委托数据",
+  
+  "gui.roadweaver_rpg.galgame.continue_hint": "点击继续",
+  "gui.roadweaver_rpg.galgame.player_name": "玩家"
 }

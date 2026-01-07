@@ -1,0 +1,38 @@
+{
+  "title": "烈焰人猎杀",
+  "description": "下界的烈焰人正在保护重要的资源通道。消灭它们。",
+  "rank": "C",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_blazes",
+      "type": "KILL",
+      "target": "minecraft:blaze",
+      "amount": 5,
+      "description": "消灭烈焰人"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 280
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 65
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 10
+    }
+  ],
+  "time_limit": 3600,
+  "repeatable": true,
+  "cooldown": 10800,
+  "difficulty": 2.0,
+  "daily_quest": true,
+  "daily_weight": 5,
+  "one_time": false,
+  "min_reputation_level": 2,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

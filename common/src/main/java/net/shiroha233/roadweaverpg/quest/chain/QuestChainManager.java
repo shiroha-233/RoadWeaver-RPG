@@ -10,28 +10,49 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 委托链管理器
  * 从数据包加载委托链定义
  * 
  * 数据包路径: data/<namespace>/quest_chains/<path>.json
+ * 
+ * 线程安全：
+ * - 使用 ConcurrentHashMap 保证并发读取安全
+ * - apply() 方法在资源重载时由单线程调用
  */
 public class QuestChainManager extends SimpleJsonResourceReloadListener {
     
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String DIRECTORY = "quest_chains";
     
-    private static QuestChainManager instance;
+    private static volatile QuestChainManager instance;
+    private static final Object LOCK = new Object();
     
-    private final Map<ResourceLocation, QuestChain> chains = new HashMap<>();
+    // 使用线程安全的集合
+    private final Map<ResourceLocation, QuestChain> chains = new ConcurrentHashMap<>();
     
     // 委托到链的反向索引
-    private final Map<ResourceLocation, Set<ResourceLocation>> questToChains = new HashMap<>();
+    private final Map<ResourceLocation, Set<ResourceLocation>> questToChains = new ConcurrentHashMap<>();
     
     public QuestChainManager() {
         super(GSON, DIRECTORY);
         instance = this;
+    }
+    
+    /**
+     * 获取单例实例（双重检查锁定）
+     */
+    public static QuestChainManager getInstance() {
+        if (instance == null) {
+            synchronized (LOCK) {
+                if (instance == null) {
+                    throw new IllegalStateException("QuestChainManager not initialized");
+                }
+            }
+        }
+        return instance;
     }
     
     @Override
@@ -48,7 +69,7 @@ public class QuestChainManager extends SimpleJsonResourceReloadListener {
                     
                     // 构建反向索引
                     for (ResourceLocation questId : chain.getQuestSequence()) {
-                        questToChains.computeIfAbsent(questId, k -> new HashSet<>()).add(id);
+                        questToChains.computeIfAbsent(questId, k -> ConcurrentHashMap.newKeySet()).add(id);
                     }
                 }
             } catch (Exception e) {
@@ -57,10 +78,6 @@ public class QuestChainManager extends SimpleJsonResourceReloadListener {
         });
         
         RoadWeaverRPG.LOGGER.info("Loaded {} quest chains", chains.size());
-    }
-    
-    public static QuestChainManager getInstance() {
-        return instance;
     }
     
     public QuestChain getChain(ResourceLocation id) {

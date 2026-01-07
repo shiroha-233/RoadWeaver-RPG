@@ -1,0 +1,54 @@
+{
+  "title": "探索要塞深处",
+  "description": "要塞是通往末路之地的重要通道，冒险者需要深入探索并带回有价值的情报。",
+  "rank": "B",
+  "type": "EXPLORE",
+  "objectives": [
+    {
+      "id": "reach_stronghold_library",
+      "type": "EXPLORE",
+      "target": "minecraft:structure_block",
+      "amount": 1,
+      "description": "到达要塞图书馆位置"
+    },
+    {
+      "id": "collect_ender_eye",
+      "type": "COLLECT",
+      "target": "minecraft:ender_eye",
+      "amount": 3,
+      "description": "收集3个末影之眼"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 320
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 120
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 10
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:ender_chest",
+      "count": 1
+    }
+  ],
+  "time_limit": 900,
+  "repeatable": false,
+  "cooldown": 0,
+  "difficulty": 1.4,
+  "daily_quest": false,
+  "daily_weight": 0,
+  "one_time": true,
+  "max_accept_per_period": 1,
+  "accept_period_seconds": 604800,
+  "prerequisites": ["quest_explore_mineshaft"],
+  "unlocks": ["quest_explore_end_city"],
+  "min_reputation_level": 3,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

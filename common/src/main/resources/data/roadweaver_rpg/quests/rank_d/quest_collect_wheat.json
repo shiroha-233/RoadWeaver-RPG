@@ -1,0 +1,34 @@
+{
+  "title": "小麦丰收",
+  "description": "公会厨房需要大量的小麦来制作面包。帮助收集一些小麦。",
+  "rank": "D",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_wheat",
+      "type": "COLLECT",
+      "target": "minecraft:wheat",
+      "amount": 12,
+      "description": "收集小麦"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 35
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 6
+    }
+  ],
+  "time_limit": 1800,
+  "repeatable": true,
+  "cooldown": 3600,
+  "difficulty": 1.0,
+  "daily_quest": true,
+  "daily_weight": 10,
+  "one_time": false,
+  "min_reputation_level": 0,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

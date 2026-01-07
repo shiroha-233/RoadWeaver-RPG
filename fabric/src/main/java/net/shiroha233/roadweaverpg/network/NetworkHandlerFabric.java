@@ -5,7 +5,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.shiroha233.roadweaverpg.network.packet.*;
+import net.shiroha233.roadweaverpg.network.packet.quest.*;
+import net.shiroha233.roadweaverpg.network.packet.sync.*;
+import net.shiroha233.roadweaverpg.network.packet.ui.*;
+import net.shiroha233.roadweaverpg.network.packet.shop.*;
 import net.shiroha233.roadweaverpg.quest.definition.QuestDefinition;
 import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
 import net.shiroha233.roadweaverpg.quest.service.PlayerQuestService;
@@ -88,6 +91,7 @@ public class NetworkHandlerFabric {
         manager.setOnQuestCompleted(NetworkHandlerFabric::sendQuestInstance);
         manager.setOnSyncAllQuests(NetworkHandlerFabric::sendAllQuestInstances);
         manager.setOnSyncAllDefinitions(NetworkHandlerFabric::sendAllDefinitions);
+        manager.setOnSyncDailyQuests(NetworkHandlerFabric::sendDailyQuests);
 
         // 初始化声望同步回调
         manager.setOnSyncReputation((player, data) -> 
@@ -97,6 +101,14 @@ public class NetworkHandlerFabric {
                 NetworkHandlerFabric::sendReputationLevels);
         net.shiroha233.roadweaverpg.network.QuestPacketHandler.setOnOpenReputationGui(
                 NetworkHandlerFabric::sendOpenReputationGui);
+    }
+    
+    public static void sendDailyQuests(ServerPlayer player, List<ResourceLocation> dailyQuestIds) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        String refreshDate = net.shiroha233.roadweaverpg.quest.daily.DailyQuestManager.getTodayDateString();
+        int timeUntilRefresh = net.shiroha233.roadweaverpg.quest.daily.DailyQuestManager.getInstance().getTimeUntilRefresh();
+        new SyncDailyQuestsPacket(dailyQuestIds, refreshDate, timeUntilRefresh).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.SYNC_DAILY_QUESTS, buf);
     }
     
     public static void sendAllDefinitions(ServerPlayer player, Collection<QuestDefinition> definitions) {

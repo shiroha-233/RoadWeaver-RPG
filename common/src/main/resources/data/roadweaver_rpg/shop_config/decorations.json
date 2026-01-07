@@ -1,0 +1,516 @@
+{
+  "items": [
+    {
+      "id": "white_bed",
+      "item": "minecraft:white_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "orange_bed",
+      "item": "minecraft:orange_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "magenta_bed",
+      "item": "minecraft:magenta_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "light_blue_bed",
+      "item": "minecraft:light_blue_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "yellow_bed",
+      "item": "minecraft:yellow_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "lime_bed",
+      "item": "minecraft:lime_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "pink_bed",
+      "item": "minecraft:pink_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "gray_bed",
+      "item": "minecraft:gray_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "light_gray_bed",
+      "item": "minecraft:light_gray_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "cyan_bed",
+      "item": "minecraft:cyan_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "purple_bed",
+      "item": "minecraft:purple_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "blue_bed",
+      "item": "minecraft:blue_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "brown_bed",
+      "item": "minecraft:brown_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "green_bed",
+      "item": "minecraft:green_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "red_bed",
+      "item": "minecraft:red_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "black_bed",
+      "item": "minecraft:black_bed",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "painting",
+      "item": "minecraft:painting",
+      "count": 1,
+      "price": 40,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "item_frame",
+      "item": "minecraft:item_frame",
+      "count": 8,
+      "price": 50,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "glow_item_frame",
+      "item": "minecraft:glow_item_frame",
+      "count": 8,
+      "price": 100,
+      "required_level": 10,
+      "category": "decorations"
+    },
+    {
+      "id": "armor_stand",
+      "item": "minecraft:armor_stand",
+      "count": 1,
+      "price": 80,
+      "required_level": 5,
+      "category": "decorations"
+    },
+    {
+      "id": "ender_eye",
+      "item": "minecraft:ender_eye",
+      "count": 1,
+      "price": 60,
+      "required_level": 10,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_white",
+      "item": "minecraft:white_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_orange",
+      "item": "minecraft:orange_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_magenta",
+      "item": "minecraft:magenta_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_light_blue",
+      "item": "minecraft:light_blue_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_yellow",
+      "item": "minecraft:yellow_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_lime",
+      "item": "minecraft:lime_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_pink",
+      "item": "minecraft:pink_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_gray",
+      "item": "minecraft:gray_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_light_gray",
+      "item": "minecraft:light_gray_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_cyan",
+      "item": "minecraft:cyan_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_purple",
+      "item": "minecraft:purple_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_blue",
+      "item": "minecraft:blue_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_brown",
+      "item": "minecraft:brown_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_green",
+      "item": "minecraft:green_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_red",
+      "item": "minecraft:red_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "banner_black",
+      "item": "minecraft:black_banner",
+      "count": 1,
+      "price": 40,
+      "required_level": 2,
+      "category": "decorations"
+    },
+    {
+      "id": "skull_creeper",
+      "item": "minecraft:creeper_head",
+      "count": 1,
+      "price": 100,
+      "required_level": 10,
+      "category": "decorations"
+    },
+    {
+      "id": "skull_zombie",
+      "item": "minecraft:zombie_head",
+      "count": 1,
+      "price": 80,
+      "required_level": 8,
+      "category": "decorations"
+    },
+    {
+      "id": "skull_skeleton",
+      "item": "minecraft:skeleton_skull",
+      "count": 1,
+      "price": 80,
+      "required_level": 8,
+      "category": "decorations"
+    },
+    {
+      "id": "skull_wither",
+      "item": "minecraft:wither_skeleton_skull",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "decorations"
+    },
+    {
+      "id": "skull_player",
+      "item": "minecraft:player_head",
+      "count": 1,
+      "price": 50,
+      "required_level": 5,
+      "category": "decorations"
+    },
+    {
+      "id": "skull_dragon",
+      "item": "minecraft:dragon_head",
+      "count": 1,
+      "price": 500,
+      "required_level": 30,
+      "category": "decorations"
+    },
+    {
+      "id": "torch",
+      "item": "minecraft:torch",
+      "count": 16,
+      "price": 20,
+      "required_level": 1,
+      "category": "decorations"
+    },
+    {
+      "id": "soul_torch",
+      "item": "minecraft:soul_torch",
+      "count": 16,
+      "price": 40,
+      "required_level": 8,
+      "category": "decorations"
+    },
+    {
+      "id": "lantern",
+      "item": "minecraft:lantern",
+      "count": 4,
+      "price": 50,
+      "required_level": 5,
+      "category": "decorations"
+    },
+    {
+      "id": "soul_lantern",
+      "item": "minecraft:soul_lantern",
+      "count": 4,
+      "price": 80,
+      "required_level": 12,
+      "category": "decorations"
+    },
+    {
+      "id": "candle",
+      "item": "minecraft:candle",
+      "count": 4,
+      "price": 30,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "white_candle",
+      "item": "minecraft:white_candle",
+      "count": 4,
+      "price": 40,
+      "required_level": 4,
+      "category": "decorations"
+    },
+    {
+      "id": "end_rod",
+      "item": "minecraft:end_rod",
+      "count": 4,
+      "price": 80,
+      "required_level": 15,
+      "category": "decorations"
+    },
+    {
+      "id": "chest",
+      "item": "minecraft:chest",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "trapped_chest",
+      "item": "minecraft:trapped_chest",
+      "count": 1,
+      "price": 80,
+      "required_level": 6,
+      "category": "decorations"
+    },
+    {
+      "id": "bookshelf",
+      "item": "minecraft:bookshelf",
+      "count": 8,
+      "price": 60,
+      "required_level": 4,
+      "category": "decorations"
+    },
+    {
+      "id": "decorated_pot",
+      "item": "minecraft:decorated_pot",
+      "count": 1,
+      "price": 50,
+      "required_level": 5,
+      "category": "decorations"
+    },
+    {
+      "id": "hanging_sign_oak",
+      "item": "minecraft:oak_hanging_sign",
+      "count": 4,
+      "price": 40,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "hanging_sign_spruce",
+      "item": "minecraft:spruce_hanging_sign",
+      "count": 4,
+      "price": 40,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "hanging_sign_birch",
+      "item": "minecraft:birch_hanging_sign",
+      "count": 4,
+      "price": 40,
+      "required_level": 3,
+      "category": "decorations"
+    },
+    {
+      "id": "hanging_sign_jungle",
+      "item": "minecraft:jungle_hanging_sign",
+      "count": 4,
+      "price": 50,
+      "required_level": 4,
+      "category": "decorations"
+    },
+    {
+      "id": "hanging_sign_acacia",
+      "item": "minecraft:acacia_hanging_sign",
+      "count": 4,
+      "price": 50,
+      "required_level": 4,
+      "category": "decorations"
+    },
+    {
+      "id": "hanging_sign_dark_oak",
+      "item": "minecraft:dark_oak_hanging_sign",
+      "count": 4,
+      "price": 50,
+      "required_level": 4,
+      "category": "decorations"
+    },
+    {
+      "id": "hanging_sign_mangrove",
+      "item": "minecraft:mangrove_hanging_sign",
+      "count": 4,
+      "price": 50,
+      "required_level": 4,
+      "category": "decorations"
+    },
+    {
+      "id": "hanging_sign_cherry",
+      "item": "minecraft:cherry_hanging_sign",
+      "count": 4,
+      "price": 60,
+      "required_level": 5,
+      "category": "decorations"
+    },
+    {
+      "id": "oak_sign",
+      "item": "minecraft:oak_sign",
+      "count": 8,
+      "price": 20,
+      "required_level": 1,
+      "category": "decorations"
+    },
+    {
+      "id": "flower_pot",
+      "item": "minecraft:flower_pot",
+      "count": 1,
+      "price": 30,
+      "required_level": 2,
+      "category": "decorations"
+    }
+  ]
+}

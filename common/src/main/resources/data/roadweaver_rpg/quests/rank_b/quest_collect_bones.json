@@ -1,0 +1,42 @@
+{
+  "title": "骨甲材料收集",
+  "description": "收集足够的骨头来制作骨制装备和炼药材料。",
+  "rank": "B",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_bones",
+      "type": "COLLECT",
+      "target": "minecraft:bone",
+      "amount": 32,
+      "description": "收集骨头"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 280
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 80
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 8
+    }
+  ],
+  "time_limit": 1200,
+  "repeatable": true,
+  "cooldown": 86400,
+  "difficulty": 1.2,
+  "daily_quest": true,
+  "daily_weight": 15,
+  "one_time": false,
+  "max_accept_per_period": 3,
+  "accept_period_seconds": 86400,
+  "prerequisites": [],
+  "unlocks": [],
+  "min_reputation_level": 3,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

@@ -1,0 +1,38 @@
+{
+  "title": "岩浆怪核心",
+  "description": "公会需要岩浆怪的核心来制作特殊的护甲材料。",
+  "rank": "C",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_magma_cubes",
+      "type": "COLLECT",
+      "target": "minecraft:magma_cube",
+      "amount": 6,
+      "description": "收集岩浆怪核心"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 180
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 40
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 6
+    }
+  ],
+  "time_limit": 3600,
+  "repeatable": true,
+  "cooldown": 7200,
+  "difficulty": 1.6,
+  "daily_quest": true,
+  "daily_weight": 6,
+  "one_time": false,
+  "min_reputation_level": 1,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

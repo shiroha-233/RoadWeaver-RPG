@@ -36,6 +36,19 @@ public class QuestDefinition {
     private final int cooldown;
     private final float baseDifficulty;
     
+    // 声望等级限制
+    private final int minReputationLevel;
+    private final ResourceLocation reputationFaction;
+    
+    // 每日委托相关
+    private final boolean dailyQuest;
+    private final int dailyWeight;
+    
+    // 领取限制相关
+    private final boolean oneTime;              // 单次任务（完成后永不刷新）
+    private final int maxAcceptPerPeriod;       // 周期内最大领取次数（0=无限制）
+    private final int acceptPeriodSeconds;      // 领取周期（秒，0=无周期限制）
+    
     private QuestDefinition(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
@@ -50,6 +63,13 @@ public class QuestDefinition {
         this.repeatable = builder.repeatable;
         this.cooldown = builder.cooldown;
         this.baseDifficulty = builder.baseDifficulty;
+        this.minReputationLevel = builder.minReputationLevel;
+        this.reputationFaction = builder.reputationFaction;
+        this.dailyQuest = builder.dailyQuest;
+        this.dailyWeight = builder.dailyWeight;
+        this.oneTime = builder.oneTime;
+        this.maxAcceptPerPeriod = builder.maxAcceptPerPeriod;
+        this.acceptPeriodSeconds = builder.acceptPeriodSeconds;
     }
     
     // region Getters
@@ -66,6 +86,21 @@ public class QuestDefinition {
     public boolean isRepeatable() { return repeatable; }
     public int getCooldown() { return cooldown; }
     public float getBaseDifficulty() { return baseDifficulty; }
+    
+    // 声望等级限制
+    public int getMinReputationLevel() { return minReputationLevel; }
+    public ResourceLocation getReputationFaction() { return reputationFaction; }
+    public boolean hasReputationRequirement() { return minReputationLevel > 0; }
+    
+    // 每日委托
+    public boolean isDailyQuest() { return dailyQuest; }
+    public int getDailyWeight() { return dailyWeight; }
+    
+    // 领取限制
+    public boolean isOneTime() { return oneTime; }
+    public int getMaxAcceptPerPeriod() { return maxAcceptPerPeriod; }
+    public int getAcceptPeriodSeconds() { return acceptPeriodSeconds; }
+    public boolean hasAcceptLimit() { return maxAcceptPerPeriod > 0 && acceptPeriodSeconds > 0; }
     
     public Component getDisplayTitle() {
         return Component.literal("[" + rank.getDisplayName() + "] ")
@@ -101,6 +136,22 @@ public class QuestDefinition {
         buf.writeBoolean(repeatable);
         buf.writeVarInt(cooldown);
         buf.writeFloat(baseDifficulty);
+        
+        // 声望等级限制
+        buf.writeVarInt(minReputationLevel);
+        buf.writeBoolean(reputationFaction != null);
+        if (reputationFaction != null) {
+            buf.writeResourceLocation(reputationFaction);
+        }
+        
+        // 每日委托
+        buf.writeBoolean(dailyQuest);
+        buf.writeVarInt(dailyWeight);
+        
+        // 领取限制
+        buf.writeBoolean(oneTime);
+        buf.writeVarInt(maxAcceptPerPeriod);
+        buf.writeVarInt(acceptPeriodSeconds);
     }
     
     public static QuestDefinition fromNetwork(FriendlyByteBuf buf) {
@@ -128,6 +179,21 @@ public class QuestDefinition {
         builder.repeatable(buf.readBoolean());
         builder.cooldown(buf.readVarInt());
         builder.baseDifficulty(buf.readFloat());
+        
+        // 声望等级限制
+        builder.minReputationLevel(buf.readVarInt());
+        if (buf.readBoolean()) {
+            builder.reputationFaction(buf.readResourceLocation());
+        }
+        
+        // 每日委托
+        builder.dailyQuest(buf.readBoolean());
+        builder.dailyWeight(buf.readVarInt());
+        
+        // 领取限制
+        builder.oneTime(buf.readBoolean());
+        builder.maxAcceptPerPeriod(buf.readVarInt());
+        builder.acceptPeriodSeconds(buf.readVarInt());
         
         return builder.build();
     }
@@ -176,6 +242,23 @@ public class QuestDefinition {
         if (json.has("cooldown")) builder.cooldown(json.get("cooldown").getAsInt());
         if (json.has("difficulty")) builder.baseDifficulty(json.get("difficulty").getAsFloat());
         
+        // 声望等级限制
+        if (json.has("min_reputation_level")) {
+            builder.minReputationLevel(json.get("min_reputation_level").getAsInt());
+        }
+        if (json.has("reputation_faction")) {
+            builder.reputationFaction(new ResourceLocation(json.get("reputation_faction").getAsString()));
+        }
+        
+        // 每日委托
+        if (json.has("daily_quest")) builder.dailyQuest(json.get("daily_quest").getAsBoolean());
+        if (json.has("daily_weight")) builder.dailyWeight(json.get("daily_weight").getAsInt());
+        
+        // 领取限制
+        if (json.has("one_time")) builder.oneTime(json.get("one_time").getAsBoolean());
+        if (json.has("max_accept_per_period")) builder.maxAcceptPerPeriod(json.get("max_accept_per_period").getAsInt());
+        if (json.has("accept_period_seconds")) builder.acceptPeriodSeconds(json.get("accept_period_seconds").getAsInt());
+        
         if (json.has("prerequisites") && json.get("prerequisites").isJsonArray()) {
             for (JsonElement elem : json.getAsJsonArray("prerequisites")) {
                 builder.addPrerequisite(new ResourceLocation(elem.getAsString()));
@@ -217,6 +300,19 @@ public class QuestDefinition {
         private int cooldown = 0;
         private float baseDifficulty = 1.0f;
         
+        // 声望等级限制
+        private int minReputationLevel = 0;
+        private ResourceLocation reputationFaction = null;
+        
+        // 每日委托
+        private boolean dailyQuest = false;
+        private int dailyWeight = 1;
+        
+        // 领取限制
+        private boolean oneTime = false;
+        private int maxAcceptPerPeriod = 0;
+        private int acceptPeriodSeconds = 0;
+        
         public Builder(ResourceLocation id) {
             this.id = id;
             this.title = Component.literal("Unnamed Quest");
@@ -235,6 +331,19 @@ public class QuestDefinition {
         public Builder repeatable(boolean val) { this.repeatable = val; return this; }
         public Builder cooldown(int seconds) { this.cooldown = seconds; return this; }
         public Builder baseDifficulty(float val) { this.baseDifficulty = val; return this; }
+        
+        // 声望等级限制
+        public Builder minReputationLevel(int level) { this.minReputationLevel = level; return this; }
+        public Builder reputationFaction(ResourceLocation faction) { this.reputationFaction = faction; return this; }
+        
+        // 每日委托
+        public Builder dailyQuest(boolean val) { this.dailyQuest = val; return this; }
+        public Builder dailyWeight(int weight) { this.dailyWeight = weight; return this; }
+        
+        // 领取限制
+        public Builder oneTime(boolean val) { this.oneTime = val; return this; }
+        public Builder maxAcceptPerPeriod(int max) { this.maxAcceptPerPeriod = max; return this; }
+        public Builder acceptPeriodSeconds(int seconds) { this.acceptPeriodSeconds = seconds; return this; }
         
         public QuestDefinition build() {
             return new QuestDefinition(this);

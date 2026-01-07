@@ -1,0 +1,48 @@
+{
+  "title": "海洋神殿探险",
+  "description": "探索深海中的神殿遗址。",
+  "rank": "B",
+  "type": "EXPLORE",
+  "objectives": [
+    {
+      "id": "explore_monument",
+      "type": "EXPLORE",
+      "target": "minecraft:monument",
+      "amount": 1,
+      "description": "探索海洋神殿"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 650
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 180
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:prismarine_shard",
+      "count": 16
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:sea_lantern",
+      "count": 4
+    }
+  ],
+  "time_limit": 3600,
+  "repeatable": true,
+  "cooldown": 604800,
+  "difficulty": 1.7,
+  "daily_quest": false,
+  "daily_weight": 0,
+  "one_time": true,
+  "max_accept_per_period": 1,
+  "accept_period_seconds": 0,
+  "prerequisites": [],
+  "unlocks": [],
+  "min_reputation_level": 4,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

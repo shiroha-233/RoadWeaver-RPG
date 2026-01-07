@@ -1,0 +1,38 @@
+{
+  "title": "远古残骸勘探",
+  "description": "下界深处蕴藏着珍贵的远古残骸。这是制作下界合金装备的必需品。",
+  "rank": "A",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_ancient_debris",
+      "type": "COLLECT",
+      "target": "minecraft:ancient_debris",
+      "amount": 16,
+      "description": "收集远古残骸"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 1800
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 400
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 60
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 172800,
+  "difficulty": 3.2,
+  "daily_quest": false,
+  "daily_weight": 1,
+  "one_time": false,
+  "min_reputation_level": 5,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

@@ -1,0 +1,34 @@
+{
+  "title": "苦力怕清除计划",
+  "description": "这些自爆生物正在破坏村庄的基础设施。消灭它们来保护村庄。",
+  "rank": "D",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_creepers",
+      "type": "KILL",
+      "target": "minecraft:creeper",
+      "amount": 3,
+      "description": "消灭苦力怕"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 45
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 10
+    }
+  ],
+  "time_limit": 1800,
+  "repeatable": true,
+  "cooldown": 3600,
+  "difficulty": 1.0,
+  "daily_quest": true,
+  "daily_weight": 7,
+  "one_time": false,
+  "min_reputation_level": 0,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

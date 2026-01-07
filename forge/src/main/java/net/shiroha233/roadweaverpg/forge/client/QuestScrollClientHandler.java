@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.client.ClientQuestCache;
-import net.shiroha233.roadweaverpg.client.gui.QuestProgressScreen;
+import net.shiroha233.roadweaverpg.client.gui.quest.QuestProgressScreen;
 import net.shiroha233.roadweaverpg.forge.network.ClientPacketHandler;
 import net.shiroha233.roadweaverpg.item.ModItems;
 import net.shiroha233.roadweaverpg.item.QuestScrollItem;

@@ -26,6 +26,11 @@ public final class QuestEventsFabric {
             QuestEventHandler.onPlayerLogin(handler.getPlayer());
         });
         
+        // 玩家登出事件（清理缓存，防止内存泄漏）
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            QuestEventHandler.onPlayerLogout(handler.getPlayer());
+        });
+        
         // 服务端Tick事件（用于玩家Tick）
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {

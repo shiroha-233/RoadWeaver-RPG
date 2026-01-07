@@ -29,6 +29,7 @@ public class QuestSyncService {
     private BiConsumer<ServerPlayer, Collection<QuestInstance>> onSyncAllQuests;
     private BiConsumer<ServerPlayer, Collection<QuestDefinition>> onSyncAllDefinitions;
     private BiConsumer<ServerPlayer, QuestInstance> onSyncQuest;
+    private BiConsumer<ServerPlayer, List<ResourceLocation>> onSyncDailyQuests;
     
     public QuestSyncService(QuestDataAccessor dataAccessor) {
         this.dataAccessor = dataAccessor;
@@ -44,6 +45,10 @@ public class QuestSyncService {
     
     public void setOnSyncQuest(BiConsumer<ServerPlayer, QuestInstance> callback) {
         this.onSyncQuest = callback;
+    }
+    
+    public void setOnSyncDailyQuests(BiConsumer<ServerPlayer, List<ResourceLocation>> callback) {
+        this.onSyncDailyQuests = callback;
     }
     
     // region 同步方法
@@ -67,6 +72,13 @@ public class QuestSyncService {
                 onSyncQuest.accept(player, instance);
             }
         });
+    }
+    
+    public void syncDailyQuestsToClient(ServerPlayer player) {
+        if (onSyncDailyQuests != null) {
+            PlayerQuestData data = dataAccessor.getPlayerData(player);
+            onSyncDailyQuests.accept(player, new java.util.ArrayList<>(data.getDailyQuests()));
+        }
     }
     // endregion
     
@@ -131,7 +143,7 @@ public class QuestSyncService {
         }
     }
     
-    public void retrieveLostScrolls(ServerPlayer player) {
+    public void retrieveLostScrolls(ServerPlayer player, com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid maid) {
         PlayerQuestData playerData = dataAccessor.getPlayerData(player);
         int issuedCount = 0;
         
@@ -145,13 +157,24 @@ public class QuestSyncService {
             }
         }
         
+        // 通过气泡显示结果，而不是聊天栏
         if (issuedCount > 0) {
-            player.displayClientMessage(Component.translatable(
-                    "gui.roadweaver_rpg.dialog.response.retrieve_scrolls_success", issuedCount), false);
+            showBubbleMessage(maid, Component.translatable(
+                    "gui.roadweaver_rpg.dialog.response.retrieve_scrolls_success", issuedCount));
         } else {
-            player.displayClientMessage(Component.translatable(
-                    "gui.roadweaver_rpg.dialog.response.no_scrolls_to_retrieve"), false);
+            showBubbleMessage(maid, Component.translatable(
+                    "gui.roadweaver_rpg.dialog.response.no_scrolls_to_retrieve"));
         }
+    }
+    
+    private void showBubbleMessage(com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid maid, Component message) {
+        com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.implement.TextChatBubbleData bubble = 
+            com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.implement.TextChatBubbleData.create(
+                60, message, 
+                com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.IChatBubbleData.TYPE_2,
+                com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.IChatBubbleData.DEFAULT_PRIORITY
+            );
+        maid.getChatBubbleManager().addChatBubble(bubble);
     }
     
     private boolean hasScrollForQuest(ServerPlayer player, ResourceLocation questId) {

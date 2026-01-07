@@ -11,7 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class QuestCache {
     
-    private static QuestCache instance;
+    private static volatile QuestCache instance;
+    private static final Object LOCK = new Object();
     
     private final Map<ResourceLocation, QuestDefinition> definitionCache = new ConcurrentHashMap<>();
     private final Map<String, List<QuestDefinition>> rankIndex = new ConcurrentHashMap<>();
@@ -22,9 +23,16 @@ public class QuestCache {
     
     private QuestCache() {}
     
+    /**
+     * 获取单例实例（双重检查锁定）
+     */
     public static QuestCache getInstance() {
         if (instance == null) {
-            instance = new QuestCache();
+            synchronized (LOCK) {
+                if (instance == null) {
+                    instance = new QuestCache();
+                }
+            }
         }
         return instance;
     }
@@ -75,6 +83,14 @@ public class QuestCache {
     
     public void invalidatePlayerCache(UUID playerId) {
         availableQuestsCache.remove(playerId);
+    }
+    
+    /**
+     * 清理过期的玩家缓存
+     * 建议每分钟调用一次
+     */
+    public void cleanupExpiredCaches() {
+        availableQuestsCache.entrySet().removeIf(entry -> entry.getValue().isExpired());
     }
     
     public void clear() {

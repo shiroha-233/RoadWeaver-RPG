@@ -1,0 +1,38 @@
+{
+  "title": "潜影贝清除",
+  "description": "末地城的潜影贝正在保护它们的巢穴。消灭它们。",
+  "rank": "B",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_shulkers",
+      "type": "KILL",
+      "target": "minecraft:shulker",
+      "amount": 6,
+      "description": "消灭潜影贝"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 700
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 140
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 28
+    }
+  ],
+  "time_limit": 7200,
+  "repeatable": true,
+  "cooldown": 43200,
+  "difficulty": 3.2,
+  "daily_quest": true,
+  "daily_weight": 4,
+  "one_time": false,
+  "min_reputation_level": 4,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

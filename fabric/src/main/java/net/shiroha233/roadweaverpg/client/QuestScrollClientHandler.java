@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
-import net.shiroha233.roadweaverpg.client.gui.QuestProgressScreen;
+import net.shiroha233.roadweaverpg.client.gui.quest.QuestProgressScreen;
 import net.shiroha233.roadweaverpg.item.ModItems;
 import net.shiroha233.roadweaverpg.item.QuestScrollItem;
 import net.shiroha233.roadweaverpg.quest.definition.QuestDefinition;

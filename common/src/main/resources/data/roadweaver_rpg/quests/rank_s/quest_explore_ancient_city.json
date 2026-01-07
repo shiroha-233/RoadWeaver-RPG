@@ -1,0 +1,38 @@
+{
+  "title": "远古城市探险",
+  "description": "探索传说中的远古城市，寻找失落文明的秘密和宝藏。",
+  "rank": "S",
+  "type": "EXPLORE",
+  "objectives": [
+    {
+      "id": "explore_ancient_city",
+      "type": "EXPLORE",
+      "target": "minecraft:ancient_city",
+      "amount": 1,
+      "description": "探索远古城市"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 8000
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 1500
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 400
+    }
+  ],
+  "time_limit": 21600,
+  "repeatable": true,
+  "cooldown": 432000,
+  "difficulty": 4.8,
+  "daily_quest": false,
+  "daily_weight": 1,
+  "one_time": false,
+  "min_reputation_level": 7,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

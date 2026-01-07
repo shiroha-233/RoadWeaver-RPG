@@ -22,7 +22,9 @@ public class ReputationManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String DIRECTORY = "reputation_levels";
     
-    private static ReputationManager instance;
+    private static volatile ReputationManager instance;
+    private static final Object LOCK = new Object();
+    
     private final Map<Integer, ReputationLevel> levels = new TreeMap<>();
     private int maxLevel = 0;
     private static java.util.function.BiConsumer<net.minecraft.server.level.ServerPlayer, Collection<ReputationLevel>> syncCallback;
@@ -32,7 +34,17 @@ public class ReputationManager extends SimpleJsonResourceReloadListener {
         instance = this;
     }
 
+    /**
+     * 获取单例实例（双重检查锁定）
+     */
     public static ReputationManager getInstance() {
+        if (instance == null) {
+            synchronized (LOCK) {
+                if (instance == null) {
+                    throw new IllegalStateException("ReputationManager not initialized");
+                }
+            }
+        }
         return instance;
     }
 

@@ -12,23 +12,30 @@ import net.shiroha233.roadweaverpg.quest.type.QuestRank;
 import net.shiroha233.roadweaverpg.quest.definition.QuestDefinition;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 委托定义加载器
  * 从数据包加载委托定义
  * 
  * 数据包路径: data/<namespace>/quests/<path>.json
+ * 
+ * 线程安全：
+ * - 使用 ConcurrentHashMap 保证并发读取安全
+ * - apply() 方法在资源重载时由单线程调用
  */
 public class QuestDefinitionLoader extends SimpleJsonResourceReloadListener {
     
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String DIRECTORY = "quests";
     
-    private static QuestDefinitionLoader instance;
+    private static volatile QuestDefinitionLoader instance;
+    private static final Object LOCK = new Object();
     
-    private final Map<ResourceLocation, QuestDefinition> definitions = new HashMap<>();
+    // 使用线程安全的集合
+    private final Map<ResourceLocation, QuestDefinition> definitions = new ConcurrentHashMap<>();
     private final Map<QuestRank, List<QuestDefinition>> byRank = new EnumMap<>(QuestRank.class);
-    private final Map<ResourceLocation, Set<ResourceLocation>> unlockGraph = new HashMap<>();
+    private final Map<ResourceLocation, Set<ResourceLocation>> unlockGraph = new ConcurrentHashMap<>();
     
     public QuestDefinitionLoader() {
         super(GSON, DIRECTORY);
@@ -36,6 +43,20 @@ public class QuestDefinitionLoader extends SimpleJsonResourceReloadListener {
         for (QuestRank rank : QuestRank.values()) {
             byRank.put(rank, new ArrayList<>());
         }
+    }
+    
+    /**
+     * 获取单例实例（双重检查锁定）
+     */
+    public static QuestDefinitionLoader getInstance() {
+        if (instance == null) {
+            synchronized (LOCK) {
+                if (instance == null) {
+                    throw new IllegalStateException("QuestDefinitionLoader not initialized");
+                }
+            }
+        }
+        return instance;
     }
     
     @Override
@@ -84,10 +105,6 @@ public class QuestDefinitionLoader extends SimpleJsonResourceReloadListener {
 
     
     // region 查询方法
-    public static QuestDefinitionLoader getInstance() {
-        return instance;
-    }
-    
     public QuestDefinition getDefinition(ResourceLocation id) {
         return definitions.get(id);
     }
@@ -138,6 +155,32 @@ public class QuestDefinitionLoader extends SimpleJsonResourceReloadListener {
             }
         }
         return available;
+    }
+    
+    /**
+     * 获取所有标记为每日委托的定义
+     */
+    public List<QuestDefinition> getDailyQuestDefinitions() {
+        List<QuestDefinition> dailyQuests = new ArrayList<>();
+        for (QuestDefinition def : definitions.values()) {
+            if (def.isDailyQuest()) {
+                dailyQuests.add(def);
+            }
+        }
+        return dailyQuests;
+    }
+    
+    /**
+     * 按等级获取每日委托定义
+     */
+    public List<QuestDefinition> getDailyQuestsByRank(QuestRank rank) {
+        List<QuestDefinition> result = new ArrayList<>();
+        for (QuestDefinition def : byRank.getOrDefault(rank, Collections.emptyList())) {
+            if (def.isDailyQuest()) {
+                result.add(def);
+            }
+        }
+        return result;
     }
     // endregion
 }

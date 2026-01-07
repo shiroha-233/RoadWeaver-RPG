@@ -1,0 +1,38 @@
+{
+  "title": "下界合金收集",
+  "description": "公会需要下界合金锭来制作终极装备。这是最高级的材料。",
+  "rank": "S",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_netherite",
+      "type": "COLLECT",
+      "target": "minecraft:netherite_scrap",
+      "amount": 8,
+      "description": "收集下界合金碎片"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 6000
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 1200
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 300
+    }
+  ],
+  "time_limit": 14400,
+  "repeatable": true,
+  "cooldown": 345600,
+  "difficulty": 4.5,
+  "daily_quest": true,
+  "daily_weight": 1,
+  "one_time": false,
+  "min_reputation_level": 7,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

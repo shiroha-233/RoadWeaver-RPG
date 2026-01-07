@@ -1,0 +1,43 @@
+{
+  "title": "下界要塞探险",
+  "description": "探索下界要塞，寻找战略要地。",
+  "rank": "B",
+  "type": "EXPLORE",
+  "objectives": [
+    {
+      "id": "explore_fortress",
+      "type": "EXPLORE",
+      "target": "minecraft:nether_fortress",
+      "amount": 1,
+      "description": "找到下界要塞"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 500
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 150
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:blaze_rod",
+      "count": 3
+    }
+  ],
+  "time_limit": 3600,
+  "repeatable": true,
+  "cooldown": 172800,
+  "difficulty": 1.5,
+  "daily_quest": false,
+  "daily_weight": 0,
+  "one_time": false,
+  "max_accept_per_period": 1,
+  "accept_period_seconds": 604800,
+  "prerequisites": [],
+  "unlocks": ["quest_b_collect_blaze_rod"],
+  "min_reputation_level": 3,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

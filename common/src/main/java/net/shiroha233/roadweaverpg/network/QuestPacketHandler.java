@@ -8,8 +8,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.entity.npc.GuildMaidEntity;
+import net.shiroha233.roadweaverpg.entity.npc.NPCDialogBubbleHandler;
 import net.shiroha233.roadweaverpg.item.QuestScrollItem;
-import net.shiroha233.roadweaverpg.network.packet.*;
+import net.shiroha233.roadweaverpg.network.packet.quest.*;
+import net.shiroha233.roadweaverpg.network.packet.sync.*;
+import net.shiroha233.roadweaverpg.network.packet.ui.*;
 import net.shiroha233.roadweaverpg.quest.type.QuestState;
 import net.shiroha233.roadweaverpg.quest.definition.QuestDefinition;
 import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
@@ -33,20 +36,30 @@ public final class QuestPacketHandler {
     public static void handleDialogResponse(ServerPlayer player, DialogResponsePacket packet,
                                             Runnable sendQuests) {
         Entity entity = player.level().getEntity(packet.entityId());
-        if (!(entity instanceof GuildMaidEntity)) return;
+        if (!(entity instanceof GuildMaidEntity maid)) return;
         
         switch (packet.option()) {
-            case WHO_ARE_YOU -> player.displayClientMessage(
-                    Component.translatable("gui.roadweaver_rpg.dialog.response.who_are_you"), false);
-            case SHOW_QUESTS -> sendQuests.run();
-            case COMPLETE_QUEST -> handleQuestTurnIn(player);
-            case VIEW_REPUTATION -> handleViewReputation(player);
-            case RETRIEVE_SCROLL -> handleRetrieveScroll(player);
+            case SHOW_QUESTS -> {
+                NPCDialogBubbleHandler.handleGuildMaidDialog(player, packet.entityId(), "SHOW_QUESTS");
+                sendQuests.run();
+            }
+            case COMPLETE_QUEST -> {
+                NPCDialogBubbleHandler.handleGuildMaidDialog(player, packet.entityId(), "COMPLETE_QUEST");
+                handleQuestTurnIn(player, maid);
+            }
+            case VIEW_REPUTATION -> {
+                NPCDialogBubbleHandler.handleGuildMaidDialog(player, packet.entityId(), "VIEW_REPUTATION");
+                handleViewReputation(player);
+            }
+            case RETRIEVE_SCROLL -> {
+                NPCDialogBubbleHandler.handleGuildMaidDialog(player, packet.entityId(), "RETRIEVE_SCROLL");
+                handleRetrieveScroll(player, maid);
+            }
         }
     }
     
-    private static void handleRetrieveScroll(ServerPlayer player) {
-        PlayerQuestService.getInstance().retrieveLostScrolls(player);
+    private static void handleRetrieveScroll(ServerPlayer player, GuildMaidEntity maid) {
+        PlayerQuestService.getInstance().retrieveLostScrolls(player, maid);
     }
     
     private static void handleViewReputation(ServerPlayer player) {
@@ -105,7 +118,7 @@ public final class QuestPacketHandler {
     /**
      * 处理委托提交（通过对话选项，检查手持物品）
      */
-    public static void handleQuestTurnIn(ServerPlayer player) {
+    public static void handleQuestTurnIn(ServerPlayer player, GuildMaidEntity maid) {
         for (InteractionHand hand : InteractionHand.values()) {
             ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() instanceof QuestScrollItem && QuestScrollItem.hasQuest(stack)) {
@@ -114,8 +127,9 @@ public final class QuestPacketHandler {
                     if (questId.isPresent() && PlayerQuestService.getInstance().turnInQuestByScroll(player, stack)) {
                         QuestDefinition def = QuestDefinitionLoader.getInstance().getDefinition(questId.get());
                         if (def != null) {
-                            player.displayClientMessage(
-                                    Component.translatable("gui.roadweaver_rpg.quest.turned_in", def.getTitle()), false);
+                            // 通过气泡显示提交成功
+                            NPCDialogBubbleHandler.showBubbleMessage(maid,
+                                Component.translatable("gui.roadweaver_rpg.quest.turned_in", def.getTitle()));
                         }
                         return;
                     }
@@ -123,8 +137,9 @@ public final class QuestPacketHandler {
             }
         }
         
-        player.displayClientMessage(
-                Component.translatable("gui.roadweaver_rpg.dialog.response.no_completed_quest"), false);
+        // 没有已完成的委托书，通过气泡显示
+        NPCDialogBubbleHandler.showBubbleMessage(maid, 
+            Component.translatable("gui.roadweaver_rpg.dialog.response.no_completed_quest"));
     }
     
     /**

@@ -1,0 +1,662 @@
+{
+  "items": [
+    {
+      "id": "enchanted_book_protection",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:protection\",lvl:1s}]}",
+      "price": 200,
+      "required_level": 8,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_protection_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:protection\",lvl:2s}]}",
+      "price": 400,
+      "required_level": 12,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_protection_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:protection\",lvl:3s}]}",
+      "price": 800,
+      "required_level": 18,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_protection_4",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:protection\",lvl:4s}]}",
+      "price": 1500,
+      "required_level": 28,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_fire_protection",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:fire_protection\",lvl:1s}]}",
+      "price": 200,
+      "required_level": 8,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_fire_protection_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:fire_protection\",lvl:2s}]}",
+      "price": 400,
+      "required_level": 12,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_fire_protection_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:fire_protection\",lvl:3s}]}",
+      "price": 800,
+      "required_level": 18,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_fire_protection_4",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:fire_protection\",lvl:4s}]}",
+      "price": 1500,
+      "required_level": 28,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_feather_falling",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:feather_falling\",lvl:1s}]}",
+      "price": 250,
+      "required_level": 10,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_feather_falling_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:feather_falling\",lvl:2s}]}",
+      "price": 500,
+      "required_level": 15,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_feather_falling_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:feather_falling\",lvl:3s}]}",
+      "price": 1000,
+      "required_level": 22,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_feather_falling_4",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:feather_falling\",lvl:4s}]}",
+      "price": 1800,
+      "required_level": 32,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_efficiency",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:efficiency\",lvl:1s}]}",
+      "price": 150,
+      "required_level": 6,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_efficiency_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:efficiency\",lvl:2s}]}",
+      "price": 300,
+      "required_level": 10,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_efficiency_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:efficiency\",lvl:3s}]}",
+      "price": 600,
+      "required_level": 15,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_efficiency_4",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:efficiency\",lvl:4s}]}",
+      "price": 1200,
+      "required_level": 22,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_efficiency_5",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:efficiency\",lvl:5s}]}",
+      "price": 2000,
+      "required_level": 35,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_sharpness",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:sharpness\",lvl:1s}]}",
+      "price": 200,
+      "required_level": 8,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_sharpness_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:sharpness\",lvl:2s}]}",
+      "price": 400,
+      "required_level": 12,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_sharpness_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:sharpness\",lvl:3s}]}",
+      "price": 800,
+      "required_level": 18,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_sharpness_4",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:sharpness\",lvl:4s}]}",
+      "price": 1500,
+      "required_level": 28,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_sharpness_5",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:sharpness\",lvl:5s}]}",
+      "price": 2500,
+      "required_level": 40,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_power",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:power\",lvl:1s}]}",
+      "price": 200,
+      "required_level": 8,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_power_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:power\",lvl:2s}]}",
+      "price": 400,
+      "required_level": 12,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_power_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:power\",lvl:3s}]}",
+      "price": 800,
+      "required_level": 18,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_power_4",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:power\",lvl:4s}]}",
+      "price": 1500,
+      "required_level": 28,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_power_5",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:power\",lvl:5s}]}",
+      "price": 2500,
+      "required_level": 40,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_punch",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:punch\",lvl:1s}]}",
+      "price": 300,
+      "required_level": 12,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_punch_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:punch\",lvl:2s}]}",
+      "price": 600,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_infinity",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:infinity\",lvl:1s}]}",
+      "price": 2000,
+      "required_level": 35,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_mending",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:mending\",lvl:1s}]}",
+      "price": 3000,
+      "required_level": 45,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_unbreaking",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:unbreaking\",lvl:1s}]}",
+      "price": 150,
+      "required_level": 6,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_unbreaking_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:unbreaking\",lvl:2s}]}",
+      "price": 350,
+      "required_level": 12,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_unbreaking_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:unbreaking\",lvl:3s}]}",
+      "price": 700,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_luck_of_the_sea",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:luck_of_the_sea\",lvl:1s}]}",
+      "price": 500,
+      "required_level": 18,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_lure",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:lure\",lvl:1s}]}",
+      "price": 400,
+      "required_level": 15,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_loyalty",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:loyalty\",lvl:1s}]}",
+      "price": 400,
+      "required_level": 15,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_loyalty_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:loyalty\",lvl:2s}]}",
+      "price": 800,
+      "required_level": 25,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_loyalty_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:loyalty\",lvl:3s}]}",
+      "price": 1500,
+      "required_level": 38,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_impaling",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:impaling\",lvl:1s}]}",
+      "price": 300,
+      "required_level": 12,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_impaling_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:impaling\",lvl:2s}]}",
+      "price": 600,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_impaling_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:impaling\",lvl:3s}]}",
+      "price": 1200,
+      "required_level": 30,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_impaling_4",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:impaling\",lvl:4s}]}",
+      "price": 2200,
+      "required_level": 42,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_impaling_5",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:impaling\",lvl:5s}]}",
+      "price": 3500,
+      "required_level": 50,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_riptide",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:riptide\",lvl:1s}]}",
+      "price": 400,
+      "required_level": 15,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_riptide_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:riptide\",lvl:2s}]}",
+      "price": 800,
+      "required_level": 25,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_riptide_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:riptide\",lvl:3s}]}",
+      "price": 1500,
+      "required_level": 38,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_channeling",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:channeling\",lvl:1s}]}",
+      "price": 500,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_multishot",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:multishot\",lvl:1s}]}",
+      "price": 600,
+      "required_level": 22,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_quick_charge",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:quick_charge\",lvl:1s}]}",
+      "price": 300,
+      "required_level": 12,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_quick_charge_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:quick_charge\",lvl:2s}]}",
+      "price": 600,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_quick_charge_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:quick_charge\",lvl:3s}]}",
+      "price": 1200,
+      "required_level": 32,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_soul_speed",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:soul_speed\",lvl:1s}]}",
+      "price": 1000,
+      "required_level": 30,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_soul_speed_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:soul_speed\",lvl:2s}]}",
+      "price": 2000,
+      "required_level": 45,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_soul_speed_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:soul_speed\",lvl:3s}]}",
+      "price": 3500,
+      "required_level": 55,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_swift_sneak",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:swift_sneak\",lvl:1s}]}",
+      "price": 800,
+      "required_level": 28,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_swift_sneak_2",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:swift_sneak\",lvl:2s}]}",
+      "price": 1600,
+      "required_level": 42,
+      "category": "special"
+    },
+    {
+      "id": "enchanted_book_swift_sneak_3",
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:swift_sneak\",lvl:3s}]}",
+      "price": 2800,
+      "required_level": 52,
+      "category": "special"
+    },
+    {
+      "id": "experience_bottle",
+      "item": "minecraft:experience_bottle",
+      "count": 8,
+      "price": 150,
+      "required_level": 15,
+      "category": "special"
+    },
+    {
+      "id": "nether_star",
+      "item": "minecraft:nether_star",
+      "count": 1,
+      "price": 5000,
+      "required_level": 50,
+      "category": "special"
+    },
+    {
+      "id": "dragon_egg",
+      "item": "minecraft:dragon_egg",
+      "count": 1,
+      "price": 10000,
+      "required_level": 55,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_13",
+      "item": "minecraft:music_disc_13",
+      "count": 1,
+      "price": 200,
+      "required_level": 15,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_cat",
+      "item": "minecraft:music_disc_cat",
+      "count": 1,
+      "price": 200,
+      "required_level": 15,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_blocks",
+      "item": "minecraft:music_disc_blocks",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_chirp",
+      "item": "minecraft:music_disc_chirp",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_far",
+      "item": "minecraft:music_disc_far",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_mall",
+      "item": "minecraft:music_disc_mall",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_mellohi",
+      "item": "minecraft:music_disc_mellohi",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_stal",
+      "item": "minecraft:music_disc_stal",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_strad",
+      "item": "minecraft:music_disc_strad",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_ward",
+      "item": "minecraft:music_disc_ward",
+      "count": 1,
+      "price": 400,
+      "required_level": 25,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_11",
+      "item": "minecraft:music_disc_11",
+      "count": 1,
+      "price": 400,
+      "required_level": 25,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_wait",
+      "item": "minecraft:music_disc_wait",
+      "count": 1,
+      "price": 400,
+      "required_level": 25,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_otherside",
+      "item": "minecraft:music_disc_otherside",
+      "count": 1,
+      "price": 500,
+      "required_level": 30,
+      "category": "special"
+    },
+    {
+      "id": "music_disc_relic",
+      "item": "minecraft:music_disc_relic",
+      "count": 1,
+      "price": 800,
+      "required_level": 40,
+      "category": "special"
+    }
+  ]
+}

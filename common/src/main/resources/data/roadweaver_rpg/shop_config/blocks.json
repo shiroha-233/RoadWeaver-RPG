@@ -1,0 +1,532 @@
+{
+  "items": [
+    {
+      "id": "cobblestone",
+      "item": "minecraft:cobblestone",
+      "count": 32,
+      "price": 20,
+      "required_level": 1,
+      "category": "blocks"
+    },
+    {
+      "id": "stone",
+      "item": "minecraft:stone",
+      "count": 16,
+      "price": 25,
+      "required_level": 1,
+      "category": "blocks"
+    },
+    {
+      "id": "granite",
+      "item": "minecraft:granite",
+      "count": 16,
+      "price": 30,
+      "required_level": 2,
+      "category": "blocks"
+    },
+    {
+      "id": "diorite",
+      "item": "minecraft:diorite",
+      "count": 16,
+      "price": 30,
+      "required_level": 2,
+      "category": "blocks"
+    },
+    {
+      "id": "andesite",
+      "item": "minecraft:andesite",
+      "count": 16,
+      "price": 30,
+      "required_level": 2,
+      "category": "blocks"
+    },
+    {
+      "id": "deepslate",
+      "item": "minecraft:deepslate",
+      "count": 16,
+      "price": 50,
+      "required_level": 8,
+      "category": "blocks"
+    },
+    {
+      "id": "cobbled_deepslate",
+      "item": "minecraft:cobbled_deepslate",
+      "count": 16,
+      "price": 40,
+      "required_level": 6,
+      "category": "blocks"
+    },
+    {
+      "id": "sand",
+      "item": "minecraft:sand",
+      "count": 16,
+      "price": 15,
+      "required_level": 1,
+      "category": "blocks"
+    },
+    {
+      "id": "red_sand",
+      "item": "minecraft:red_sand",
+      "count": 16,
+      "price": 20,
+      "required_level": 2,
+      "category": "blocks"
+    },
+    {
+      "id": "gravel",
+      "item": "minecraft:gravel",
+      "count": 16,
+      "price": 15,
+      "required_level": 1,
+      "category": "blocks"
+    },
+    {
+      "id": "dirt",
+      "item": "minecraft:dirt",
+      "count": 32,
+      "price": 20,
+      "required_level": 1,
+      "category": "blocks"
+    },
+    {
+      "id": "grass_block",
+      "item": "minecraft:grass_block",
+      "count": 16,
+      "price": 25,
+      "required_level": 1,
+      "category": "blocks"
+    },
+    {
+      "id": "podzol",
+      "item": "minecraft:podzol",
+      "count": 16,
+      "price": 30,
+      "required_level": 3,
+      "category": "blocks"
+    },
+    {
+      "id": "mycelium",
+      "item": "minecraft:mycelium",
+      "count": 16,
+      "price": 35,
+      "required_level": 4,
+      "category": "blocks"
+    },
+    {
+      "id": "clay",
+      "item": "minecraft:clay",
+      "count": 16,
+      "price": 30,
+      "required_level": 2,
+      "category": "blocks"
+    },
+    {
+      "id": "sandstone",
+      "item": "minecraft:sandstone",
+      "count": 16,
+      "price": 25,
+      "required_level": 2,
+      "category": "blocks"
+    },
+    {
+      "id": "red_sandstone",
+      "item": "minecraft:red_sandstone",
+      "count": 16,
+      "price": 30,
+      "required_level": 3,
+      "category": "blocks"
+    },
+    {
+      "id": "netherrack",
+      "item": "minecraft:netherrack",
+      "count": 32,
+      "price": 30,
+      "required_level": 8,
+      "category": "blocks"
+    },
+    {
+      "id": "soul_sand",
+      "item": "minecraft:soul_sand",
+      "count": 8,
+      "price": 40,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "soul_soil",
+      "item": "minecraft:soul_soil",
+      "count": 8,
+      "price": 40,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "end_stone",
+      "item": "minecraft:end_stone",
+      "count": 16,
+      "price": 50,
+      "required_level": 15,
+      "category": "blocks"
+    },
+    {
+      "id": "obsidian",
+      "item": "minecraft:obsidian",
+      "count": 4,
+      "price": 80,
+      "required_level": 12,
+      "category": "blocks"
+    },
+    {
+      "id": "crying_obsidian",
+      "item": "minecraft:crying_obsidian",
+      "count": 4,
+      "price": 150,
+      "required_level": 20,
+      "category": "blocks"
+    },
+    {
+      "id": "ice",
+      "item": "minecraft:ice",
+      "count": 8,
+      "price": 40,
+      "required_level": 8,
+      "category": "blocks"
+    },
+    {
+      "id": "packed_ice",
+      "item": "minecraft:packed_ice",
+      "count": 8,
+      "price": 50,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "blue_ice",
+      "item": "minecraft:blue_ice",
+      "count": 4,
+      "price": 100,
+      "required_level": 15,
+      "category": "blocks"
+    },
+    {
+      "id": "snow_block",
+      "item": "minecraft:snow_block",
+      "count": 16,
+      "price": 20,
+      "required_level": 3,
+      "category": "blocks"
+    },
+    {
+      "id": "prismarine",
+      "item": "minecraft:prismarine",
+      "count": 16,
+      "price": 60,
+      "required_level": 12,
+      "category": "blocks"
+    },
+    {
+      "id": "prismarine_bricks",
+      "item": "minecraft:prismarine_bricks",
+      "count": 8,
+      "price": 80,
+      "required_level": 15,
+      "category": "blocks"
+    },
+    {
+      "id": "dark_prismarine",
+      "item": "minecraft:dark_prismarine",
+      "count": 8,
+      "price": 100,
+      "required_level": 18,
+      "category": "blocks"
+    },
+    {
+      "id": "magma_block",
+      "item": "minecraft:magma_block",
+      "count": 8,
+      "price": 50,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "nether_bricks",
+      "item": "minecraft:nether_bricks",
+      "count": 16,
+      "price": 40,
+      "required_level": 8,
+      "category": "blocks"
+    },
+    {
+      "id": "red_nether_bricks",
+      "item": "minecraft:red_nether_bricks",
+      "count": 16,
+      "price": 50,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "blackstone",
+      "item": "minecraft:blackstone",
+      "count": 16,
+      "price": 50,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "polished_blackstone",
+      "item": "minecraft:polished_blackstone",
+      "count": 16,
+      "price": 60,
+      "required_level": 12,
+      "category": "blocks"
+    },
+    {
+      "id": "cobblestone_wall",
+      "item": "minecraft:cobblestone_wall",
+      "count": 16,
+      "price": 30,
+      "required_level": 2,
+      "category": "blocks"
+    },
+    {
+      "id": "iron_bars",
+      "item": "minecraft:iron_bars",
+      "count": 16,
+      "price": 60,
+      "required_level": 5,
+      "category": "blocks"
+    },
+    {
+      "id": "glass",
+      "item": "minecraft:glass",
+      "count": 16,
+      "price": 40,
+      "required_level": 3,
+      "category": "blocks"
+    },
+    {
+      "id": "tinted_glass",
+      "item": "minecraft:tinted_glass",
+      "count": 8,
+      "price": 80,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "glowstone",
+      "item": "minecraft:glowstone",
+      "count": 4,
+      "price": 80,
+      "required_level": 12,
+      "category": "blocks"
+    },
+    {
+      "id": "sea_lantern",
+      "item": "minecraft:sea_lantern",
+      "count": 4,
+      "price": 100,
+      "required_level": 15,
+      "category": "blocks"
+    },
+    {
+      "id": "shulker_box",
+      "item": "minecraft:shulker_box",
+      "count": 1,
+      "price": 300,
+      "required_level": 20,
+      "category": "blocks"
+    },
+    {
+      "id": "ender_chest",
+      "item": "minecraft:ender_chest",
+      "count": 1,
+      "price": 800,
+      "required_level": 28,
+      "category": "blocks"
+    },
+    {
+      "id": "anvil",
+      "item": "minecraft:anvil",
+      "count": 1,
+      "price": 400,
+      "required_level": 15,
+      "category": "blocks"
+    },
+    {
+      "id": "chipped_anvil",
+      "item": "minecraft:chipped_anvil",
+      "count": 1,
+      "price": 350,
+      "required_level": 14,
+      "category": "blocks"
+    },
+    {
+      "id": "damaged_anvil",
+      "item": "minecraft:damaged_anvil",
+      "count": 1,
+      "price": 300,
+      "required_level": 13,
+      "category": "blocks"
+    },
+    {
+      "id": "smithing_table",
+      "item": "minecraft:smithing_table",
+      "count": 1,
+      "price": 100,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "blast_furnace",
+      "item": "minecraft:blast_furnace",
+      "count": 1,
+      "price": 200,
+      "required_level": 12,
+      "category": "blocks"
+    },
+    {
+      "id": "smoker",
+      "item": "minecraft:smoker",
+      "count": 1,
+      "price": 100,
+      "required_level": 6,
+      "category": "blocks"
+    },
+    {
+      "id": "furnace",
+      "item": "minecraft:furnace",
+      "count": 1,
+      "price": 50,
+      "required_level": 2,
+      "category": "blocks"
+    },
+    {
+      "id": "campfire",
+      "item": "minecraft:campfire",
+      "count": 1,
+      "price": 80,
+      "required_level": 5,
+      "category": "blocks"
+    },
+    {
+      "id": "soul_campfire",
+      "item": "minecraft:soul_campfire",
+      "count": 1,
+      "price": 100,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "crafting_table",
+      "item": "minecraft:crafting_table",
+      "count": 1,
+      "price": 30,
+      "required_level": 1,
+      "category": "blocks"
+    },
+    {
+      "id": "cartography_table",
+      "item": "minecraft:cartography_table",
+      "count": 1,
+      "price": 50,
+      "required_level": 4,
+      "category": "blocks"
+    },
+    {
+      "id": "fletching_table",
+      "item": "minecraft:fletching_table",
+      "count": 1,
+      "price": 50,
+      "required_level": 4,
+      "category": "blocks"
+    },
+    {
+      "id": "lectern",
+      "item": "minecraft:lectern",
+      "count": 1,
+      "price": 60,
+      "required_level": 5,
+      "category": "blocks"
+    },
+    {
+      "id": "brewing_stand",
+      "item": "minecraft:brewing_stand",
+      "count": 1,
+      "price": 150,
+      "required_level": 10,
+      "category": "blocks"
+    },
+    {
+      "id": "cauldron",
+      "item": "minecraft:cauldron",
+      "count": 1,
+      "price": 100,
+      "required_level": 8,
+      "category": "blocks"
+    },
+    {
+      "id": "stonecutter",
+      "item": "minecraft:stonecutter",
+      "count": 1,
+      "price": 80,
+      "required_level": 6,
+      "category": "blocks"
+    },
+    {
+      "id": "grindstone",
+      "item": "minecraft:grindstone",
+      "count": 1,
+      "price": 100,
+      "required_level": 8,
+      "category": "blocks"
+    },
+    {
+      "id": "loom",
+      "item": "minecraft:loom",
+      "count": 1,
+      "price": 50,
+      "required_level": 4,
+      "category": "blocks"
+    },
+    {
+      "id": "barrel",
+      "item": "minecraft:barrel",
+      "count": 1,
+      "price": 40,
+      "required_level": 3,
+      "category": "blocks"
+    },
+    {
+      "id": "bee_hive",
+      "item": "minecraft:bee_hive",
+      "count": 1,
+      "price": 100,
+      "required_level": 8,
+      "category": "blocks"
+    },
+    {
+      "id": "note_block",
+      "item": "minecraft:note_block",
+      "count": 1,
+      "price": 50,
+      "required_level": 4,
+      "category": "blocks"
+    },
+    {
+      "id": "jukebox",
+      "item": "minecraft:jukebox",
+      "count": 1,
+      "price": 200,
+      "required_level": 12,
+      "category": "blocks"
+    },
+    {
+      "id": "respawn_anchor",
+      "item": "minecraft:respawn_anchor",
+      "count": 1,
+      "price": 400,
+      "required_level": 25,
+      "category": "blocks"
+    }
+  ]
+}

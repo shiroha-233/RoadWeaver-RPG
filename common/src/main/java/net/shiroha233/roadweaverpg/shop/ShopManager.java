@@ -46,30 +46,45 @@ public class ShopManager extends SimpleJsonResourceReloadListener {
             itemsByCategory.put(cat, new ArrayList<>());
         }
         
-        // 只读取 shop.json 文件
-        JsonElement shopConfig = resources.get(SHOP_CONFIG);
-        if (shopConfig == null) {
-            RoadWeaverRPG.LOGGER.warn("Shop config not found: {}", SHOP_CONFIG);
+        if (resources.isEmpty()) {
+            RoadWeaverRPG.LOGGER.warn("No shop configs found under data/{}/shop_config", RoadWeaverRPG.MOD_ID);
             return;
         }
-        
-        try {
-            JsonObject root = shopConfig.getAsJsonObject();
-            JsonArray items = root.getAsJsonArray("items");
-            
-            for (JsonElement element : items) {
-                JsonObject itemJson = element.getAsJsonObject();
-                String id = itemJson.get("id").getAsString();
+
+        int totalItems = 0;
+        for (Map.Entry<ResourceLocation, JsonElement> entry : resources.entrySet()) {
+            ResourceLocation configId = entry.getKey();
+            JsonElement element = entry.getValue();
+            try {
+                if (!element.isJsonObject()) {
+                    RoadWeaverRPG.LOGGER.warn("Skip shop config {}: root is not a JsonObject", configId);
+                    continue;
+                }
+                JsonObject root = element.getAsJsonObject();
+                JsonArray items = root.getAsJsonArray("items");
+                if (items == null) {
+                    RoadWeaverRPG.LOGGER.warn("Skip shop config {}: missing 'items' array", configId);
+                    continue;
+                }
                 
-                ShopItem item = ShopItem.fromJson(id, itemJson);
-                itemsByCategory.get(item.category()).add(item);
-                itemsById.put(item.id(), item);
+                for (JsonElement itemElement : items) {
+                    if (!itemElement.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject itemJson = itemElement.getAsJsonObject();
+                    String id = itemJson.get("id").getAsString();
+                    
+                    ShopItem item = ShopItem.fromJson(id, itemJson);
+                    itemsByCategory.get(item.category()).add(item);
+                    itemsById.put(item.id(), item);
+                    totalItems++;
+                }
+            } catch (Exception e) {
+                RoadWeaverRPG.LOGGER.error("Failed to load shop config file {}", configId, e);
             }
-            
-            RoadWeaverRPG.LOGGER.info("Loaded {} shop items from config", itemsById.size());
-        } catch (Exception e) {
-            RoadWeaverRPG.LOGGER.error("Failed to load shop config", e);
         }
+
+        RoadWeaverRPG.LOGGER.info("Loaded {} shop items from {} shop config files", totalItems, resources.size());
     }
     
     public List<ShopItem> getItemsByCategory(ShopCategory category) {

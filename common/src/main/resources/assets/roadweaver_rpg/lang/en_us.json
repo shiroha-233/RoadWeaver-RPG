@@ -28,6 +28,13 @@
   "gui.roadweaver_rpg.dialog.response.complete_quest": "Let me see... You haven't completed any quests yet.",
   "gui.roadweaver_rpg.dialog.response.no_completed_quest": "You don't have any completed quest scrolls.",
   
+  "npc.roadweaver_rpg.guild_maid.who_are_you": "I'm the receptionist here at the Adventurer's Guild!",
+  "npc.roadweaver_rpg.guild_maid.greeting": "Welcome to the Adventurer's Guild! How can I help you?",
+  "npc.roadweaver_rpg.guild_maid.show_quests": "Let me show you the available quests.",
+  "npc.roadweaver_rpg.guild_maid.complete_quest": "Let me check your completed quests.",
+  "npc.roadweaver_rpg.guild_maid.view_reputation": "Here's your reputation status.",
+  "npc.roadweaver_rpg.guild_maid.retrieve_scroll": "I'll retrieve your lost scrolls.",
+  
   "gui.roadweaver_rpg.quest_board.title": "Quest Board",
   "gui.roadweaver_rpg.quest_board.accept": "Accept Quest",
   "gui.roadweaver_rpg.quest_board.description": "Description:",
@@ -39,6 +46,16 @@
   "gui.roadweaver_rpg.quest_board.time_limit": "Time Limit: %s",
   "gui.roadweaver_rpg.quest_board.repeatable": "Repeatable",
   "gui.roadweaver_rpg.quest_board.cooldown": "On Cooldown: %s",
+  "gui.roadweaver_rpg.quest_board.reputation_required": "Required Reputation: %d",
+  "gui.roadweaver_rpg.quest_board.reputation_current": "Current Level: %d",
+  "gui.roadweaver_rpg.quest_board.locked": "Reputation too low to accept",
+  "gui.roadweaver_rpg.quest_board.daily_quest": "★ Daily Quest",
+  "gui.roadweaver_rpg.quest_board.daily_refresh": "Daily Refresh: %s",
+  "gui.roadweaver_rpg.quest_board.one_time": "One-Time Quest",
+  "gui.roadweaver_rpg.quest_board.one_time_completed": "Completed (Cannot Accept Again)",
+  "gui.roadweaver_rpg.quest_board.accept_limit": "Accept Limit: %d times/%s",
+  "gui.roadweaver_rpg.quest_board.accept_remaining": "Remaining: %d times",
+  "gui.roadweaver_rpg.quest_board.accept_cooldown": "Next Available: %s",
   
   "gui.roadweaver_rpg.time.minutes": "%d min",
   
@@ -115,6 +132,10 @@
   "gui.roadweaver_rpg.shop_dialog.open_shop": "Browse Shop",
   "gui.roadweaver_rpg.shop_dialog.response.who_are_you": "I'm the shop keeper. I sell gear for adventurers. You can spend your hard-earned coins here!",
   
+  "npc.roadweaver_rpg.shop_maid.who_are_you": "I'm the shop keeper!",
+  "npc.roadweaver_rpg.shop_maid.greeting": "Welcome! I have all kinds of gear for adventurers.",
+  "npc.roadweaver_rpg.shop_maid.open_shop": "Welcome! Feel free to browse.",
+  
   "shop.roadweaver_rpg.category.weapons": "Weapons",
   "shop.roadweaver_rpg.category.armor": "Armor",
   "shop.roadweaver_rpg.category.tools": "Tools",
@@ -137,6 +158,10 @@
   "quest.error.prerequisites_not_met": "Prerequisites not met",
   "quest.error.not_repeatable": "Quest is not repeatable",
   "quest.error.expired": "Quest has expired",
+  "quest.error.reputation_too_low": "Reputation level too low",
+  "quest.error.not_daily_quest": "Quest is not in today's daily list",
+  "quest.error.one_time_completed": "One-time quest already completed",
+  "quest.error.accept_limit_reached": "Accept limit reached for this quest",
   "quest.error.scroll_invalid": "Invalid quest scroll",
   "quest.error.scroll_not_found": "Quest scroll not found",
   "quest.error.item_not_registered": "Item not registered",
@@ -145,5 +170,18 @@
   "quest.error.data_save_failed": "Data save failed",
   "quest.error.serialization_failed": "Serialization failed",
   "quest.error.network_sync_failed": "Network sync failed",
-  "quest.error.unknown": "Unknown error"
+  "quest.error.unknown": "Unknown error",
+  
+  "command.rwquest.reputation.set.success": "§aSet %s's %s reputation level to %d",
+  "command.rwquest.reputation.add.success": "§aAdded %d %s reputation to %s",
+  "command.rwquest.reputation.get.info": "§6%s's %s Reputation Info:\n§eLevel: %d\n§eCurrent XP: %d",
+  "command.rwquest.reputation.get.info_with_next": "§6%s's %s Reputation Info:\n§eLevel: %d\n§eCurrent XP: %d\n§eXP for Next Level: %d",
+  "command.rwquest.daily.refresh.success": "§aRefreshed daily quests for %s",
+  "command.rwquest.daily.list.title": "§6Today's Quests:",
+  "command.rwquest.daily.list.empty": "§cNone",
+  "command.rwquest.daily.list.item": "§e- %s",
+  "command.rwquest.data.clear.success": "§aCleared all quest data for %s",
+  
+  "gui.roadweaver_rpg.galgame.continue_hint": "Click to continue",
+  "gui.roadweaver_rpg.galgame.player_name": "Player"
 }

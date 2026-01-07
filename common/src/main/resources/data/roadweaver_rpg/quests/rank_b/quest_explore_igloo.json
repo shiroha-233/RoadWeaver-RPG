@@ -1,0 +1,47 @@
+{
+  "title": "冰屋探险",
+  "description": "探险家报告在冰原发现了神秘的冰屋，据说里面藏有珍贵的宝物。",
+  "rank": "B",
+  "type": "EXPLORE",
+  "objectives": [
+    {
+      "id": "explore_igloo",
+      "type": "EXPLORE",
+      "target": "minecraft:igloo",
+      "amount": 1,
+      "description": "探索1个冰屋"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 180
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 75
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 6
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:red_carpet",
+      "count": 4
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 86400,
+  "difficulty": 1.1,
+  "daily_quest": true,
+  "daily_weight": 5,
+  "one_time": false,
+  "max_accept_per_period": 1,
+  "accept_period_seconds": 86400,
+  "prerequisites": [],
+  "unlocks": [],
+  "min_reputation_level": 3,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

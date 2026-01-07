@@ -1,0 +1,52 @@
+{
+  "title": "洞穴蜘蛛清剿",
+  "description": "深入地下洞穴，清剿危险的洞穴蜘蛛群落。",
+  "rank": "B",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_cave_spider",
+      "type": "KILL",
+      "target": "minecraft:cave_spider",
+      "amount": 15,
+      "description": "消灭洞穴蜘蛛"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 480
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 140
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 14
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:spider_eye",
+      "count": 8
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:fermented_spider_eye",
+      "count": 4
+    }
+  ],
+  "time_limit": 1800,
+  "repeatable": true,
+  "cooldown": 10800,
+  "difficulty": 1.5,
+  "daily_quest": false,
+  "daily_weight": 0,
+  "one_time": false,
+  "max_accept_per_period": 3,
+  "accept_period_seconds": 86400,
+  "prerequisites": [],
+  "unlocks": [],
+  "min_reputation_level": 3,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

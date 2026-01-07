@@ -1,0 +1,54 @@
+{
+  "title": "钻石矿脉探测",
+  "description": "寻找并收集珍贵的钻石，用于打造更强的装备。",
+  "rank": "B",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_diamond",
+      "type": "COLLECT",
+      "target": "minecraft:diamond",
+      "amount": 12,
+      "description": "收集12颗钻石"
+    },
+    {
+      "id": "collect_diamond_block",
+      "type": "COLLECT",
+      "target": "minecraft:diamond_block",
+      "amount": 2,
+      "description": "收集2个钻石方块"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 900
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 250
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 20
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:diamond_pickaxe",
+      "count": 1
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 14400,
+  "difficulty": 1.8,
+  "daily_quest": true,
+  "daily_weight": 5,
+  "one_time": false,
+  "max_accept_per_period": 1,
+  "accept_period_seconds": 86400,
+  "prerequisites": [],
+  "unlocks": [],
+  "min_reputation_level": 3,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

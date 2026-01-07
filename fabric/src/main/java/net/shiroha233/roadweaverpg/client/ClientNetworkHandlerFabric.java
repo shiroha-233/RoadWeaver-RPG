@@ -7,12 +7,13 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.shiroha233.roadweaverpg.client.gui.NPCDialogScreen;
-import net.shiroha233.roadweaverpg.client.gui.QuestBoardScreen;
-import net.shiroha233.roadweaverpg.client.gui.ShopDialogScreen;
-import net.shiroha233.roadweaverpg.client.gui.ShopScreen;
+import net.shiroha233.roadweaverpg.client.gui.quest.QuestBoardScreen;
+import net.shiroha233.roadweaverpg.client.gui.shop.ShopScreen;
 import net.shiroha233.roadweaverpg.network.NetworkHandler;
-import net.shiroha233.roadweaverpg.network.packet.*;
+import net.shiroha233.roadweaverpg.network.packet.quest.*;
+import net.shiroha233.roadweaverpg.network.packet.sync.*;
+import net.shiroha233.roadweaverpg.network.packet.ui.*;
+import net.shiroha233.roadweaverpg.network.packet.shop.*;
 import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
 
 /**
@@ -71,7 +72,14 @@ public class ClientNetworkHandlerFabric {
 
         // 处理打开声望界面
         ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.OPEN_REPUTATION_GUI, (client, handler, buf, responseSender) -> {
-            client.execute(() -> Minecraft.getInstance().setScreen(new net.shiroha233.roadweaverpg.client.gui.ReputationOverviewScreen()));
+            client.execute(() -> Minecraft.getInstance().setScreen(new net.shiroha233.roadweaverpg.client.gui.reputation.ReputationOverviewScreen()));
+        });
+        
+        // 处理同步每日委托
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_DAILY_QUESTS, (client, handler, buf, responseSender) -> {
+            SyncDailyQuestsPacket packet = SyncDailyQuestsPacket.decode(buf);
+            client.execute(() -> net.shiroha233.roadweaverpg.client.data.ClientDailyQuestData.getInstance()
+                    .update(packet.dailyQuestIds(), packet.refreshDate(), packet.timeUntilRefresh()));
         });
         
         // 注册商店相关接收器
@@ -101,10 +109,26 @@ public class ClientNetworkHandlerFabric {
     }
     
     private static void openShopDialogScreen(int entityId) {
-        Minecraft.getInstance().setScreen(new ShopDialogScreen(
-                entityId, 
-                ClientNetworkHandlerFabric::sendShopDialogResponse
-        ));
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null) return;
+        
+        var entity = mc.level.getEntity(entityId);
+        if (!(entity instanceof net.minecraft.world.entity.LivingEntity npc)) return;
+        
+        // 使用Galgame对话界面
+        net.shiroha233.roadweaverpg.client.gui.galgame.GalgameDialogScreen screen = 
+            net.shiroha233.roadweaverpg.client.gui.galgame.GalgameDialogBuilder.create(entityId)
+                .npcName(npc.getDisplayName())
+                .npcSaysTranslatable("npc.roadweaver_rpg.shop_maid.greeting")
+                .addOptionTranslatable("gui.roadweaver_rpg.shop_dialog.open_shop", "open_shop")
+                .onOptionSelected(index -> {
+                    if (index == 0) {
+                        sendShopDialogResponse(entityId, ShopDialogResponsePacket.ShopDialogOption.OPEN_SHOP);
+                    }
+                })
+                .build();
+        
+        mc.setScreen(screen);
     }
     
     private static void handleOpenShop(OpenShopPacket packet) {
@@ -139,13 +163,44 @@ public class ClientNetworkHandlerFabric {
     // ==================== 原有方法 ====================
     
     private static void openDialogScreen(int entityId) {
-        Minecraft.getInstance().setScreen(new NPCDialogScreen(entityId, ClientNetworkHandlerFabric::sendDialogResponse));
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null) return;
+        
+        var entity = mc.level.getEntity(entityId);
+        if (!(entity instanceof net.minecraft.world.entity.LivingEntity npc)) return;
+        
+        // 使用Galgame对话界面
+        net.shiroha233.roadweaverpg.client.gui.galgame.GalgameDialogScreen screen = 
+            net.shiroha233.roadweaverpg.client.gui.galgame.GalgameDialogBuilder.create(entityId)
+                .npcName(npc.getDisplayName())
+                .npcSaysTranslatable("npc.roadweaver_rpg.guild_maid.greeting")
+                .addOptionTranslatable("gui.roadweaver_rpg.dialog.show_quests", "show_quests")
+                .addOptionTranslatable("gui.roadweaver_rpg.dialog.complete_quest", "complete_quest")
+                .addOptionTranslatable("gui.roadweaver_rpg.dialog.retrieve_scroll", "retrieve_scroll")
+                .addOptionTranslatable("gui.roadweaver_rpg.dialog.view_reputation", "view_reputation")
+                .onOptionSelected(index -> {
+                    // 根据索引发送对应的响应
+                    DialogResponsePacket.DialogOption option = switch (index) {
+                        case 0 -> DialogResponsePacket.DialogOption.SHOW_QUESTS;
+                        case 1 -> DialogResponsePacket.DialogOption.COMPLETE_QUEST;
+                        case 2 -> DialogResponsePacket.DialogOption.RETRIEVE_SCROLL;
+                        case 3 -> DialogResponsePacket.DialogOption.VIEW_REPUTATION;
+                        default -> DialogResponsePacket.DialogOption.SHOW_QUESTS;
+                    };
+                    sendDialogResponse(entityId, option);
+                })
+                .build();
+        
+        mc.setScreen(screen);
     }
     
     private static void openQuestBoardScreen() {
+        int playerRepLevel = ClientReputationCache.getPlayerLevel(
+                new ResourceLocation("roadweaver_rpg", "guild"));
         Minecraft.getInstance().setScreen(new QuestBoardScreen(
                 ClientQuestCache.getQuests(),
-                ClientNetworkHandlerFabric::sendAcceptQuest
+                ClientNetworkHandlerFabric::sendAcceptQuest,
+                playerRepLevel
         ));
     }
     

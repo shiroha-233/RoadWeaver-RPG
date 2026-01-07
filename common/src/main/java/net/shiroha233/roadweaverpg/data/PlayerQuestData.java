@@ -5,24 +5,47 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 玩家委托数据
+ * 
+ * 线程安全：
+ * - 使用 ConcurrentHashMap 保证并发访问安全
+ * - 使用 AtomicInteger/AtomicLong 保证原子操作
+ * - 关键方法使用 synchronized 保证原子性
  */
 public class PlayerQuestData {
     
     private final UUID playerId;
-    private final Map<ResourceLocation, QuestInstance> activeQuests = new LinkedHashMap<>();
-    private final Set<ResourceLocation> completedQuests = new HashSet<>();
-    private final Map<ResourceLocation, Integer> completionCounts = new HashMap<>();
-    private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();
-    private final Map<ResourceLocation, Integer> reputationXp = new HashMap<>();
-    private final Map<ResourceLocation, Integer> reputationLevels = new HashMap<>();
-    private int totalQuestsCompleted = 0;
-    private int totalQuestsFailed = 0;
+    
+    // 使用线程安全的集合
+    private final Map<ResourceLocation, QuestInstance> activeQuests = new ConcurrentHashMap<>();
+    private final Set<ResourceLocation> completedQuests = ConcurrentHashMap.newKeySet();
+    private final Map<ResourceLocation, Integer> completionCounts = new ConcurrentHashMap<>();
+    private final Map<ResourceLocation, Long> cooldowns = new ConcurrentHashMap<>();
+    private final Map<ResourceLocation, Integer> reputationXp = new ConcurrentHashMap<>();
+    private final Map<ResourceLocation, Integer> reputationLevels = new ConcurrentHashMap<>();
+    
+    // 使用原子类型
+    private final AtomicInteger totalQuestsCompleted = new AtomicInteger(0);
+    private final AtomicInteger totalQuestsFailed = new AtomicInteger(0);
+    
+    // 数据版本号（用于同步检测）
+    private final AtomicLong version = new AtomicLong(0);
+    
+    // 每日委托相关（使用 volatile 保证可见性）
+    private volatile List<ResourceLocation> dailyQuests = new ArrayList<>();
+    private volatile String lastDailyRefreshDate = "";
+    
+    // 领取记录追踪（用于周期限制）- key: questId, value: 领取时间戳列表
+    private final Map<ResourceLocation, List<Long>> acceptanceHistory = new ConcurrentHashMap<>();
     
     public PlayerQuestData(UUID playerId) {
         this.playerId = playerId;
@@ -30,6 +53,16 @@ public class PlayerQuestData {
     
     // region Getters
     public UUID getPlayerId() { return playerId; }
+    
+    /**
+     * 获取数据版本号（用于同步检测）
+     */
+    public long getVersion() { return version.get(); }
+    
+    /**
+     * 增加版本号
+     */
+    public void incrementVersion() { version.incrementAndGet(); }
     
     public Collection<QuestInstance> getActiveQuests() {
         return Collections.unmodifiableCollection(activeQuests.values());
@@ -75,34 +108,150 @@ public class PlayerQuestData {
         return Collections.unmodifiableMap(reputationLevels);
     }
     
-    public int getTotalQuestsCompleted() { return totalQuestsCompleted; }
-    public int getTotalQuestsFailed() { return totalQuestsFailed; }
+    public int getTotalQuestsCompleted() { return totalQuestsCompleted.get(); }
+    public int getTotalQuestsFailed() { return totalQuestsFailed.get(); }
+    
+    // 每日委托相关
+    public List<ResourceLocation> getDailyQuests() {
+        return Collections.unmodifiableList(dailyQuests);
+    }
+    
+    public String getLastDailyRefreshDate() {
+        return lastDailyRefreshDate;
+    }
+    
+    public synchronized void setDailyQuests(List<ResourceLocation> quests) {
+        this.dailyQuests = new ArrayList<>(quests);
+        incrementVersion();
+    }
+    
+    public synchronized void setLastDailyRefreshDate(String date) {
+        this.lastDailyRefreshDate = date;
+        incrementVersion();
+    }
     // endregion
     
-    // region 委托操作
-    public void addActiveQuest(QuestInstance instance) {
+    // region 领取记录操作（线程安全）
+    
+    /**
+     * 记录委托领取时间
+     */
+    public synchronized void recordAcceptance(ResourceLocation questId) {
+        acceptanceHistory.computeIfAbsent(questId, k -> new ArrayList<>())
+                .add(System.currentTimeMillis());
+        incrementVersion();
+    }
+    
+    /**
+     * 获取指定周期内的领取次数
+     * @param questId 委托ID
+     * @param periodSeconds 周期（秒）
+     * @return 周期内领取次数
+     */
+    public int getAcceptCountInPeriod(ResourceLocation questId, int periodSeconds) {
+        List<Long> history = acceptanceHistory.get(questId);
+        if (history == null || history.isEmpty()) return 0;
+        
+        long cutoffTime = System.currentTimeMillis() - (periodSeconds * 1000L);
+        return (int) history.stream().filter(t -> t >= cutoffTime).count();
+    }
+    
+    /**
+     * 检查是否达到周期内领取上限
+     */
+    public boolean hasReachedAcceptLimit(ResourceLocation questId, int maxPerPeriod, int periodSeconds) {
+        if (maxPerPeriod <= 0 || periodSeconds <= 0) return false;
+        return getAcceptCountInPeriod(questId, periodSeconds) >= maxPerPeriod;
+    }
+    
+    /**
+     * 获取下次可领取的剩余时间（秒）
+     * @return 剩余秒数，0表示可立即领取
+     */
+    public int getNextAcceptCooldown(ResourceLocation questId, int maxPerPeriod, int periodSeconds) {
+        if (maxPerPeriod <= 0 || periodSeconds <= 0) return 0;
+        
+        List<Long> history = acceptanceHistory.get(questId);
+        if (history == null || history.isEmpty()) return 0;
+        
+        long cutoffTime = System.currentTimeMillis() - (periodSeconds * 1000L);
+        List<Long> recentAccepts = history.stream()
+                .filter(t -> t >= cutoffTime)
+                .sorted()
+                .toList();
+        
+        if (recentAccepts.size() < maxPerPeriod) return 0;
+        
+        // 最早的一次领取过期后即可再次领取
+        long earliestInPeriod = recentAccepts.get(0);
+        long nextAvailable = earliestInPeriod + (periodSeconds * 1000L);
+        long remaining = nextAvailable - System.currentTimeMillis();
+        
+        return remaining > 0 ? (int)(remaining / 1000) : 0;
+    }
+    
+    /**
+     * 清理过期的领取记录（防止内存泄漏）
+     */
+    public synchronized void cleanupExpiredAcceptanceHistory(int maxPeriodSeconds) {
+        long cutoffTime = System.currentTimeMillis() - (maxPeriodSeconds * 1000L * 2); // 保留2倍周期
+        
+        acceptanceHistory.forEach((questId, history) -> {
+            history.removeIf(t -> t < cutoffTime);
+        });
+        
+        // 移除空列表
+        acceptanceHistory.entrySet().removeIf(e -> e.getValue().isEmpty());
+    }
+    // endregion
+    
+    // region 声望数据操作（线程安全）
+    public void addReputationXp(ResourceLocation factionId, int amount) {
+        reputationXp.merge(factionId, amount, Integer::sum);
+        incrementVersion();
+    }
+
+    public void setReputationLevel(ResourceLocation factionId, int level) {
+        reputationLevels.put(factionId, level);
+        incrementVersion();
+    }
+    // endregion
+    
+    // region 委托操作（线程安全）
+    public synchronized void addActiveQuest(QuestInstance instance) {
         activeQuests.put(instance.getQuestId(), instance);
+        incrementVersion();
     }
     
-    public QuestInstance removeActiveQuest(ResourceLocation questId) {
-        return activeQuests.remove(questId);
+    public synchronized QuestInstance removeActiveQuest(ResourceLocation questId) {
+        QuestInstance removed = activeQuests.remove(questId);
+        if (removed != null) {
+            incrementVersion();
+        }
+        return removed;
     }
     
-    public void markQuestCompleted(ResourceLocation questId) {
+    public synchronized void markQuestCompleted(ResourceLocation questId) {
         completedQuests.add(questId);
         completionCounts.merge(questId, 1, Integer::sum);
-        totalQuestsCompleted++;
+        totalQuestsCompleted.incrementAndGet();
+        incrementVersion();
     }
     
     public void markQuestFailed(ResourceLocation questId) {
-        totalQuestsFailed++;
+        totalQuestsFailed.incrementAndGet();
+        incrementVersion();
     }
     
     public void setCooldown(ResourceLocation questId, int seconds) {
         cooldowns.put(questId, System.currentTimeMillis() + (seconds * 1000L));
+        incrementVersion();
     }
     
-    public boolean isOnCooldown(ResourceLocation questId) {
+    /**
+     * 检查冷却（原子操作）
+     */
+    public synchronized boolean isOnCooldown(ResourceLocation questId) {
         Long endTime = cooldowns.get(questId);
         if (endTime == null) return false;
         if (System.currentTimeMillis() >= endTime) {
@@ -117,14 +266,6 @@ public class PlayerQuestData {
         if (endTime == null) return 0;
         long remaining = endTime - System.currentTimeMillis();
         return remaining > 0 ? (int)(remaining / 1000) : 0;
-    }
-    
-    public void addReputationXp(ResourceLocation factionId, int amount) {
-        reputationXp.merge(factionId, amount, Integer::sum);
-    }
-
-    public void setReputationLevel(ResourceLocation factionId, int level) {
-        reputationLevels.put(factionId, level);
     }
     // endregion
     
@@ -161,53 +302,142 @@ public class PlayerQuestData {
         reputationLevels.forEach((id, val) -> levelTag.putInt(id.toString(), val));
         tag.put("reputationLevels", levelTag);
         
-        tag.putInt("totalCompleted", totalQuestsCompleted);
-        tag.putInt("totalFailed", totalQuestsFailed);
+        tag.putInt("totalCompleted", totalQuestsCompleted.get());
+        tag.putInt("totalFailed", totalQuestsFailed.get());
+        
+        // 每日委托数据
+        ListTag dailyList = new ListTag();
+        for (ResourceLocation id : dailyQuests) {
+            dailyList.add(StringTag.valueOf(id.toString()));
+        }
+        tag.put("dailyQuests", dailyList);
+        tag.putString("lastDailyRefresh", lastDailyRefreshDate);
+        
+        // 领取记录
+        CompoundTag historyTag = new CompoundTag();
+        acceptanceHistory.forEach((questId, timestamps) -> {
+            long[] arr = timestamps.stream().mapToLong(Long::longValue).toArray();
+            historyTag.putLongArray(questId.toString(), arr);
+        });
+        tag.put("acceptanceHistory", historyTag);
         
         return tag;
     }
     
+    /**
+     * 从 NBT 反序列化（带异常处理）
+     */
     public static PlayerQuestData fromNbt(CompoundTag tag) {
         UUID playerId = tag.getUUID("playerId");
         PlayerQuestData data = new PlayerQuestData(playerId);
         
-        ListTag activeList = tag.getList("activeQuests", Tag.TAG_COMPOUND);
-        for (int i = 0; i < activeList.size(); i++) {
-            QuestInstance instance = QuestInstance.fromNbt(activeList.getCompound(i));
-            data.activeQuests.put(instance.getQuestId(), instance);
-        }
-        
-        ListTag completedList = tag.getList("completedQuests", Tag.TAG_STRING);
-        for (int i = 0; i < completedList.size(); i++) {
-            data.completedQuests.add(new ResourceLocation(completedList.getString(i)));
-        }
-        
-        CompoundTag countsTag = tag.getCompound("completionCounts");
-        for (String key : countsTag.getAllKeys()) {
-            data.completionCounts.put(new ResourceLocation(key), countsTag.getInt(key));
-        }
-        
-        CompoundTag cooldownTag = tag.getCompound("cooldowns");
-        for (String key : cooldownTag.getAllKeys()) {
-            data.cooldowns.put(new ResourceLocation(key), cooldownTag.getLong(key));
-        }
-        
-        if (tag.contains("reputationXp")) {
-            CompoundTag xpTag = tag.getCompound("reputationXp");
-            for (String key : xpTag.getAllKeys()) {
-                data.reputationXp.put(new ResourceLocation(key), xpTag.getInt(key));
+        try {
+            // 活跃委托
+            ListTag activeList = tag.getList("activeQuests", Tag.TAG_COMPOUND);
+            for (int i = 0; i < activeList.size(); i++) {
+                try {
+                    QuestInstance instance = QuestInstance.fromNbt(activeList.getCompound(i));
+                    data.activeQuests.put(instance.getQuestId(), instance);
+                } catch (Exception e) {
+                    RoadWeaverRPG.LOGGER.warn("Failed to load quest instance at index {}: {}", i, e.getMessage());
+                }
             }
-        }
-        
-        if (tag.contains("reputationLevels")) {
-            CompoundTag levelTag = tag.getCompound("reputationLevels");
-            for (String key : levelTag.getAllKeys()) {
-                data.reputationLevels.put(new ResourceLocation(key), levelTag.getInt(key));
+            
+            // 已完成委托
+            ListTag completedList = tag.getList("completedQuests", Tag.TAG_STRING);
+            for (int i = 0; i < completedList.size(); i++) {
+                try {
+                    data.completedQuests.add(new ResourceLocation(completedList.getString(i)));
+                } catch (Exception e) {
+                    RoadWeaverRPG.LOGGER.warn("Failed to load completed quest at index {}: {}", i, e.getMessage());
+                }
             }
+            
+            // 完成次数
+            CompoundTag countsTag = tag.getCompound("completionCounts");
+            for (String key : countsTag.getAllKeys()) {
+                try {
+                    data.completionCounts.put(new ResourceLocation(key), countsTag.getInt(key));
+                } catch (Exception e) {
+                    RoadWeaverRPG.LOGGER.warn("Failed to load completion count for {}: {}", key, e.getMessage());
+                }
+            }
+            
+            // 冷却时间
+            CompoundTag cooldownTag = tag.getCompound("cooldowns");
+            for (String key : cooldownTag.getAllKeys()) {
+                try {
+                    data.cooldowns.put(new ResourceLocation(key), cooldownTag.getLong(key));
+                } catch (Exception e) {
+                    RoadWeaverRPG.LOGGER.warn("Failed to load cooldown for {}: {}", key, e.getMessage());
+                }
+            }
+            
+            // 声望经验
+            if (tag.contains("reputationXp")) {
+                CompoundTag xpTag = tag.getCompound("reputationXp");
+                for (String key : xpTag.getAllKeys()) {
+                    try {
+                        data.reputationXp.put(new ResourceLocation(key), xpTag.getInt(key));
+                    } catch (Exception e) {
+                        RoadWeaverRPG.LOGGER.warn("Failed to load reputation xp for {}: {}", key, e.getMessage());
+                    }
+                }
+            }
+            
+            // 声望等级
+            if (tag.contains("reputationLevels")) {
+                CompoundTag levelTag = tag.getCompound("reputationLevels");
+                for (String key : levelTag.getAllKeys()) {
+                    try {
+                        data.reputationLevels.put(new ResourceLocation(key), levelTag.getInt(key));
+                    } catch (Exception e) {
+                        RoadWeaverRPG.LOGGER.warn("Failed to load reputation level for {}: {}", key, e.getMessage());
+                    }
+                }
+            }
+            
+            // 统计数据
+            data.totalQuestsCompleted.set(tag.getInt("totalCompleted"));
+            data.totalQuestsFailed.set(tag.getInt("totalFailed"));
+            
+            // 每日委托数据
+            if (tag.contains("dailyQuests")) {
+                ListTag dailyList = tag.getList("dailyQuests", Tag.TAG_STRING);
+                List<ResourceLocation> dailyQuests = new ArrayList<>();
+                for (int i = 0; i < dailyList.size(); i++) {
+                    try {
+                        dailyQuests.add(new ResourceLocation(dailyList.getString(i)));
+                    } catch (Exception e) {
+                        RoadWeaverRPG.LOGGER.warn("Failed to load daily quest at index {}: {}", i, e.getMessage());
+                    }
+                }
+                data.dailyQuests = dailyQuests;
+            }
+            if (tag.contains("lastDailyRefresh")) {
+                data.lastDailyRefreshDate = tag.getString("lastDailyRefresh");
+            }
+            
+            // 领取记录
+            if (tag.contains("acceptanceHistory")) {
+                CompoundTag historyTag = tag.getCompound("acceptanceHistory");
+                for (String key : historyTag.getAllKeys()) {
+                    try {
+                        long[] arr = historyTag.getLongArray(key);
+                        List<Long> timestamps = new ArrayList<>();
+                        for (long t : arr) {
+                            timestamps.add(t);
+                        }
+                        data.acceptanceHistory.put(new ResourceLocation(key), timestamps);
+                    } catch (Exception e) {
+                        RoadWeaverRPG.LOGGER.warn("Failed to load acceptance history for {}: {}", key, e.getMessage());
+                    }
+                }
+            }
+            
+        } catch (Exception e) {
+            RoadWeaverRPG.LOGGER.error("Critical error loading player quest data for {}: {}", playerId, e.getMessage());
         }
-        
-        data.totalQuestsCompleted = tag.getInt("totalCompleted");
-        data.totalQuestsFailed = tag.getInt("totalFailed");
         
         return data;
     }

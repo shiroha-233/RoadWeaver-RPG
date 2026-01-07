@@ -1,0 +1,39 @@
+{
+  "title": "凋灵骷髅猎人",
+  "description": "下界堡垒中栖息着危险的凋灵骷髅。它们是制作凋灵之星的关键材料。",
+  "rank": "A",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_wither_skeleton",
+      "type": "KILL",
+      "target": "minecraft:wither_skeleton",
+      "amount": 20,
+      "description": "消灭凋灵骷髅"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 2000
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:wither_skeleton_skull",
+      "count": 2
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 80
+    }
+  ],
+  "time_limit": 7200,
+  "repeatable": true,
+  "cooldown": 86400,
+  "difficulty": 3.5,
+  "daily_quest": true,
+  "daily_weight": 8,
+  "one_time": false,
+  "min_reputation_level": 5,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

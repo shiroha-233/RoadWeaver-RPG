@@ -1,0 +1,38 @@
+{
+  "title": "末地城探索",
+  "description": "探索末地城，寻找珍贵的资源和隐藏的宝藏。",
+  "rank": "B",
+  "type": "EXPLORE",
+  "objectives": [
+    {
+      "id": "explore_end_city",
+      "type": "EXPLORE",
+      "target": "minecraft:end_city",
+      "amount": 1,
+      "description": "探索末地城"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 800
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 150
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 30
+    }
+  ],
+  "time_limit": 10800,
+  "repeatable": true,
+  "cooldown": 43200,
+  "difficulty": 3.0,
+  "daily_quest": false,
+  "daily_weight": 3,
+  "one_time": false,
+  "min_reputation_level": 4,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

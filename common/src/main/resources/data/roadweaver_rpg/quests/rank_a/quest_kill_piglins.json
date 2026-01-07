@@ -1,0 +1,50 @@
+{
+  "title": "猪灵剿灭战",
+  "description": "猪灵在下界横行霸道，威胁着冒险者的安全。公会发布剿灭令。",
+  "rank": "A",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_piglin",
+      "type": "KILL",
+      "target": "minecraft:piglin",
+      "amount": 20,
+      "description": "击杀猪灵"
+    },
+    {
+      "id": "kill_zombified_piglin",
+      "type": "KILL",
+      "target": "minecraft:zombified_piglin",
+      "amount": 15,
+      "description": "击杀僵尸猪灵"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 2500
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 600
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 80
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:gold_ingot",
+      "count": 8
+    }
+  ],
+  "time_limit": 1800,
+  "repeatable": true,
+  "cooldown": 259200,
+  "difficulty": 3.2,
+  "daily_quest": true,
+  "daily_weight": 8,
+  "one_time": false,
+  "min_reputation_level": 5,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

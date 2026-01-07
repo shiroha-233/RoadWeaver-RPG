@@ -1,0 +1,38 @@
+{
+  "title": "监守者讨伐",
+  "description": "深渊深处的监守者正在威胁整个下界的通道。集结队伍讨伐它。",
+  "rank": "A",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_warden",
+      "type": "KILL",
+      "target": "minecraft:warden",
+      "amount": 1,
+      "description": "消灭监守者"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 3000
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 500
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 100
+    }
+  ],
+  "time_limit": 14400,
+  "repeatable": true,
+  "cooldown": 172800,
+  "difficulty": 4.5,
+  "daily_quest": false,
+  "daily_weight": 2,
+  "one_time": false,
+  "min_reputation_level": 6,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

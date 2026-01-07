@@ -1,0 +1,43 @@
+{
+  "title": "绿宝石收集",
+  "description": "收集绿宝石用于与村民交易。",
+  "rank": "B",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_emeralds",
+      "type": "COLLECT",
+      "target": "minecraft:emerald",
+      "amount": 12,
+      "description": "收集绿宝石"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 600
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 160
+    },
+    {
+      "type": "ITEM",
+      "item": "minecraft:diamond",
+      "count": 2
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 604800,
+  "difficulty": 1.6,
+  "daily_quest": false,
+  "daily_weight": 0,
+  "one_time": false,
+  "max_accept_per_period": 1,
+  "accept_period_seconds": 604800,
+  "prerequisites": [],
+  "unlocks": [],
+  "min_reputation_level": 4,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

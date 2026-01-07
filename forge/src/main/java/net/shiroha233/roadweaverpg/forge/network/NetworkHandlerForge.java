@@ -8,7 +8,10 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.network.QuestPacketHandler;
-import net.shiroha233.roadweaverpg.network.packet.*;
+import net.shiroha233.roadweaverpg.network.packet.quest.*;
+import net.shiroha233.roadweaverpg.network.packet.sync.*;
+import net.shiroha233.roadweaverpg.network.packet.ui.*;
+import net.shiroha233.roadweaverpg.network.packet.shop.*;
 import net.shiroha233.roadweaverpg.quest.definition.QuestDefinition;
 import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
 import net.shiroha233.roadweaverpg.quest.service.PlayerQuestService;
@@ -99,6 +102,14 @@ public class NetworkHandlerForge {
                     ctx.get().setPacketHandled(true);
                 }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         
+        // 服务端 -> 客户端：同步每日委托
+        CHANNEL.registerMessage(packetId++, SyncDailyQuestsPacket.class,
+                SyncDailyQuestsPacket::encode, SyncDailyQuestsPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> ClientPacketHandler.handleSyncDailyQuests(packet));
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
         // 客户端 -> 服务端：对话响应
         CHANNEL.registerMessage(packetId++, DialogResponsePacket.class,
                 DialogResponsePacket::encode, DialogResponsePacket::decode,
@@ -165,6 +176,7 @@ public class NetworkHandlerForge {
         manager.setOnQuestCompleted((player, instance) -> sendQuestInstance(player, new SyncQuestInstancePacket(instance)));
         manager.setOnSyncAllQuests(NetworkHandlerForge::sendAllQuestInstances);
         manager.setOnSyncAllDefinitions(NetworkHandlerForge::sendAllDefinitions);
+        manager.setOnSyncDailyQuests(NetworkHandlerForge::sendDailyQuests);
 
         // 初始化声望同步回调
         manager.setOnSyncReputation((player, data) -> 
@@ -174,6 +186,13 @@ public class NetworkHandlerForge {
                 NetworkHandlerForge::sendReputationLevels);
         net.shiroha233.roadweaverpg.network.QuestPacketHandler.setOnOpenReputationGui(
                 NetworkHandlerForge::sendOpenReputationGui);
+    }
+    
+    public static void sendDailyQuests(ServerPlayer player, List<ResourceLocation> dailyQuestIds) {
+        String refreshDate = net.shiroha233.roadweaverpg.quest.daily.DailyQuestManager.getTodayDateString();
+        int timeUntilRefresh = net.shiroha233.roadweaverpg.quest.daily.DailyQuestManager.getInstance().getTimeUntilRefresh();
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), 
+                new SyncDailyQuestsPacket(dailyQuestIds, refreshDate, timeUntilRefresh));
     }
 
     public static void sendReputationLevels(ServerPlayer player, Collection<net.shiroha233.roadweaverpg.reputation.ReputationLevel> levels) {

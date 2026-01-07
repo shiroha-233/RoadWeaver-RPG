@@ -1,0 +1,38 @@
+{
+  "title": "下界入侵者",
+  "description": "猪灵正在入侵主世界的前哨站。消灭这些危险的生物。",
+  "rank": "C",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_piglins",
+      "type": "KILL",
+      "target": "minecraft:piglin",
+      "amount": 8,
+      "description": "消灭猪灵"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 200
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 45
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 8
+    }
+  ],
+  "time_limit": 3600,
+  "repeatable": true,
+  "cooldown": 7200,
+  "difficulty": 1.8,
+  "daily_quest": true,
+  "daily_weight": 7,
+  "one_time": false,
+  "min_reputation_level": 1,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

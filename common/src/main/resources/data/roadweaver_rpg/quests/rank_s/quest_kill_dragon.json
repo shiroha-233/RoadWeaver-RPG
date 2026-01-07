@@ -1,0 +1,38 @@
+{
+  "title": "末影龙讨伐",
+  "description": "末影龙正在威胁整个末地的和平。集结公会最强大的战士讨伐它。",
+  "rank": "S",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_dragon",
+      "type": "KILL",
+      "target": "minecraft:ender_dragon",
+      "amount": 1,
+      "description": "消灭末影龙"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 10000
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 2000
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 500
+    }
+  ],
+  "time_limit": 28800,
+  "repeatable": true,
+  "cooldown": 604800,
+  "difficulty": 5.0,
+  "daily_quest": false,
+  "daily_weight": 1,
+  "one_time": false,
+  "min_reputation_level": 7,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

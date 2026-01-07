@@ -1,0 +1,38 @@
+{
+  "title": "末影珍珠收集者",
+  "description": "末影珍珠是前往末地的关键道具。公会需要大量末影珍珠来支援探险队。",
+  "rank": "A",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_ender_pearls",
+      "type": "COLLECT",
+      "target": "minecraft:ender_pearl",
+      "amount": 24,
+      "description": "收集末影珍珠"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 1800
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 400
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 60
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 259200,
+  "difficulty": 3.2,
+  "daily_quest": false,
+  "daily_weight": 1,
+  "one_time": false,
+  "min_reputation_level": 5,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

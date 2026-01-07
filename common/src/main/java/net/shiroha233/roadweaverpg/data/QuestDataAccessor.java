@@ -8,13 +8,21 @@ import net.minecraft.server.level.ServerPlayer;
  */
 public class QuestDataAccessor {
     
-    private static QuestDataAccessor instance;
+    private static volatile QuestDataAccessor instance;
+    private static final Object LOCK = new Object();
     
     private QuestDataAccessor() {}
     
+    /**
+     * 获取单例实例（双重检查锁定）
+     */
     public static QuestDataAccessor getInstance() {
         if (instance == null) {
-            instance = new QuestDataAccessor();
+            synchronized (LOCK) {
+                if (instance == null) {
+                    instance = new QuestDataAccessor();
+                }
+            }
         }
         return instance;
     }

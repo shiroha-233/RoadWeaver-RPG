@@ -3,8 +3,10 @@ package net.shiroha233.roadweaverpg.network;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.shiroha233.roadweaverpg.entity.npc.NPCDialogBubbleHandler;
 import net.shiroha233.roadweaverpg.entity.npc.ShopMaidEntity;
-import net.shiroha233.roadweaverpg.network.packet.*;
+import net.shiroha233.roadweaverpg.network.packet.shop.*;
+import net.shiroha233.roadweaverpg.network.packet.sync.*;
 import net.shiroha233.roadweaverpg.shop.ShopManager;
 
 import java.util.function.BiConsumer;
@@ -26,9 +28,10 @@ public final class ShopPacketHandler {
         if (!(entity instanceof ShopMaidEntity)) return;
         
         switch (packet.option()) {
-            case WHO_ARE_YOU -> player.displayClientMessage(
-                    Component.translatable("gui.roadweaver_rpg.shop_dialog.response.who_are_you"), false);
-            case OPEN_SHOP -> openShopCallback.accept(player);
+            case OPEN_SHOP -> {
+                NPCDialogBubbleHandler.handleShopMaidDialog(player, packet.entityId(), "OPEN_SHOP");
+                openShopCallback.accept(player);
+            }
             case CANCEL -> {} // 客户端已关闭界面
         }
     }

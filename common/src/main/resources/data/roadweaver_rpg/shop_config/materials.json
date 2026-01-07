@@ -1,0 +1,468 @@
+{
+  "items": [
+    {
+      "id": "oak_log",
+      "item": "minecraft:oak_log",
+      "count": 16,
+      "price": 20,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "spruce_log",
+      "item": "minecraft:spruce_log",
+      "count": 16,
+      "price": 20,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "birch_log",
+      "item": "minecraft:birch_log",
+      "count": 16,
+      "price": 20,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "jungle_log",
+      "item": "minecraft:jungle_log",
+      "count": 16,
+      "price": 25,
+      "required_level": 2,
+      "category": "materials"
+    },
+    {
+      "id": "acacia_log",
+      "item": "minecraft:acacia_log",
+      "count": 16,
+      "price": 25,
+      "required_level": 2,
+      "category": "materials"
+    },
+    {
+      "id": "dark_oak_log",
+      "item": "minecraft:dark_oak_log",
+      "count": 16,
+      "price": 25,
+      "required_level": 2,
+      "category": "materials"
+    },
+    {
+      "id": "mangrove_log",
+      "item": "minecraft:mangrove_log",
+      "count": 16,
+      "price": 25,
+      "required_level": 2,
+      "category": "materials"
+    },
+    {
+      "id": "cherry_log",
+      "item": "minecraft:cherry_log",
+      "count": 16,
+      "price": 30,
+      "required_level": 3,
+      "category": "materials"
+    },
+    {
+      "id": "oak_planks",
+      "item": "minecraft:oak_planks",
+      "count": 32,
+      "price": 20,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "stick",
+      "item": "minecraft:stick",
+      "count": 32,
+      "price": 15,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "coal",
+      "item": "minecraft:coal",
+      "count": 16,
+      "price": 40,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "charcoal",
+      "item": "minecraft:charcoal",
+      "count": 16,
+      "price": 35,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "raw_iron",
+      "item": "minecraft:raw_iron",
+      "count": 8,
+      "price": 50,
+      "required_level": 3,
+      "category": "materials"
+    },
+    {
+      "id": "raw_copper",
+      "item": "minecraft:raw_copper",
+      "count": 8,
+      "price": 40,
+      "required_level": 3,
+      "category": "materials"
+    },
+    {
+      "id": "raw_gold",
+      "item": "minecraft:raw_gold",
+      "count": 4,
+      "price": 80,
+      "required_level": 5,
+      "category": "materials"
+    },
+    {
+      "id": "iron_ingot",
+      "item": "minecraft:iron_ingot",
+      "count": 8,
+      "price": 100,
+      "required_level": 4,
+      "category": "materials"
+    },
+    {
+      "id": "copper_ingot",
+      "item": "minecraft:copper_ingot",
+      "count": 8,
+      "price": 60,
+      "required_level": 4,
+      "category": "materials"
+    },
+    {
+      "id": "gold_ingot",
+      "item": "minecraft:gold_ingot",
+      "count": 4,
+      "price": 120,
+      "required_level": 6,
+      "category": "materials"
+    },
+    {
+      "id": "diamond",
+      "item": "minecraft:diamond",
+      "count": 4,
+      "price": 400,
+      "required_level": 12,
+      "category": "materials"
+    },
+    {
+      "id": "emerald",
+      "item": "minecraft:emerald",
+      "count": 4,
+      "price": 350,
+      "required_level": 10,
+      "category": "materials"
+    },
+    {
+      "id": "lapis_lazuli",
+      "item": "minecraft:lapis_lazuli",
+      "count": 16,
+      "price": 80,
+      "required_level": 8,
+      "category": "materials"
+    },
+    {
+      "id": "redstone",
+      "item": "minecraft:redstone",
+      "count": 16,
+      "price": 50,
+      "required_level": 6,
+      "category": "materials"
+    },
+    {
+      "id": "quartz",
+      "item": "minecraft:quartz",
+      "count": 8,
+      "price": 80,
+      "required_level": 10,
+      "category": "materials"
+    },
+    {
+      "id": "amethyst_shard",
+      "item": "minecraft:amethyst_shard",
+      "count": 8,
+      "price": 60,
+      "required_level": 8,
+      "category": "materials"
+    },
+    {
+      "id": "ancient_debris",
+      "item": "minecraft:ancient_debris",
+      "count": 2,
+      "price": 500,
+      "required_level": 25,
+      "category": "materials"
+    },
+    {
+      "id": "netherite_scrap",
+      "item": "minecraft:netherite_scrap",
+      "count": 2,
+      "price": 600,
+      "required_level": 28,
+      "category": "materials"
+    },
+    {
+      "id": "netherite_ingot",
+      "item": "minecraft:netherite_ingot",
+      "count": 1,
+      "price": 1200,
+      "required_level": 32,
+      "category": "materials"
+    },
+    {
+      "id": "ender_pearl",
+      "item": "minecraft:ender_pearl",
+      "count": 8,
+      "price": 150,
+      "required_level": 12,
+      "category": "materials"
+    },
+    {
+      "id": "blaze_rod",
+      "item": "minecraft:blaze_rod",
+      "count": 4,
+      "price": 200,
+      "required_level": 15,
+      "category": "materials"
+    },
+    {
+      "id": "ghast_tear",
+      "item": "minecraft:ghast_tear",
+      "count": 2,
+      "price": 300,
+      "required_level": 18,
+      "category": "materials"
+    },
+    {
+      "id": "magma_cream",
+      "item": "minecraft:magma_cream",
+      "count": 4,
+      "price": 100,
+      "required_level": 12,
+      "category": "materials"
+    },
+    {
+      "id": "slime_ball",
+      "item": "minecraft:slime_ball",
+      "count": 8,
+      "price": 60,
+      "required_level": 6,
+      "category": "materials"
+    },
+    {
+      "id": "feather",
+      "item": "minecraft:feather",
+      "count": 16,
+      "price": 30,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "leather",
+      "item": "minecraft:leather",
+      "count": 8,
+      "price": 50,
+      "required_level": 2,
+      "category": "materials"
+    },
+    {
+      "id": "rabbit_hide",
+      "item": "minecraft:rabbit_hide",
+      "count": 8,
+      "price": 30,
+      "required_level": 2,
+      "category": "materials"
+    },
+    {
+      "id": "phantom_membrane",
+      "item": "minecraft:phantom_membrane",
+      "count": 4,
+      "price": 80,
+      "required_level": 10,
+      "category": "materials"
+    },
+    {
+      "id": "scute",
+      "item": "minecraft:scute",
+      "count": 4,
+      "price": 80,
+      "required_level": 10,
+      "category": "materials"
+    },
+    {
+      "id": "turtle_scute",
+      "item": "minecraft:turtle_scute",
+      "count": 4,
+      "price": 100,
+      "required_level": 12,
+      "category": "materials"
+    },
+    {
+      "id": "nautilus_shell",
+      "item": "minecraft:nautilus_shell",
+      "count": 2,
+      "price": 150,
+      "required_level": 15,
+      "category": "materials"
+    },
+    {
+      "id": "heart_of_the_sea",
+      "item": "minecraft:heart_of_the_sea",
+      "count": 1,
+      "price": 500,
+      "required_level": 20,
+      "category": "materials"
+    },
+    {
+      "id": "shulker_shell",
+      "item": "minecraft:shulker_shell",
+      "count": 2,
+      "price": 250,
+      "required_level": 18,
+      "category": "materials"
+    },
+    {
+      "id": "elytra",
+      "item": "minecraft:elytra",
+      "count": 1,
+      "price": 2000,
+      "required_level": 28,
+      "category": "materials"
+    },
+    {
+      "id": "string",
+      "item": "minecraft:string",
+      "count": 16,
+      "price": 20,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "spider_eye",
+      "item": "minecraft:spider_eye",
+      "count": 8,
+      "price": 40,
+      "required_level": 3,
+      "category": "materials"
+    },
+    {
+      "id": "bone",
+      "item": "minecraft:bone",
+      "count": 8,
+      "price": 30,
+      "required_level": 2,
+      "category": "materials"
+    },
+    {
+      "id": "bone_meal",
+      "item": "minecraft:bone_meal",
+      "count": 16,
+      "price": 20,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "gunpowder",
+      "item": "minecraft:gunpowder",
+      "count": 8,
+      "price": 50,
+      "required_level": 4,
+      "category": "materials"
+    },
+    {
+      "id": "rotten_flesh",
+      "item": "minecraft:rotten_flesh",
+      "count": 16,
+      "price": 15,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "ender_eye",
+      "item": "minecraft:ender_eye",
+      "count": 8,
+      "price": 120,
+      "required_level": 12,
+      "category": "materials"
+    },
+    {
+      "id": "glass_bottle",
+      "item": "minecraft:glass_bottle",
+      "count": 8,
+      "price": 30,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "brick",
+      "item": "minecraft:brick",
+      "count": 8,
+      "price": 40,
+      "required_level": 3,
+      "category": "materials"
+    },
+    {
+      "id": "nether_brick",
+      "item": "minecraft:nether_brick",
+      "count": 8,
+      "price": 50,
+      "required_level": 8,
+      "category": "materials"
+    },
+    {
+      "id": "clay_ball",
+      "item": "minecraft:clay_ball",
+      "count": 16,
+      "price": 20,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "paper",
+      "item": "minecraft:paper",
+      "count": 16,
+      "price": 30,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "book",
+      "item": "minecraft:book",
+      "count": 8,
+      "price": 40,
+      "required_level": 2,
+      "category": "materials"
+    },
+    {
+      "id": "writable_book",
+      "item": "minecraft:writable_book",
+      "count": 1,
+      "price": 50,
+      "required_level": 3,
+      "category": "materials"
+    },
+    {
+      "id": "sugar_cane",
+      "item": "minecraft:sugar_cane",
+      "count": 16,
+      "price": 15,
+      "required_level": 1,
+      "category": "materials"
+    },
+    {
+      "id": "cocoa_beans",
+      "item": "minecraft:cocoa_beans",
+      "count": 8,
+      "price": 25,
+      "required_level": 2,
+      "category": "materials"
+    }
+  ]
+}

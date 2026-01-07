@@ -1,0 +1,34 @@
+{
+  "title": "煤炭收集",
+  "description": "公会需要煤炭来维持熔炉的运转。前往矿井收集一些煤炭。",
+  "rank": "D",
+  "type": "COLLECT",
+  "objectives": [
+    {
+      "id": "collect_coal",
+      "type": "COLLECT",
+      "target": "minecraft:coal",
+      "amount": 8,
+      "description": "收集煤炭"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 40
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 8
+    }
+  ],
+  "time_limit": 1800,
+  "repeatable": true,
+  "cooldown": 3600,
+  "difficulty": 1.0,
+  "daily_quest": true,
+  "daily_weight": 8,
+  "one_time": false,
+  "min_reputation_level": 0,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

@@ -1,0 +1,38 @@
+{
+  "title": "疣猪兽猎人",
+  "description": "下界的疣猪兽对探险者构成严重威胁。公会需要猎人去控制它们的数量。",
+  "rank": "A",
+  "type": "KILL",
+  "objectives": [
+    {
+      "id": "kill_hoglins",
+      "type": "KILL",
+      "target": "minecraft:hoglin",
+      "amount": 25,
+      "description": "消灭疣猪兽"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "COIN",
+      "amount": 1800
+    },
+    {
+      "type": "EXPERIENCE",
+      "amount": 400
+    },
+    {
+      "type": "REPUTATION",
+      "amount": 65
+    }
+  ],
+  "time_limit": 0,
+  "repeatable": true,
+  "cooldown": 432000,
+  "difficulty": 3.2,
+  "daily_quest": false,
+  "daily_weight": 1,
+  "one_time": false,
+  "min_reputation_level": 5,
+  "reputation_faction": "roadweaver_rpg:guild"
+}

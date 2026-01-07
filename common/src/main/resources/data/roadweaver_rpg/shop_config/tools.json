@@ -1,0 +1,212 @@
+{
+  "items": [
+    {
+      "id": "wooden_pickaxe",
+      "item": "minecraft:wooden_pickaxe",
+      "count": 1,
+      "price": 40,
+      "required_level": 1,
+      "category": "tools"
+    },
+    {
+      "id": "wooden_shovel",
+      "item": "minecraft:wooden_shovel",
+      "count": 1,
+      "price": 25,
+      "required_level": 1,
+      "category": "tools"
+    },
+    {
+      "id": "wooden_hoe",
+      "item": "minecraft:wooden_hoe",
+      "count": 1,
+      "price": 25,
+      "required_level": 1,
+      "category": "tools"
+    },
+    {
+      "id": "stone_pickaxe",
+      "item": "minecraft:stone_pickaxe",
+      "count": 1,
+      "price": 100,
+      "required_level": 3,
+      "category": "tools"
+    },
+    {
+      "id": "stone_shovel",
+      "item": "minecraft:stone_shovel",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "tools"
+    },
+    {
+      "id": "stone_hoe",
+      "item": "minecraft:stone_hoe",
+      "count": 1,
+      "price": 60,
+      "required_level": 3,
+      "category": "tools"
+    },
+    {
+      "id": "iron_pickaxe",
+      "item": "minecraft:iron_pickaxe",
+      "count": 1,
+      "price": 250,
+      "required_level": 6,
+      "category": "tools"
+    },
+    {
+      "id": "iron_shovel",
+      "item": "minecraft:iron_shovel",
+      "count": 1,
+      "price": 150,
+      "required_level": 6,
+      "category": "tools"
+    },
+    {
+      "id": "iron_hoe",
+      "item": "minecraft:iron_hoe",
+      "count": 1,
+      "price": 150,
+      "required_level": 6,
+      "category": "tools"
+    },
+    {
+      "id": "golden_pickaxe",
+      "item": "minecraft:golden_pickaxe",
+      "count": 1,
+      "price": 180,
+      "required_level": 5,
+      "category": "tools"
+    },
+    {
+      "id": "golden_shovel",
+      "item": "minecraft:golden_shovel",
+      "count": 1,
+      "price": 100,
+      "required_level": 5,
+      "category": "tools"
+    },
+    {
+      "id": "golden_hoe",
+      "item": "minecraft:golden_hoe",
+      "count": 1,
+      "price": 100,
+      "required_level": 5,
+      "category": "tools"
+    },
+    {
+      "id": "diamond_pickaxe",
+      "item": "minecraft:diamond_pickaxe",
+      "count": 1,
+      "price": 1000,
+      "required_level": 12,
+      "category": "tools"
+    },
+    {
+      "id": "diamond_shovel",
+      "item": "minecraft:diamond_shovel",
+      "count": 1,
+      "price": 600,
+      "required_level": 12,
+      "category": "tools"
+    },
+    {
+      "id": "diamond_hoe",
+      "item": "minecraft:diamond_hoe",
+      "count": 1,
+      "price": 600,
+      "required_level": 12,
+      "category": "tools"
+    },
+    {
+      "id": "netherite_pickaxe",
+      "item": "minecraft:netherite_pickaxe",
+      "count": 1,
+      "price": 3000,
+      "required_level": 30,
+      "category": "tools"
+    },
+    {
+      "id": "netherite_shovel",
+      "item": "minecraft:netherite_shovel",
+      "count": 1,
+      "price": 1800,
+      "required_level": 30,
+      "category": "tools"
+    },
+    {
+      "id": "netherite_hoe",
+      "item": "minecraft:netherite_hoe",
+      "count": 1,
+      "price": 1800,
+      "required_level": 30,
+      "category": "tools"
+    },
+    {
+      "id": "shears",
+      "item": "minecraft:shears",
+      "count": 1,
+      "price": 80,
+      "required_level": 2,
+      "category": "tools"
+    },
+    {
+      "id": "flint_and_steel",
+      "item": "minecraft:flint_and_steel",
+      "count": 1,
+      "price": 60,
+      "required_level": 2,
+      "category": "tools"
+    },
+    {
+      "id": "compass",
+      "item": "minecraft:compass",
+      "count": 1,
+      "price": 100,
+      "required_level": 5,
+      "category": "tools"
+    },
+    {
+      "id": "clock",
+      "item": "minecraft:clock",
+      "count": 1,
+      "price": 120,
+      "required_level": 5,
+      "category": "tools"
+    },
+    {
+      "id": "fishing_rod",
+      "item": "minecraft:fishing_rod",
+      "count": 1,
+      "price": 200,
+      "required_level": 8,
+      "category": "tools"
+    },
+    {
+      "id": "carrot_on_a_stick",
+      "item": "minecraft:carrot_on_a_stick",
+      "count": 1,
+      "price": 150,
+      "required_level": 8,
+      "category": "tools"
+    },
+    {
+      "id": "warped_fungus_on_a_stick",
+      "item": "minecraft:warped_fungus_on_a_stick",
+      "count": 1,
+      "price": 200,
+      "required_level": 15,
+      "category": "tools"
+    },
+    {
+      "id": "shield",
+      "item": "minecraft:shield",
+      "count": 1,
+      "price": 180,
+      "required_level": 6,
+      "category": "tools"
+    }
+  ]
+}
