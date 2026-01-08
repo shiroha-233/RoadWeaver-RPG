@@ -12,7 +12,8 @@ public enum RewardType {
     REPUTATION("reputation"),
     UNLOCK_QUEST("unlock_quest"),
     COMMAND("command"),
-    COIN("coin");
+    COIN("coin"),
+    ADVENTURE_EXP("adventure_exp");
     
     private final String serializedName;
     

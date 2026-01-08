@@ -86,6 +86,9 @@ public class ClientNetworkHandlerFabric {
                     .update(packet.dailyQuestIds(), packet.refreshDate(), packet.timeUntilRefresh()));
         });
         
+        // 注册冒险等级接收器
+        registerAdventureReceivers();
+        
         // 注册商店相关接收器
         registerShopReceivers();
         
@@ -97,6 +100,24 @@ public class ClientNetworkHandlerFabric {
     }
     
     // ==================== 对话系统客户端处理 ====================
+    
+    // ==================== 冒险等级系统客户端处理 ====================
+    
+    private static void registerAdventureReceivers() {
+        // 处理同步冒险等级定义
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_ADVENTURE_LEVELS, (client, handler, buf, responseSender) -> {
+            SyncAdventureLevelsPacket packet = SyncAdventureLevelsPacket.decode(buf);
+            client.execute(() -> ClientAdventureCache.setLevelDefinitions(packet.levels()));
+        });
+        
+        // 处理同步玩家冒险数据
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_PLAYER_ADVENTURE, (client, handler, buf, responseSender) -> {
+            SyncPlayerAdventurePacket packet = SyncPlayerAdventurePacket.decode(buf);
+            client.execute(() -> ClientAdventureCache.setPlayerData(packet.exp(), packet.level()));
+        });
+    }
+    
+    // ==================== 对话系统客户端处理（原有） ====================
     
     private static void registerDialogReceivers() {
         // 处理完整对话数据

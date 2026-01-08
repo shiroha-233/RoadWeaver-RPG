@@ -28,8 +28,11 @@ public record ShopItem(
 ) {
     
     public Component getDisplayName() {
-        Optional<Item> item = RegistryHelper.getItem(itemId);
-        return item.map(Item::getDescription).orElse(Component.literal(itemId.toString()));
+        ItemStack stack = createItemStack();
+        if (stack.isEmpty()) {
+            return Component.literal(itemId.toString());
+        }
+        return stack.getHoverName();
     }
     
     public ItemStack createItemStack() {

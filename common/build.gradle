@@ -15,11 +15,18 @@ dependencies {
     modCompileOnly("maven.modrinth:touhou-little-maid:${rootProject.touhou_little_maid_version}") {
         transitive = false
     }
-    
+
+    // Cloth Config API - 作为 API 依赖，由平台模块提供具体实现
+    modApi "me.shedaniel.cloth:cloth-config:11.1.136"
+
     // Mixin 注解处理器
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 }
 
 java {
     withSourcesJar()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }

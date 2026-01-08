@@ -87,6 +87,25 @@
   "message.roadweaver_rpg.reputation_gained": "获得 %s %s 声望",
   "message.roadweaver_rpg.reputation_error": "同步声望数据时出错",
   
+  "message.roadweaver_rpg.adventure_exp_gained": "获得 %s 冒险经验",
+  "message.roadweaver_rpg.adventure_level_up": "恭喜！你的冒险等级已提升至 Lv.%d！",
+  "gui.roadweaver_rpg.adventure.title": "冒险等级",
+  "gui.roadweaver_rpg.adventure.current_level": "当前等级：Lv.%d",
+  "gui.roadweaver_rpg.adventure.current_exp": "当前经验：%d",
+  "gui.roadweaver_rpg.adventure.next_level_exp": "下一级所需：%d",
+  
+  "message.roadweaver_rpg.player_exp_gained": "获得 %s 战斗经验",
+  "message.roadweaver_rpg.player_level_up": "恭喜！你的等级已提升至 Lv.%d！",
+  "gui.roadweaver_rpg.player_level.title": "玩家等级",
+  "gui.roadweaver_rpg.player_level.current_level": "当前等级：Lv.%d",
+  "gui.roadweaver_rpg.player_level.current_exp": "当前经验：%d",
+  "gui.roadweaver_rpg.player_level.next_level_exp": "下一级所需：%d",
+  
+  "effect.roadweaver_rpg.max_health": "最大生命值 %s",
+  "effect.roadweaver_rpg.attack_damage": "攻击伤害 %s",
+  "effect.roadweaver_rpg.armor": "护甲值 %s",
+  "effect.roadweaver_rpg.potion": "%s Lv.%d",
+  
   "gui.roadweaver_rpg.quest.accepted": "已接受委托：%s",
   "gui.roadweaver_rpg.quest.completed": "委托完成：%s",
   "gui.roadweaver_rpg.quest.turned_in": "已提交委托：%s",
@@ -114,6 +133,7 @@
   "reward.roadweaver_rpg.levels": "%d 经验等级",
   "reward.roadweaver_rpg.reputation": "%s 声望（%s）",
   "reward.roadweaver_rpg.coin": "%d 金币",
+  "reward.roadweaver_rpg.adventure_exp": "%s 冒险经验",
   
   "gui.roadweaver_rpg.shop.title": "公会商店",
   "gui.roadweaver_rpg.shop.buy": "购买",
@@ -239,5 +259,37 @@
   "message.roadweaver_rpg.map_marker_removed": "§c已移除地图标记",
   
   "key.categories.roadweaver_rpg": "RoadWeaver RPG",
-  "key.roadweaver_rpg.toggle_env_debug": "切换环境调试信息 (Z+V)"
+  "key.roadweaver_rpg.toggle_env_debug": "切换环境调试信息 (Z+V)",
+
+  "config.roadweaver_rpg.title": "RoadWeaver RPG 配置",
+  "config.roadweaver_rpg.category.gameplay": "游戏性",
+  "config.roadweaver_rpg.category.performance": "性能",
+  "config.roadweaver_rpg.category.debug": "调试",
+
+  "config.roadweaver_rpg.subcategory.daily_quest": "每日委托数量",
+  "config.roadweaver_rpg.option.daily_count_d": "D级数量",
+  "config.roadweaver_rpg.option.daily_count_c": "C级数量",
+  "config.roadweaver_rpg.option.daily_count_b": "B级数量",
+  "config.roadweaver_rpg.option.daily_count_a": "A级数量",
+  "config.roadweaver_rpg.option.daily_count_s": "S级数量",
+  "config.roadweaver_rpg.option.daily_count_d.tooltip": "每天生成的D级委托数量",
+
+  "config.roadweaver_rpg.subcategory.quest_limits": "委托限制",
+  "config.roadweaver_rpg.option.max_active_quests": "最大活动委托数",
+  "config.roadweaver_rpg.option.max_active_quests.tooltip": "玩家可以同时接取的最大委托数量",
+  "config.roadweaver_rpg.option.default_time_limit": "默认时限 (秒)",
+  "config.roadweaver_rpg.option.default_time_limit.tooltip": "如果委托未指定时限，则使用此默认值（0表示无限制）",
+
+  "config.roadweaver_rpg.subcategory.difficulty": "难度系数",
+  "config.roadweaver_rpg.option.base_difficulty": "基础难度",
+  "config.roadweaver_rpg.option.difficulty_per_level": "每级难度增量",
+
+  "config.roadweaver_rpg.option.objective_check_interval": "目标检查间隔 (Tick)",
+  "config.roadweaver_rpg.option.objective_check_interval.tooltip": "检查委托目标是否完成的频率。数值越高，性能消耗越低。",
+  "config.roadweaver_rpg.option.sync_validation_interval": "同步校验间隔 (ms)",
+  "config.roadweaver_rpg.option.packet_timeout": "数据包超时 (ms)",
+
+  "config.roadweaver_rpg.option.enable_verbose_logging": "启用详细日志",
+  "config.roadweaver_rpg.option.enable_performance_monitoring": "启用性能监控",
+  "config.roadweaver_rpg.option.enable_consistency_check": "启用一致性检查"
 }

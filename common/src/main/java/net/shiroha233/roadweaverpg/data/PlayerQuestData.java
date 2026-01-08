@@ -37,6 +37,14 @@ public class PlayerQuestData {
     private final AtomicInteger totalQuestsCompleted = new AtomicInteger(0);
     private final AtomicInteger totalQuestsFailed = new AtomicInteger(0);
     
+    // 冒险等级系统
+    private final AtomicInteger adventureExp = new AtomicInteger(0);
+    private final AtomicInteger adventureLevel = new AtomicInteger(0);
+    
+    // 玩家等级系统
+    private final AtomicInteger playerExp = new AtomicInteger(0);
+    private final AtomicInteger playerLevel = new AtomicInteger(0);
+    
     // 数据版本号（用于同步检测）
     private final AtomicLong version = new AtomicLong(0);
     
@@ -110,6 +118,14 @@ public class PlayerQuestData {
     
     public int getTotalQuestsCompleted() { return totalQuestsCompleted.get(); }
     public int getTotalQuestsFailed() { return totalQuestsFailed.get(); }
+    
+    // 冒险等级相关
+    public int getAdventureExp() { return adventureExp.get(); }
+    public int getAdventureLevel() { return adventureLevel.get(); }
+    
+    // 玩家等级相关
+    public int getPlayerExp() { return playerExp.get(); }
+    public int getPlayerLevel() { return playerLevel.get(); }
     
     // 每日委托相关
     public List<ResourceLocation> getDailyQuests() {
@@ -217,6 +233,30 @@ public class PlayerQuestData {
     }
     // endregion
     
+    // region 冒险等级操作（线程安全）
+    public void addAdventureExp(int amount) {
+        adventureExp.addAndGet(amount);
+        incrementVersion();
+    }
+    
+    public void setAdventureLevel(int level) {
+        adventureLevel.set(level);
+        incrementVersion();
+    }
+    // endregion
+    
+    // region 玩家等级操作（线程安全）
+    public void addPlayerExp(int amount) {
+        playerExp.addAndGet(amount);
+        incrementVersion();
+    }
+    
+    public void setPlayerLevel(int level) {
+        playerLevel.set(level);
+        incrementVersion();
+    }
+    // endregion
+    
     // region 委托操作（线程安全）
     public synchronized void addActiveQuest(QuestInstance instance) {
         activeQuests.put(instance.getQuestId(), instance);
@@ -304,6 +344,14 @@ public class PlayerQuestData {
         
         tag.putInt("totalCompleted", totalQuestsCompleted.get());
         tag.putInt("totalFailed", totalQuestsFailed.get());
+        
+        // 冒险等级数据
+        tag.putInt("adventureExp", adventureExp.get());
+        tag.putInt("adventureLevel", adventureLevel.get());
+        
+        // 玩家等级数据
+        tag.putInt("playerExp", playerExp.get());
+        tag.putInt("playerLevel", playerLevel.get());
         
         // 每日委托数据
         ListTag dailyList = new ListTag();
@@ -400,6 +448,22 @@ public class PlayerQuestData {
             // 统计数据
             data.totalQuestsCompleted.set(tag.getInt("totalCompleted"));
             data.totalQuestsFailed.set(tag.getInt("totalFailed"));
+            
+            // 冒险等级数据
+            if (tag.contains("adventureExp")) {
+                data.adventureExp.set(tag.getInt("adventureExp"));
+            }
+            if (tag.contains("adventureLevel")) {
+                data.adventureLevel.set(tag.getInt("adventureLevel"));
+            }
+            
+            // 玩家等级数据
+            if (tag.contains("playerExp")) {
+                data.playerExp.set(tag.getInt("playerExp"));
+            }
+            if (tag.contains("playerLevel")) {
+                data.playerLevel.set(tag.getInt("playerLevel"));
+            }
             
             // 每日委托数据
             if (tag.contains("dailyQuests")) {

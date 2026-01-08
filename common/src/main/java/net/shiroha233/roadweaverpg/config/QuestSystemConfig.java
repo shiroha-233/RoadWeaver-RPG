@@ -15,52 +15,52 @@ public final class QuestSystemConfig {
     // ========== 性能相关 ==========
     
     /** 目标检查间隔（tick） */
-    public static final int OBJECTIVE_CHECK_INTERVAL = 20; // 每秒
+    public static int OBJECTIVE_CHECK_INTERVAL = 20; // 每秒
     
     /** 数据同步验证间隔（毫秒） */
-    public static final long SYNC_VALIDATION_INTERVAL = 60000; // 1分钟
+    public static long SYNC_VALIDATION_INTERVAL = 60000; // 1分钟
     
     /** 收集类目标缓存时间（毫秒） */
-    public static final long COLLECT_CACHE_DURATION = 1000; // 1秒
+    public static long COLLECT_CACHE_DURATION = 1000; // 1秒
     
     // ========== 每日委托相关 ==========
     
     /** D级每日委托数量 */
-    public static final int DAILY_QUEST_COUNT_D = 3;
+    public static int DAILY_QUEST_COUNT_D = 3;
     
     /** C级每日委托数量 */
-    public static final int DAILY_QUEST_COUNT_C = 3;
+    public static int DAILY_QUEST_COUNT_C = 3;
     
     /** B级每日委托数量 */
-    public static final int DAILY_QUEST_COUNT_B = 2;
+    public static int DAILY_QUEST_COUNT_B = 2;
     
     /** A级每日委托数量 */
-    public static final int DAILY_QUEST_COUNT_A = 2;
+    public static int DAILY_QUEST_COUNT_A = 2;
     
     /** S级每日委托数量 */
-    public static final int DAILY_QUEST_COUNT_S = 1;
+    public static int DAILY_QUEST_COUNT_S = 1;
     
     // ========== 委托限制 ==========
     
     /** 最大同时活跃委托数量 */
-    public static final int MAX_ACTIVE_QUESTS = 10;
+    public static int MAX_ACTIVE_QUESTS = 10;
     
     /** 默认委托时间限制（秒，0表示无限制） */
-    public static final int DEFAULT_TIME_LIMIT = 0;
+    public static int DEFAULT_TIME_LIMIT = 0;
     
     /** 默认委托冷却时间（秒） */
-    public static final int DEFAULT_COOLDOWN = 0;
+    public static int DEFAULT_COOLDOWN = 0;
     
     // ========== 难度系统 ==========
     
     /** 基础难度倍数 */
-    public static final float BASE_DIFFICULTY = 1.0f;
+    public static float BASE_DIFFICULTY = 1.0f;
     
     /** 每级增加的难度百分比 */
-    public static final float DIFFICULTY_PER_LEVEL = 0.01f; // 1%
+    public static float DIFFICULTY_PER_LEVEL = 0.01f; // 1%
     
     /** 每次重复增加的难度百分比 */
-    public static final float DIFFICULTY_PER_REPEAT = 0.1f; // 10%
+    public static float DIFFICULTY_PER_REPEAT = 0.1f; // 10%
     
     // ========== 声望系统 ==========
     
@@ -84,10 +84,10 @@ public final class QuestSystemConfig {
     // ========== 网络相关 ==========
     
     /** 数据包发送超时（毫秒） */
-    public static final int PACKET_TIMEOUT = 5000;
+    public static int PACKET_TIMEOUT = 5000;
     
     /** 最大数据包大小（字节） */
-    public static final int MAX_PACKET_SIZE = 32768; // 32KB
+    public static int MAX_PACKET_SIZE = 32768; // 32KB
     
     // ========== 事务相关 ==========
     

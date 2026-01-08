@@ -87,6 +87,25 @@
   "message.roadweaver_rpg.reputation_gained": "Gained %s %s reputation",
   "message.roadweaver_rpg.reputation_error": "Error syncing reputation data",
   
+  "message.roadweaver_rpg.adventure_exp_gained": "Gained %s Adventure EXP",
+  "message.roadweaver_rpg.adventure_level_up": "Congratulations! Your Adventure Level is now Lv.%d!",
+  "gui.roadweaver_rpg.adventure.title": "Adventure Level",
+  "gui.roadweaver_rpg.adventure.current_level": "Current Level: Lv.%d",
+  "gui.roadweaver_rpg.adventure.current_exp": "Current EXP: %d",
+  "gui.roadweaver_rpg.adventure.next_level_exp": "Next Level: %d",
+  
+  "message.roadweaver_rpg.player_exp_gained": "Gained %s Combat EXP",
+  "message.roadweaver_rpg.player_level_up": "Congratulations! Your Level is now Lv.%d!",
+  "gui.roadweaver_rpg.player_level.title": "Player Level",
+  "gui.roadweaver_rpg.player_level.current_level": "Current Level: Lv.%d",
+  "gui.roadweaver_rpg.player_level.current_exp": "Current EXP: %d",
+  "gui.roadweaver_rpg.player_level.next_level_exp": "Next Level: %d",
+  
+  "effect.roadweaver_rpg.max_health": "Max Health %s",
+  "effect.roadweaver_rpg.attack_damage": "Attack Damage %s",
+  "effect.roadweaver_rpg.armor": "Armor %s",
+  "effect.roadweaver_rpg.potion": "%s Lv.%d",
+  
   "gui.roadweaver_rpg.quest.accepted": "Accepted Quest: %s",
   "gui.roadweaver_rpg.quest.completed": "Quest Completed: %s",
   "gui.roadweaver_rpg.quest.turned_in": "Quest Turned In: %s",
@@ -100,6 +119,39 @@
   "quest.rank.b": "B Rank",
   "quest.rank.c": "C Rank",
   "quest.rank.d": "D Rank",
+
+  "config.roadweaver_rpg.title": "RoadWeaver RPG Configuration",
+  "config.roadweaver_rpg.category.gameplay": "Gameplay",
+  "config.roadweaver_rpg.category.performance": "Performance",
+  "config.roadweaver_rpg.category.debug": "Debug",
+
+  "config.roadweaver_rpg.subcategory.daily_quest": "Daily Quest Counts",
+  "config.roadweaver_rpg.option.daily_count_d": "D Rank Count",
+  "config.roadweaver_rpg.option.daily_count_c": "C Rank Count",
+  "config.roadweaver_rpg.option.daily_count_b": "B Rank Count",
+  "config.roadweaver_rpg.option.daily_count_a": "A Rank Count",
+  "config.roadweaver_rpg.option.daily_count_s": "S Rank Count",
+  "config.roadweaver_rpg.option.daily_count_d.tooltip": "Number of D-rank quests generated daily",
+
+  "config.roadweaver_rpg.subcategory.quest_limits": "Quest Limits",
+  "config.roadweaver_rpg.option.max_active_quests": "Max Active Quests",
+  "config.roadweaver_rpg.option.max_active_quests.tooltip": "Maximum number of quests a player can have active at once",
+  "config.roadweaver_rpg.option.default_time_limit": "Default Time Limit (sec)",
+  "config.roadweaver_rpg.option.default_time_limit.tooltip": "Default time limit if not specified in quest (0 for no limit)",
+
+  "config.roadweaver_rpg.subcategory.difficulty": "Difficulty Factors",
+  "config.roadweaver_rpg.option.base_difficulty": "Base Difficulty",
+  "config.roadweaver_rpg.option.difficulty_per_level": "Difficulty Increment per Level",
+
+  "config.roadweaver_rpg.option.objective_check_interval": "Objective Check Interval (Ticks)",
+  "config.roadweaver_rpg.option.objective_check_interval.tooltip": "Frequency of checking quest objectives. Higher values save performance.",
+  "config.roadweaver_rpg.option.sync_validation_interval": "Sync Validation Interval (ms)",
+  "config.roadweaver_rpg.option.packet_timeout": "Packet Timeout (ms)",
+
+  "config.roadweaver_rpg.option.enable_verbose_logging": "Enable Verbose Logging",
+  "config.roadweaver_rpg.option.enable_performance_monitoring": "Enable Performance Monitoring",
+  "config.roadweaver_rpg.option.enable_consistency_check": "Enable Consistency Check",
+
   
   "quest.state.available": "Available",
   "quest.state.in_progress": "In Progress",
@@ -114,6 +166,7 @@
   "reward.roadweaver_rpg.levels": "%d Levels",
   "reward.roadweaver_rpg.reputation": "%s Reputation (%s)",
   "reward.roadweaver_rpg.coin": "%d Coins",
+  "reward.roadweaver_rpg.adventure_exp": "%s Adventure EXP",
   
   "gui.roadweaver_rpg.shop.title": "Guild Shop",
   "gui.roadweaver_rpg.shop.buy": "Buy",

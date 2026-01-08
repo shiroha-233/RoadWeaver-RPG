@@ -1,0 +1,146 @@
+{
+  "levels": [
+    {
+      "level": 1,
+      "xp": 0,
+      "effects": [],
+      "rewards": [{"type": "item", "item": "minecraft:bread", "count": 5}]
+    },
+    {
+      "level": 2,
+      "xp": 100,
+      "effects": [
+        {"type": "max_health", "amount": 2.0, "operation": "addition"}
+      ],
+      "rewards": [{"type": "experience", "amount": 50, "levels": false}]
+    },
+    {
+      "level": 3,
+      "xp": 300,
+      "effects": [
+        {"type": "max_health", "amount": 2.0, "operation": "addition"}
+      ],
+      "rewards": [{"type": "item", "item": "minecraft:iron_ingot", "count": 3}]
+    },
+    {
+      "level": 4,
+      "xp": 600,
+      "effects": [
+        {"type": "attack_damage", "amount": 0.5, "operation": "addition"}
+      ],
+      "rewards": [{"type": "experience", "amount": 75, "levels": false}]
+    },
+    {
+      "level": 5,
+      "xp": 1000,
+      "effects": [
+        {"type": "max_health", "amount": 2.0, "operation": "addition"},
+        {"type": "armor", "amount": 1.0, "operation": "addition"}
+      ],
+      "rewards": [
+        {"type": "item", "item": "minecraft:golden_apple", "count": 1},
+        {"type": "experience", "amount": 100, "levels": false}
+      ]
+    },
+    {
+      "level": 6,
+      "xp": 1500,
+      "effects": [
+        {"type": "attack_damage", "amount": 0.5, "operation": "addition"}
+      ],
+      "rewards": [{"type": "item", "item": "minecraft:diamond", "count": 1}]
+    },
+    {
+      "level": 7,
+      "xp": 2100,
+      "effects": [
+        {"type": "max_health", "amount": 2.0, "operation": "addition"}
+      ],
+      "rewards": [{"type": "experience", "amount": 125, "levels": false}]
+    },
+    {
+      "level": 8,
+      "xp": 2800,
+      "effects": [
+        {"type": "armor", "amount": 1.0, "operation": "addition"}
+      ],
+      "rewards": [{"type": "item", "item": "minecraft:emerald", "count": 3}]
+    },
+    {
+      "level": 9,
+      "xp": 3600,
+      "effects": [
+        {"type": "attack_damage", "amount": 0.5, "operation": "addition"}
+      ],
+      "rewards": [{"type": "experience", "amount": 150, "levels": false}]
+    },
+    {
+      "level": 10,
+      "xp": 4500,
+      "effects": [
+        {"type": "max_health", "amount": 4.0, "operation": "addition"},
+        {"type": "attack_damage", "amount": 1.0, "operation": "addition"},
+        {"type": "potion", "effect": "minecraft:regeneration", "amplifier": 0, "ambient": true, "show_particles": false}
+      ],
+      "rewards": [
+        {"type": "item", "item": "minecraft:diamond_sword", "count": 1},
+        {"type": "experience", "amount": 300, "levels": false}
+      ]
+    },
+    {
+      "level": 15,
+      "xp": 10000,
+      "effects": [
+        {"type": "max_health", "amount": 4.0, "operation": "addition"},
+        {"type": "attack_damage", "amount": 1.0, "operation": "addition"},
+        {"type": "armor", "amount": 2.0, "operation": "addition"}
+      ],
+      "rewards": [
+        {"type": "item", "item": "minecraft:diamond_chestplate", "count": 1},
+        {"type": "experience", "amount": 500, "levels": false}
+      ]
+    },
+    {
+      "level": 20,
+      "xp": 20000,
+      "effects": [
+        {"type": "max_health", "amount": 6.0, "operation": "addition"},
+        {"type": "attack_damage", "amount": 1.5, "operation": "addition"},
+        {"type": "armor", "amount": 2.0, "operation": "addition"},
+        {"type": "potion", "effect": "minecraft:strength", "amplifier": 0, "ambient": true, "show_particles": false}
+      ],
+      "rewards": [
+        {"type": "item", "item": "minecraft:netherite_ingot", "count": 1},
+        {"type": "experience", "amount": 1000, "levels": false}
+      ]
+    },
+    {
+      "level": 25,
+      "xp": 35000,
+      "effects": [
+        {"type": "max_health", "amount": 6.0, "operation": "addition"},
+        {"type": "attack_damage", "amount": 2.0, "operation": "addition"},
+        {"type": "armor", "amount": 3.0, "operation": "addition"}
+      ],
+      "rewards": [
+        {"type": "item", "item": "minecraft:enchanted_golden_apple", "count": 1},
+        {"type": "experience", "amount": 1500, "levels": false}
+      ]
+    },
+    {
+      "level": 30,
+      "xp": 55000,
+      "effects": [
+        {"type": "max_health", "amount": 10.0, "operation": "addition"},
+        {"type": "attack_damage", "amount": 3.0, "operation": "addition"},
+        {"type": "armor", "amount": 4.0, "operation": "addition"},
+        {"type": "potion", "effect": "minecraft:resistance", "amplifier": 0, "ambient": true, "show_particles": false}
+      ],
+      "rewards": [
+        {"type": "item", "item": "minecraft:netherite_sword", "count": 1},
+        {"type": "item", "item": "minecraft:netherite_chestplate", "count": 1},
+        {"type": "experience", "amount": 3000, "levels": false}
+      ]
+    }
+  ]
+}

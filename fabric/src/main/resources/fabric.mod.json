@@ -1,4 +1,4 @@
-﻿{
+{
   "schemaVersion": 1,
   "id": "roadweaver_rpg",
   "version": "${version}",
@@ -18,6 +18,9 @@
     ],
     "client": [
       "net.shiroha233.roadweaverpg.RoadWeaverRPGFabricClient"
+    ],
+    "modmenu": [
+      "net.shiroha233.roadweaverpg.client.RoadWeaverModMenuApi"
     ]
   },
   "accessWidener": "roadweaver_rpg.accesswidener",
@@ -33,6 +36,7 @@
     "reach-entity-attributes": ">=2.4.0"
   },
   "suggests": {
-    "modmenu": ">=7.0.0"
+    "modmenu": ">=7.0.0",
+    "cloth-config": ">=11.1.136"
   }
 }

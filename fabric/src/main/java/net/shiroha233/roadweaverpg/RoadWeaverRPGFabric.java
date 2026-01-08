@@ -53,6 +53,18 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new net.shiroha233.roadweaverpg.shop.ShopManagerFabric());
         
+        // 注册冒险等级数据加载器
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.adventure.AdventureLevelManagerFabric());
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.adventure.AdventureExpSourceManagerFabric());
+        
+        // 注册玩家等级数据加载器
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerLevelManagerFabric());
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerExpSourceManagerFabric());
+        
         // 注册对话数据加载器（使用Fabric包装类）
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(net.shiroha233.roadweaverpg.dialog.DialogRegistryFabric.getInstance());

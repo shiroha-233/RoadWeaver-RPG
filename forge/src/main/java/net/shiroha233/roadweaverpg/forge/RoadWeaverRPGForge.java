@@ -23,6 +23,9 @@ import net.shiroha233.roadweaverpg.quest.event.QuestEventHandler;
 import net.shiroha233.roadweaverpg.quest.service.QuestDefinitionLoader;
 import net.shiroha233.roadweaverpg.reputation.ReputationManager;
 import net.shiroha233.roadweaverpg.worldgen.VillagePoolInjector;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.client.ConfigScreenHandler;
+import net.shiroha233.roadweaverpg.client.config.ConfigScreenBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,10 @@ public class RoadWeaverRPGForge {
         // 初始化NPC声音事件提供者
         NPCSoundProviderForge.init();
         
+        // 注册 Config Screen
+        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new ConfigScreenHandler.ConfigScreenFactory((mc, screen) -> ConfigScreenBuilder.create(screen)));
+        
         // 检查前置依赖
         if (!RoadWeaverRPG.isRoadWeaverAvailable()) {
             LOGGER.warn("RoadWeaver main mod not found! Some features will be disabled.");
@@ -72,6 +79,12 @@ public class RoadWeaverRPGForge {
         event.addListener(net.shiroha233.roadweaverpg.dialog.DialogRegistry.getInstance());
         // 注册NPC行为数据加载器
         event.addListener(net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorLoader.getInstance());
+        // 注册冒险等级数据加载器
+        event.addListener(new net.shiroha233.roadweaverpg.adventure.AdventureLevelManager());
+        event.addListener(new net.shiroha233.roadweaverpg.adventure.AdventureExpSourceManager());
+        // 注册玩家等级数据加载器
+        event.addListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerLevelManager());
+        event.addListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerExpSourceManager());
     }
     
     @Mod.EventBusSubscriber(modid = RoadWeaverRPG.MOD_ID)
@@ -103,6 +116,10 @@ public class RoadWeaverRPGForge {
         public static void onLivingDeath(LivingDeathEvent event) {
             if (event.getSource().getEntity() instanceof ServerPlayer killer) {
                 QuestEventHandler.onEntityKilled(killer, event.getEntity());
+                // 冒险等级经验
+                net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.onEntityKilled(event.getEntity(), killer);
+                // 玩家等级经验
+                net.shiroha233.roadweaverpg.playerlevel.PlayerLevelEventHandler.onEntityKilled(event.getEntity(), killer);
             }
         }
         
@@ -110,6 +127,18 @@ public class RoadWeaverRPGForge {
         public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
             if (event.getEntity() instanceof ServerPlayer player) {
                 QuestEventHandler.onPlayerLogin(player);
+                // 同步冒险等级数据
+                net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.onPlayerLogin(player);
+                // 同步玩家等级数据
+                net.shiroha233.roadweaverpg.playerlevel.PlayerLevelEventHandler.onPlayerLogin(player);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                // 重新应用玩家等级效果
+                net.shiroha233.roadweaverpg.playerlevel.PlayerLevelEventHandler.onPlayerRespawn(player);
             }
         }
         

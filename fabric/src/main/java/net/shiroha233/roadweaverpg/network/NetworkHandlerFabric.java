@@ -154,6 +154,20 @@ public class NetworkHandlerFabric {
         ServerPlayNetworking.send(player, NetworkHandler.OPEN_REPUTATION_GUI, buf);
     }
     
+    // ==================== 冒险等级系统网络方法 ====================
+    
+    public static void sendAdventureLevels(ServerPlayer player, Collection<net.shiroha233.roadweaverpg.adventure.AdventureLevel> levels) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new SyncAdventureLevelsPacket(levels).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.SYNC_ADVENTURE_LEVELS, buf);
+    }
+    
+    public static void sendPlayerAdventure(ServerPlayer player, int exp, int level) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new SyncPlayerAdventurePacket(exp, level).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.SYNC_PLAYER_ADVENTURE, buf);
+    }
+    
     /** 初始化回调 */
     private static void initializeCallbacks() {
         PlayerQuestService manager = PlayerQuestService.getInstance();
@@ -169,6 +183,12 @@ public class NetworkHandlerFabric {
         net.shiroha233.roadweaverpg.reputation.ReputationManager.setSyncCallback(
                 NetworkHandlerFabric::sendReputationLevels);
         QuestPacketHandler.setOnOpenReputationGui(NetworkHandlerFabric::sendOpenReputationGui);
+        
+        // 初始化冒险等级系统回调
+        net.shiroha233.roadweaverpg.adventure.AdventureLevelManager.setSyncCallback(
+                NetworkHandlerFabric::sendAdventureLevels);
+        net.shiroha233.roadweaverpg.adventure.AdventureDataService.getInstance().setOnSyncAdventure(
+                (player, data) -> sendPlayerAdventure(player, data.getAdventureExp(), data.getAdventureLevel()));
         
         // 初始化对话系统回调
         initializeDialogCallbacks();

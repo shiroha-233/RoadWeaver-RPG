@@ -175,6 +175,28 @@ public class NetworkHandlerForge {
         registerShopPackets();
         registerInteractionPackets();
         registerDialogPackets();
+        registerAdventurePackets();
+    }
+    
+    /**
+     * 注册冒险等级系统相关的网络包
+     */
+    public static void registerAdventurePackets() {
+        // 服务端 -> 客户端：同步冒险等级定义
+        CHANNEL.registerMessage(packetId++, SyncAdventureLevelsPacket.class,
+                SyncAdventureLevelsPacket::encode, SyncAdventureLevelsPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> ClientPacketHandler.handleSyncAdventureLevels(packet));
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
+        // 服务端 -> 客户端：同步玩家冒险数据
+        CHANNEL.registerMessage(packetId++, SyncPlayerAdventurePacket.class,
+                SyncPlayerAdventurePacket::encode, SyncPlayerAdventurePacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> ClientPacketHandler.handleSyncPlayerAdventure(packet));
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
     
     /**
@@ -306,6 +328,12 @@ public class NetworkHandlerForge {
                 NetworkHandlerForge::sendReputationLevels);
         QuestPacketHandler.setOnOpenReputationGui(NetworkHandlerForge::sendOpenReputationGui);
         
+        // 初始化冒险等级系统回调
+        net.shiroha233.roadweaverpg.adventure.AdventureLevelManager.setSyncCallback(
+                NetworkHandlerForge::sendAdventureLevels);
+        net.shiroha233.roadweaverpg.adventure.AdventureDataService.getInstance().setOnSyncAdventure(
+                (player, data) -> sendPlayerAdventure(player, data.getAdventureExp(), data.getAdventureLevel()));
+        
         // 初始化对话系统回调
         initializeDialogCallbacks();
         
@@ -369,6 +397,16 @@ public class NetworkHandlerForge {
 
     public static void sendOpenReputationGui(ServerPlayer player) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new OpenReputationGuiPacket());
+    }
+    
+    // ==================== 冒险等级系统网络方法 ====================
+    
+    public static void sendAdventureLevels(ServerPlayer player, Collection<net.shiroha233.roadweaverpg.adventure.AdventureLevel> levels) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SyncAdventureLevelsPacket(levels));
+    }
+    
+    public static void sendPlayerAdventure(ServerPlayer player, int exp, int level) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SyncPlayerAdventurePacket(exp, level));
     }
     
     public static void sendAllDefinitions(ServerPlayer player, Collection<QuestDefinition> definitions) {

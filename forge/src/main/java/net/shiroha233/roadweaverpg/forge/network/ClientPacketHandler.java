@@ -102,6 +102,16 @@ public class ClientPacketHandler {
                 .update(packet.dailyQuestIds(), packet.refreshDate(), packet.timeUntilRefresh());
     }
     
+    // ==================== 冒险等级系统客户端处理 ====================
+    
+    public static void handleSyncAdventureLevels(SyncAdventureLevelsPacket packet) {
+        net.shiroha233.roadweaverpg.client.ClientAdventureCache.setLevelDefinitions(packet.levels());
+    }
+    
+    public static void handleSyncPlayerAdventure(SyncPlayerAdventurePacket packet) {
+        net.shiroha233.roadweaverpg.client.ClientAdventureCache.setPlayerData(packet.exp(), packet.level());
+    }
+    
     // ==================== 商店系统客户端处理 ====================
     
     private static int currentShopCoins = 0;

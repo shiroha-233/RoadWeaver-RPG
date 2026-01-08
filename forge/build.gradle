@@ -22,6 +22,13 @@ configurations {
     developmentForge.extendsFrom common
 }
 
+repositories {
+    maven {
+        url = "https://maven.shedaniel.me/"
+        name "Shedaniel Maven"
+    }
+}
+
 dependencies {
     // Common 模块
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
@@ -35,6 +42,10 @@ dependencies {
     
     // Touhou Little Maid 依赖
     modImplementation "maven.modrinth:touhou-little-maid:${rootProject.touhou_little_maid_version}"
+
+    // Cloth Config API - 使用 Shedaniel Maven 的官方版本并打包到模组中
+    modApi("me.shedaniel.cloth:cloth-config-forge:11.1.136")
+    include("me.shedaniel.cloth:cloth-config-forge:11.1.136")
 }
 
 tasks.named('processResources', ProcessResources).configure {

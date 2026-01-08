@@ -12,20 +12,62 @@ import org.joml.Matrix4f;
 public class GuiRenderer {
     
     /**
-     * 绘制带圆角的矩形
+     * 绘制带圆角的矩形 (改进版：真正的圆角)
      */
     public static void drawRoundedRect(GuiGraphics graphics, int x, int y, int width, int height, 
                                         int radius, int color) {
-        // 中心矩形
-        graphics.fill(x + radius, y, x + width - radius, y + height, color);
-        // 左右边
-        graphics.fill(x, y + radius, x + radius, y + height - radius, color);
-        graphics.fill(x + width - radius, y + radius, x + width, y + height - radius, color);
-        // 四个角（简化为小矩形）
-        graphics.fill(x, y, x + radius, y + radius, color);
-        graphics.fill(x + width - radius, y, x + width, y + radius, color);
-        graphics.fill(x, y + height - radius, x + radius, y + height, color);
-        graphics.fill(x + width - radius, y + height - radius, x + width, y + height, color);
+        // 限制半径大小
+        int r = Math.min(radius, Math.min(width / 2, height / 2));
+        if (r <= 0) {
+            graphics.fill(x, y, x + width, y + height, color);
+            return;
+        }
+
+        // 1. 绘制中心主体（十字形）
+        // 中心横条 (从左边距到右边距，高度为 height - 2*r)
+        graphics.fill(x, y + r, x + width, y + height - r, color);
+        // 中心竖条 (从上边距到下边距，宽度为 width - 2*r)
+        graphics.fill(x + r, y, x + width - r, y + height, color);
+
+        // 2. 绘制四个圆角
+        drawCorner(graphics, x, y, r, 0, color);                 // 左上
+        drawCorner(graphics, x + width - r, y, r, 1, color);     // 右上
+        drawCorner(graphics, x, y + height - r, r, 2, color);    // 左下
+        drawCorner(graphics, x + width - r, y + height - r, r, 3, color); // 右下
+    }
+
+    /**
+     * 绘制单个圆角
+     * type: 0=左上, 1=右上, 2=左下, 3=右下
+     */
+    private static void drawCorner(GuiGraphics graphics, int x, int y, int r, int type, int color) {
+        // 使用简单的扫描线算法逼近圆角
+        // 为了性能，我们只画像素条
+        for (int i = 0; i < r; i++) {
+            // 计算当前行/列的长度
+            // 也就是圆的方程 x^2 + y^2 = r^2
+            // 这里的 i 是距离圆心的垂直/水平距离
+            int limit = (int) Math.sqrt(r * r - (r - i - 1) * (r - i - 1));
+            // limit 是从圆心算起的长度，我们需要转换成绘制长度
+            
+            // 优化：直接画矩形条
+            // 左上角 (0): 从上往下扫
+            if (type == 0) {
+                graphics.fill(x + r - limit, y + i, x + r, y + i + 1, color);
+            }
+            // 右上角 (1): 从上往下扫
+            else if (type == 1) {
+                graphics.fill(x, y + i, x + limit, y + i + 1, color);
+            }
+            // 左下角 (2): 从下往上扫
+            else if (type == 2) {
+                graphics.fill(x + r - limit, y + r - 1 - i, x + r, y + r - i, color);
+            }
+            // 右下角 (3): 从下往上扫
+            else if (type == 3) {
+                graphics.fill(x, y + r - 1 - i, x + limit, y + r - i, color);
+            }
+        }
     }
     
     /**

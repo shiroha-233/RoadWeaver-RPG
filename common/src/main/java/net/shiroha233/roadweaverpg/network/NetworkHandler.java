@@ -79,5 +79,11 @@ public class NetworkHandler {
     public static final ResourceLocation INTERACTION_SELECT = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "interaction_select");
     
+    // 冒险等级系统
+    public static final ResourceLocation SYNC_ADVENTURE_LEVELS = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_adventure_levels");
+    public static final ResourceLocation SYNC_PLAYER_ADVENTURE = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_player_adventure");
+    
     private NetworkHandler() {}
 }

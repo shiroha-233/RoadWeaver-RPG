@@ -18,6 +18,13 @@ configurations {
     developmentFabric.extendsFrom common
 }
 
+repositories {
+    maven {
+        url = "https://maven.shedaniel.me/"
+        name "Shedaniel Maven"
+    }
+}
+
 dependencies {
     // Common 模块
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
@@ -37,6 +44,15 @@ dependencies {
     
     // 森罗物语依赖
     modImplementation "maven.modrinth:kaleidoscope-cookery:${rootProject.kaleidoscope_cookery_fabric_version}"
+
+    // Cloth Config API - 使用 Shedaniel Maven 的官方版本并打包到模组中
+    modApi("me.shedaniel.cloth:cloth-config-fabric:11.1.106") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    include("me.shedaniel.cloth:cloth-config-fabric:11.1.106")
+    
+    // Mod Menu
+    modApi "maven.modrinth:modmenu:${rootProject.modmenu_version}"
 }
 
 processResources {

@@ -1,16 +1,21 @@
 package net.shiroha233.roadweaverpg.client.gui.shop;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.shiroha233.roadweaverpg.client.gui.render.GuiRenderer;
 import net.shiroha233.roadweaverpg.shop.ShopCategory;
 import net.shiroha233.roadweaverpg.shop.ShopItem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 /**
  * 商店界面 - 半透明黑色背景 + 物品格子 + 分类
@@ -18,14 +23,17 @@ import java.util.stream.Collectors;
 public class ShopScreen extends Screen {
     
     private static final int GUI_SIZE_RATIO = 85;
-    private static final int TITLE_HEIGHT = 20;
-    private static final int CATEGORY_HEIGHT = 24;
-    private static final int ITEM_SIZE = 32;
-    private static final int ITEM_SPACING = 4;
-    private static final int PADDING = 12;
+    private static final int HEADER_HEIGHT = 38; // 稍微增高头部
+    private static final int CHIP_HEIGHT = 24;   // 增高标签
+    private static final int ITEM_SIZE = 36;     // 增大物品格子
+    private static final int ITEM_SPACING = 8;   // 增加间距
+    private static final int GRID_INNER_PADDING = 12;
+    private static final int PADDING = 20;       // 增加整体内边距
     private static final int COIN_COLOR = 0xFFFFD700;
+    private static final int COLOR_TEXT_SECONDARY = 0xFFB0B0B0;
     
-    private final List<ShopItem> allItems;
+    private final Map<ShopCategory, List<ShopItem>> itemsByCategory;
+    private final List<ShopCategory> availableCategories;
     private final BiConsumer<ResourceLocation, Integer> purchaseHandler;
     
     private int playerCoins;
@@ -37,17 +45,37 @@ public class ShopScreen extends Screen {
     public ShopScreen(int entityId, List<ShopItem> items, int playerCoins,
                       BiConsumer<ResourceLocation, Integer> purchaseHandler) {
         super(Component.translatable("gui.roadweaver_rpg.shop.title"));
-        this.allItems = items;
         this.playerCoins = playerCoins;
         this.purchaseHandler = purchaseHandler;
+        this.itemsByCategory = buildItemsByCategory(items);
+        this.availableCategories = buildAvailableCategories();
         this.selectedCategory = findFirstNonEmptyCategory();
     }
     
-    private ShopCategory findFirstNonEmptyCategory() {
+    private Map<ShopCategory, List<ShopItem>> buildItemsByCategory(List<ShopItem> items) {
+        Map<ShopCategory, List<ShopItem>> map = new EnumMap<>(ShopCategory.class);
         for (ShopCategory cat : ShopCategory.values()) {
-            if (allItems.stream().anyMatch(i -> i.category() == cat)) {
-                return cat;
+            map.put(cat, new ArrayList<>());
+        }
+        for (ShopItem item : items) {
+            map.get(item.category()).add(item);
+        }
+        return map;
+    }
+    
+    private List<ShopCategory> buildAvailableCategories() {
+        List<ShopCategory> result = new ArrayList<>();
+        for (ShopCategory cat : ShopCategory.values()) {
+            if (!getItemsForCategory(cat).isEmpty()) {
+                result.add(cat);
             }
+        }
+        return result;
+    }
+    
+    private ShopCategory findFirstNonEmptyCategory() {
+        for (ShopCategory cat : availableCategories) {
+            return cat;
         }
         return ShopCategory.MATERIALS;
     }
@@ -63,11 +91,8 @@ public class ShopScreen extends Screen {
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics);
         renderMainPanel(graphics);
-        renderTitle(graphics);
-        renderCoinDisplay(graphics);
-        renderCategoryTabs(graphics, mouseX, mouseY);
+        renderHeader(graphics, mouseX, mouseY);
         renderItemGrid(graphics, mouseX, mouseY);
         
         if (hoveredItem != null) {
@@ -79,109 +104,147 @@ public class ShopScreen extends Screen {
 
     
     private void renderMainPanel(GuiGraphics graphics) {
-        graphics.fill(guiLeft, guiTop, guiLeft + guiWidth, guiTop + guiHeight, 0xCC000000);
-        graphics.fill(guiLeft, guiTop, guiLeft + guiWidth, guiTop + 1, 0xFF333333);
-        graphics.fill(guiLeft, guiTop + guiHeight - 1, guiLeft + guiWidth, guiTop + guiHeight, 0xFF333333);
-        graphics.fill(guiLeft, guiTop, guiLeft + 1, guiTop + guiHeight, 0xFF333333);
-        graphics.fill(guiLeft + guiWidth - 1, guiTop, guiLeft + guiWidth, guiTop + guiHeight, 0xFF333333);
+        renderBackground(graphics); 
+        
+        // 主面板背景 - 更现代的半透明深色玻璃质感
+        // 使用更低的 Alpha (0xB0 -> ~70%)，增加通透感
+        // 圆角半径增大到 16
+        GuiRenderer.drawRoundedRect(graphics, guiLeft, guiTop, guiWidth, guiHeight, 16, 0xB0101218);
+        
+        // 叠加微弱的渐变，增加质感
+        GuiRenderer.drawVerticalGradient(graphics, guiLeft + 2, guiTop + 2, guiWidth - 4, guiHeight - 4, 0x15FFFFFF, 0x05000000);
+        
+        // 外边框 - 极细发光感
+        graphics.renderOutline(guiLeft, guiTop, guiWidth, guiHeight, 0x20FFFFFF);
     }
     
-    private void renderTitle(GuiGraphics graphics) {
-        int titleY = guiTop - TITLE_HEIGHT - 5;
-        int titleWidth = font.width(title) + 40;
-        int titleX = guiLeft + guiWidth / 2 - titleWidth / 2;
+    // 移除独立的 renderTitle，标题可以在头部左侧显示，或者直接省略，因为Header很明显
+    
+    private void renderHeader(GuiGraphics graphics, int mouseX, int mouseY) {
+        HeaderLayout header = computeHeaderLayout();
+        Rect statusRect = computeStatusPanelRect(header);
         
-        graphics.fill(titleX, titleY, titleX + titleWidth, titleY + TITLE_HEIGHT, 0xDD000000);
-        graphics.fill(titleX, titleY, titleX + titleWidth, titleY + 1, 0xFF444444);
-        graphics.fill(titleX, titleY + TITLE_HEIGHT - 1, titleX + titleWidth, titleY + TITLE_HEIGHT, 0xFF444444);
+        // 头部区域不再画明显的深色背景框，而是保持通透，或者仅画一条分割线
+        // 这里选择画一个极淡的背景条
+        // GuiRenderer.drawRoundedRect(graphics, header.headerX, header.headerY, header.headerW, header.headerH, 12, 0x20000000);
         
-        graphics.drawCenteredString(font, title, guiLeft + guiWidth / 2, titleY + 6, 0xFFFFFFFF);
+        renderStatusPanel(graphics, statusRect);
+        renderCategoryChips(graphics, header, statusRect.x, mouseX, mouseY);
     }
     
-    private void renderCoinDisplay(GuiGraphics graphics) {
-        String coinText = "§6" + playerCoins;
-        int coinTextWidth = font.width(coinText);
-        int iconSize = 16;
-        int totalWidth = coinTextWidth + iconSize + 4;
+    private void renderStatusPanel(GuiGraphics graphics, Rect statusRect) {
+        int repLevel = net.shiroha233.roadweaverpg.client.ClientReputationCache.getPlayerLevel("roadweaver_rpg:guild");
         
-        int coinX = guiLeft + guiWidth - totalWidth - PADDING;
-        int coinY = guiTop + PADDING;
+        String coinValue = String.valueOf(playerCoins);
         
-        graphics.fill(coinX - 4, coinY - 2, coinX + totalWidth, coinY + 12, 0x80000000);
-        graphics.drawString(font, coinText, coinX, coinY, COIN_COLOR, false);
+        // 状态面板背景 - 胶囊状
+        GuiRenderer.drawRoundedRect(graphics, statusRect.x, statusRect.y, statusRect.w, statusRect.h, 12, 0x40000000);
+        graphics.renderOutline(statusRect.x, statusRect.y, statusRect.w, statusRect.h, 0x15FFFFFF);
         
+        int padding = 10;
+        int currentX = statusRect.x + padding;
+        int centerY = statusRect.y + statusRect.h / 2;
+        
+        // 1. 金币图标和数值
         if (net.shiroha233.roadweaverpg.item.ModItems.COIN != null) {
             ItemStack coinStack = new ItemStack(net.shiroha233.roadweaverpg.item.ModItems.COIN.get());
-            graphics.renderItem(coinStack, coinX + coinTextWidth + 4, coinY - 2);
+            graphics.renderItem(coinStack, currentX, centerY - 8);
+            currentX += 18;
         }
-
-        int repLevel = net.shiroha233.roadweaverpg.client.ClientReputationCache.getPlayerLevel("roadweaver_rpg:guild");
-        String repText = "§bLv." + repLevel + " §7Guild Reputation";
-        int repWidth = font.width(repText);
-        int repX = guiLeft + guiWidth - repWidth - PADDING;
-        int repY = coinY + 16;
-
-        graphics.fill(repX - 4, repY - 2, repX + repWidth + 4, repY + 10, 0x80000000);
-        graphics.drawString(font, repText, repX, repY, 0xFFFFFFFF, false);
+        
+        graphics.drawString(font, coinValue, currentX, centerY - 4, COIN_COLOR, false);
+        currentX += font.width(coinValue) + 12;
+        
+        // 分隔符 - 垂直细线
+        graphics.fill(currentX, centerY - 6, currentX + 1, centerY + 6, 0x30FFFFFF);
+        currentX += 12;
+        
+        // 2. 声望信息
+        graphics.drawString(font, "声望", currentX, centerY - 4, COLOR_TEXT_SECONDARY, false);
+        currentX += font.width("声望") + 4;
+        
+        String lvlStr = "Lv." + repLevel;
+        graphics.drawString(font, lvlStr, currentX, centerY - 4, 0xFF55FF55, false);
     }
     
-    private void renderCategoryTabs(GuiGraphics graphics, int mouseX, int mouseY) {
-        int tabY = guiTop + PADDING;
-        int tabX = guiLeft + PADDING;
-        int tabWidth = 0;
+    private void renderCategoryChips(GuiGraphics graphics, HeaderLayout header, int statusLeftX, int mouseX, int mouseY) {
+        int headerTextY = header.headerY + (header.headerH - CHIP_HEIGHT) / 2;
         
-        for (ShopCategory cat : ShopCategory.values()) {
-            List<ShopItem> catItems = getItemsForCategory(cat);
-            if (catItems.isEmpty()) continue;
+        int x = header.headerX + 4; // 起始位置微调
+        int maxX = statusLeftX - 10;
+        
+        graphics.enableScissor(header.headerX, header.headerY, statusLeftX, header.headerY + header.headerH);
+        
+        for (ShopCategory cat : availableCategories) {
+            String name = cat.getDisplayName().getString();
+            int textWidth = font.width(name);
+            int chipW = textWidth + 20; // 左右各10padding
             
-            String catName = cat.getDisplayName().getString();
-            int catWidth = font.width(catName) + 16;
+            if (x + chipW > maxX) break;
             
-            boolean hovered = mouseX >= tabX + tabWidth && mouseX < tabX + tabWidth + catWidth
-                    && mouseY >= tabY && mouseY < tabY + CATEGORY_HEIGHT;
+            boolean hovered = mouseX >= x && mouseX < x + chipW && mouseY >= headerTextY && mouseY < headerTextY + CHIP_HEIGHT;
             boolean selected = cat == selectedCategory;
             
-            int bgColor = selected ? (cat.getColor() & 0xFFFFFF) | 0xCC000000 : 
-                         (hovered ? 0x60FFFFFF : 0x40000000);
+            // 优化颜色逻辑：确保未选中状态也清晰可见
+            int categoryColor = cat.getColor();
             
-            graphics.fill(tabX + tabWidth, tabY, tabX + tabWidth + catWidth, tabY + CATEGORY_HEIGHT, bgColor);
+            int bg;
+            int borderColor;
+            int textColor;
             
             if (selected) {
-                graphics.fill(tabX + tabWidth, tabY + CATEGORY_HEIGHT - 2, 
-                        tabX + tabWidth + catWidth, tabY + CATEGORY_HEIGHT, cat.getColor());
+                // 选中：高亮背景，白色文字，亮边框
+                bg = (categoryColor & 0x00FFFFFF) | 0xCC000000; // 80% alpha
+                borderColor = (categoryColor & 0x00FFFFFF) | 0xFF000000;
+                textColor = 0xFFFFFFFF;
+            } else {
+                // 未选中：深色背景，灰色文字，暗边框
+                // 悬停时稍微提亮背景
+                bg = hovered ? 0x60404040 : 0x40202020; 
+                borderColor = hovered ? 0x40FFFFFF : 0x20FFFFFF;
+                textColor = hovered ? 0xFFFFFFFF : 0xFFAAAAAA;
             }
             
-            int textColor = selected ? 0xFFFFFFFF : (hovered ? 0xFFEEEEEE : 0xFFAAAAAA);
-            graphics.drawString(font, catName, tabX + tabWidth + 8, tabY + 8, textColor, false);
+            // 绘制胶囊状标签 (圆角半径 = 高度的一半 = 12)
+            GuiRenderer.drawRoundedRect(graphics, x, headerTextY, chipW, CHIP_HEIGHT, 12, bg);
+            graphics.renderOutline(x, headerTextY, chipW, CHIP_HEIGHT, borderColor);
             
-            tabWidth += catWidth + 2;
+            // 居中绘制文字
+            graphics.drawCenteredString(font, name, x + chipW / 2, headerTextY + 8, textColor);
+            
+            x += chipW + 8; // 增加间距
         }
+        
+        graphics.disableScissor();
     }
     
     private void renderItemGrid(GuiGraphics graphics, int mouseX, int mouseY) {
-        int gridX = guiLeft + PADDING;
-        int gridY = guiTop + PADDING + CATEGORY_HEIGHT + 8;
-        int gridWidth = guiWidth - PADDING * 2;
-        int gridHeight = guiHeight - PADDING * 2 - CATEGORY_HEIGHT - 8;
+        GridLayout layout = computeGridLayout();
         
-        graphics.fill(gridX, gridY, gridX + gridWidth, gridY + gridHeight, 0x40000000);
+        // 物品网格背景 - 更通透
+        GuiRenderer.drawRoundedRect(graphics, layout.gridX, layout.gridY, layout.gridW, layout.gridH, 12, 0x25000000);
+        // graphics.renderOutline(layout.gridX, layout.gridY, layout.gridW, layout.gridH, 0x10FFFFFF); // 去除网格边框，更简洁
         
         List<ShopItem> items = getItemsForCategory(selectedCategory);
-        int cols = (gridWidth - 8) / (ITEM_SIZE + ITEM_SPACING);
-        if (cols < 1) cols = 1;
+        int cols = Math.max(1, (layout.innerW + ITEM_SPACING) / (ITEM_SIZE + ITEM_SPACING));
         
-        graphics.enableScissor(gridX, gridY, gridX + gridWidth, gridY + gridHeight);
+        graphics.enableScissor(layout.gridX, layout.gridY, layout.gridX + layout.gridW, layout.gridY + layout.gridH);
         
         hoveredItem = null;
+        
+        int totalRows = (items.size() + cols - 1) / cols;
+        int totalHeight = totalRows * (ITEM_SIZE + ITEM_SPACING) - ITEM_SPACING;
+        int maxOffset = Math.max(0, totalHeight - layout.innerH);
+        scrollOffset = Math.max(0, Math.min(maxOffset, scrollOffset));
         
         for (int i = 0; i < items.size(); i++) {
             int col = i % cols;
             int row = i / cols;
             
-            int itemX = gridX + 4 + col * (ITEM_SIZE + ITEM_SPACING);
-            int itemY = gridY + 4 + row * (ITEM_SIZE + ITEM_SPACING) - scrollOffset;
+            int itemX = layout.innerX + col * (ITEM_SIZE + ITEM_SPACING);
+            int itemY = layout.innerY + row * (ITEM_SIZE + ITEM_SPACING) - scrollOffset;
             
-            if (itemY + ITEM_SIZE >= gridY && itemY < gridY + gridHeight) {
+            if (itemY + ITEM_SIZE >= layout.gridY && itemY < layout.gridY + layout.gridH) {
                 ShopItem item = items.get(i);
                 boolean hovered = mouseX >= itemX && mouseX < itemX + ITEM_SIZE
                         && mouseY >= itemY && mouseY < itemY + ITEM_SIZE;
@@ -193,11 +256,8 @@ public class ShopScreen extends Screen {
         
         graphics.disableScissor();
         
-        int totalRows = (items.size() + cols - 1) / cols;
-        int totalHeight = totalRows * (ITEM_SIZE + ITEM_SPACING);
-        if (totalHeight > gridHeight) {
-            renderScrollbar(graphics, gridX + gridWidth - 4, gridY, gridHeight, 
-                    scrollOffset, totalHeight - gridHeight);
+        if (maxOffset > 0) {
+            renderScrollbar(graphics, layout.gridX + layout.gridW - 6, layout.gridY + 6, layout.gridH - 12, scrollOffset, maxOffset);
         }
     }
 
@@ -207,59 +267,105 @@ public class ShopScreen extends Screen {
         int playerRep = net.shiroha233.roadweaverpg.client.ClientReputationCache.getPlayerLevel("roadweaver_rpg:guild");
         boolean levelMet = playerRep >= item.requiredLevel();
         
-        int bgColor = hovered ? 0x80FFFFFF : 0x60333333;
-        if (!canAfford || !levelMet) bgColor = (bgColor & 0xFF000000) | 0x442222;
+        boolean disabled = !canAfford || !levelMet;
         
-        graphics.fill(x, y, x + ITEM_SIZE, y + ITEM_SIZE, bgColor);
+        // 背景色调整
+        int bgColor;
+        if (disabled) {
+            bgColor = 0x40301010; // 淡红色背景表示不可用
+        } else {
+            bgColor = hovered ? 0x50FFFFFF : 0x30000000; // 悬停亮白，平时深黑
+        }
         
-        int borderColor = hovered ? 0xFFFFFFFF : 0xFF555555;
-        if (!canAfford || !levelMet) borderColor = 0xFFAA4444;
-        graphics.fill(x, y, x + ITEM_SIZE, y + 1, borderColor);
-        graphics.fill(x, y + ITEM_SIZE - 1, x + ITEM_SIZE, y + ITEM_SIZE, borderColor);
-        graphics.fill(x, y, x + 1, y + ITEM_SIZE, borderColor);
-        graphics.fill(x + ITEM_SIZE - 1, y, x + ITEM_SIZE, y + ITEM_SIZE, borderColor);
+        // 绘制圆角格子 (半径8)
+        GuiRenderer.drawRoundedRect(graphics, x, y, ITEM_SIZE, ITEM_SIZE, 8, bgColor);
         
+        // 边框 - 选中时发光
+        int outline = disabled ? 0x60FF4444 : (hovered ? 0xA0FFFFFF : 0x20FFFFFF);
+        graphics.renderOutline(x, y, ITEM_SIZE, ITEM_SIZE, outline);
+        
+        // 物品图标 - 居中 (36x36 格子, 16x16 图标, 居中是 10,10)
         ItemStack stack = item.createItemStack();
-        graphics.renderItem(stack, x + (ITEM_SIZE - 16) / 2, y + 4);
+        graphics.renderItem(stack, x + 10, y + 10); 
         
+        // 价格显示在右下角
         String priceStr = String.valueOf(item.price());
-        int priceColor = canAfford ? COIN_COLOR : 0xFFFF4444;
-        graphics.drawString(font, priceStr, x + (ITEM_SIZE - font.width(priceStr)) / 2, 
-                y + ITEM_SIZE - 10, priceColor, false);
+        int priceColor = canAfford ? COIN_COLOR : 0xFFFF5555;
+        
+        // 价格背景条 (增强可读性)
+        // graphics.pose().pushPose();
+        // graphics.pose().translate(0, 0, 150);
+        // GuiRenderer.drawRoundedRect(graphics, x + ITEM_SIZE - font.width(priceStr)*0.7f - 4, y + ITEM_SIZE - 9, (int)(font.width(priceStr)*0.7f)+2, 8, 4, 0x80000000);
+        // graphics.pose().popPose();
 
+        graphics.pose().pushPose();
+        graphics.pose().translate(x + ITEM_SIZE - 2, y + ITEM_SIZE - 8, 200);
+        graphics.pose().scale(0.7f, 0.7f, 1.0f);
+        graphics.drawString(font, priceStr, -font.width(priceStr), 0, priceColor, true); // 开启阴影
+        graphics.pose().popPose();
+
+        // 等级限制显示在左上角
         if (!levelMet) {
-            graphics.drawString(font, "§cL." + item.requiredLevel(), x + 2, y + 2, 0xFFFF4444, true);
+            graphics.pose().pushPose();
+            graphics.pose().translate(x + 3, y + 3, 300); 
+            graphics.pose().scale(0.7f, 0.7f, 1.0f);
+            String lvlText = "L." + item.requiredLevel();
+            graphics.drawString(font, lvlText, 0, 0, 0xFFFF5555, true);
+            graphics.pose().popPose();
+            
+            // 红色遮罩
+            GuiRenderer.drawRoundedRect(graphics, x, y, ITEM_SIZE, ITEM_SIZE, 8, 0x30FF0000);
+        }
+        
+        // 如果有数量 > 1，显示数量
+        if (item.count() > 1) {
+             graphics.pose().pushPose();
+             graphics.pose().translate(x + ITEM_SIZE - 2, y + ITEM_SIZE - 15, 200);
+             graphics.pose().scale(0.7f, 0.7f, 1.0f);
+             String countStr = "x" + item.count();
+             graphics.drawString(font, countStr, -font.width(countStr), 0, 0xFFDDDDDD, true);
+             graphics.pose().popPose();
         }
     }
     
     private void renderScrollbar(GuiGraphics graphics, int x, int y, int height, int offset, int maxOffset) {
         if (maxOffset <= 0) return;
         
-        graphics.fill(x, y, x + 3, y + height, 0x40FFFFFF);
+        // 滚动条槽
+        GuiRenderer.drawRoundedRect(graphics, x, y, 4, height, 2, 0x10FFFFFF);
         
         int thumbHeight = Math.max(20, height * height / (height + maxOffset));
         int thumbY = y + (int)((height - thumbHeight) * ((float)offset / maxOffset));
         
-        graphics.fill(x, thumbY, x + 3, thumbY + thumbHeight, 0xAAFFFFFF);
+        // 滚动条滑块 - 亮色
+        GuiRenderer.drawRoundedRect(graphics, x, thumbY, 4, thumbHeight, 2, 0x60FFFFFF);
     }
     
     private void renderItemTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
-        List<Component> tooltip = new ArrayList<>();
+        ItemStack stack = hoveredItem.createItemStack();
+        if (stack.isEmpty()) return;
+
+        List<Component> tooltip = new ArrayList<>(stack.getTooltipLines(Minecraft.getInstance().player, 
+                Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL));
         
-        tooltip.add(hoveredItem.getDisplayName());
-        tooltip.add(Component.literal("数量: " + hoveredItem.count()).withStyle(s -> s.withColor(0xAAAAAA)));
+        // 分隔线
+        tooltip.add(Component.empty());
         
-        int priceColor = playerCoins >= hoveredItem.price() ? 0xFFD700 : 0xFF4444;
-        tooltip.add(Component.literal("价格: " + hoveredItem.price() + " 金币").withStyle(s -> s.withColor(priceColor)));
+        // 商店信息
+        tooltip.add(Component.literal("商品信息").withStyle(s -> s.withColor(0xFFD700).withBold(true)));
+        tooltip.add(Component.literal("  数量: " + hoveredItem.count()).withStyle(s -> s.withColor(0xAAAAAA)));
+        
+        int priceColor = playerCoins >= hoveredItem.price() ? 0x55FF55 : 0xFF5555;
+        tooltip.add(Component.literal("  价格: " + hoveredItem.price() + " 金币").withStyle(s -> s.withColor(priceColor)));
         
         int playerRep = net.shiroha233.roadweaverpg.client.ClientReputationCache.getPlayerLevel("roadweaver_rpg:guild");
         if (hoveredItem.requiredLevel() > 0) {
             int repColor = playerRep >= hoveredItem.requiredLevel() ? 0xAAAAFF : 0xFF5555;
-            tooltip.add(Component.literal("需要声望等级: " + hoveredItem.requiredLevel())
+            tooltip.add(Component.literal("  需要声望等级: " + hoveredItem.requiredLevel())
                     .withStyle(s -> s.withColor(repColor)));
         }
         
-        tooltip.add(Component.literal(""));
+        tooltip.add(Component.empty());
         if (playerRep < hoveredItem.requiredLevel()) {
             tooltip.add(Component.literal("声望不足").withStyle(s -> s.withColor(0xFF5555).withItalic(true)));
         } else if (playerCoins >= hoveredItem.price()) {
@@ -268,36 +374,94 @@ public class ShopScreen extends Screen {
             tooltip.add(Component.literal("金币不足").withStyle(s -> s.withColor(0xFF5555).withItalic(true)));
         }
         
-        graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
+        graphics.renderTooltip(font, tooltip, stack.getTooltipImage(), mouseX, mouseY);
     }
     
     private List<ShopItem> getItemsForCategory(ShopCategory category) {
-        return allItems.stream()
-                .filter(item -> item.category() == category)
-                .collect(Collectors.toList());
+        return itemsByCategory.getOrDefault(category, List.of());
+    }
+    
+    private HeaderLayout computeHeaderLayout() {
+        int headerX = guiLeft + PADDING;
+        int headerY = guiTop + PADDING;
+        int headerW = guiWidth - PADDING * 2;
+        int headerH = HEADER_HEIGHT;
+        
+        return new HeaderLayout(headerX, headerY, headerW, headerH);
+    }
+    
+    private Rect computeStatusPanelRect(HeaderLayout header) {
+        int repLevel = net.shiroha233.roadweaverpg.client.ClientReputationCache.getPlayerLevel("roadweaver_rpg:guild");
+        
+        String coinValue = String.valueOf(playerCoins);
+        
+        // 估算宽度
+        int coinWidth = 18 + font.width(coinValue) + 12; // 图标+文字+间距
+        int repWidth = font.width("声望") + 4 + font.width("Lv." + repLevel);
+        
+        int panelW = coinWidth + repWidth + 24; // 总宽度 + padding
+        int panelH = header.headerH - 8;
+        
+        int panelX = header.headerX + header.headerW - panelW - 4;
+        int panelY = header.headerY + 4;
+        
+        return new Rect(panelX, panelY, panelW, panelH);
+    }
+    
+    private GridLayout computeGridLayout() {
+        HeaderLayout header = computeHeaderLayout();
+        int gridX = guiLeft + PADDING;
+        int gridY = header.headerY + header.headerH + 12;
+        int gridW = guiWidth - PADDING * 2;
+        int gridH = guiHeight - (gridY - guiTop) - PADDING;
+        
+        int innerX = gridX + GRID_INNER_PADDING;
+        int innerY = gridY + GRID_INNER_PADDING;
+        int innerW = gridW - GRID_INNER_PADDING * 2;
+        int innerH = gridH - GRID_INNER_PADDING * 2;
+        
+        return new GridLayout(gridX, gridY, gridW, gridH, innerX, innerY, innerW, innerH);
+    }
+    
+    private record HeaderLayout(int headerX, int headerY, int headerW, int headerH) {}
+    
+    private record Rect(int x, int y, int w, int h) {}
+    
+    private record GridLayout(int gridX, int gridY, int gridW, int gridH, int innerX, int innerY, int innerW, int innerH) {}
+    
+    private ShopCategory getCategoryAt(double mouseX, double mouseY) {
+        HeaderLayout header = computeHeaderLayout();
+        Rect statusRect = computeStatusPanelRect(header);
+        
+        int chipY = header.headerY + (header.headerH - CHIP_HEIGHT) / 2;
+        if (mouseY < chipY || mouseY >= chipY + CHIP_HEIGHT) return null;
+        
+        int x = header.headerX + 4;
+        int maxX = statusRect.x - 10;
+        
+        for (ShopCategory cat : availableCategories) {
+            String name = cat.getDisplayName().getString();
+            int chipW = font.width(name) + 20;
+            if (x + chipW > maxX) break;
+            
+            if (mouseX >= x && mouseX < x + chipW) {
+                return cat;
+            }
+            
+            x += chipW + 8;
+        }
+        
+        return null;
     }
     
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            int tabY = guiTop + PADDING;
-            int tabX = guiLeft + PADDING;
-            int tabWidth = 0;
-            
-            for (ShopCategory cat : ShopCategory.values()) {
-                List<ShopItem> catItems = getItemsForCategory(cat);
-                if (catItems.isEmpty()) continue;
-                
-                String catName = cat.getDisplayName().getString();
-                int catWidth = font.width(catName) + 16;
-                
-                if (mouseX >= tabX + tabWidth && mouseX < tabX + tabWidth + catWidth
-                        && mouseY >= tabY && mouseY < tabY + CATEGORY_HEIGHT) {
-                    selectedCategory = cat;
-                    scrollOffset = 0;
-                    return true;
-                }
-                tabWidth += catWidth + 2;
+            ShopCategory clickedCategory = getCategoryAt(mouseX, mouseY);
+            if (clickedCategory != null) {
+                selectedCategory = clickedCategory;
+                scrollOffset = 0;
+                return true;
             }
             
             if (hoveredItem != null) {
@@ -313,15 +477,19 @@ public class ShopScreen extends Screen {
     
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        int gridHeight = guiHeight - PADDING * 2 - CATEGORY_HEIGHT - 8;
-        int gridWidth = guiWidth - PADDING * 2;
-        int cols = (gridWidth - 8) / (ITEM_SIZE + ITEM_SPACING);
-        if (cols < 1) cols = 1;
+        GridLayout layout = computeGridLayout();
+        if (mouseX < layout.gridX || mouseX >= layout.gridX + layout.gridW || mouseY < layout.gridY || mouseY >= layout.gridY + layout.gridH) {
+            return super.mouseScrolled(mouseX, mouseY, delta);
+        }
         
         List<ShopItem> items = getItemsForCategory(selectedCategory);
+        int cols = Math.max(1, (layout.innerW + ITEM_SPACING) / (ITEM_SIZE + ITEM_SPACING));
         int totalRows = (items.size() + cols - 1) / cols;
-        int totalHeight = totalRows * (ITEM_SIZE + ITEM_SPACING);
-        int maxOffset = Math.max(0, totalHeight - gridHeight);
+        int totalHeight = totalRows * (ITEM_SIZE + ITEM_SPACING) - ITEM_SPACING;
+        int maxOffset = Math.max(0, totalHeight - layout.innerH);
+        if (maxOffset <= 0) {
+            return true;
+        }
         
         scrollOffset = (int) Math.max(0, Math.min(maxOffset, scrollOffset - delta * 20));
         return true;

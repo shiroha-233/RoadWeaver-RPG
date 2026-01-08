@@ -223,6 +223,7 @@ public class QuestRewardService {
             case REPUTATION -> PriorityRewardQueue.RewardPriority.NORMAL;
             case UNLOCK_QUEST -> PriorityRewardQueue.RewardPriority.NORMAL;
             case COMMAND -> PriorityRewardQueue.RewardPriority.NORMAL;
+            case ADVENTURE_EXP -> PriorityRewardQueue.RewardPriority.NORMAL;
         };
     }
     

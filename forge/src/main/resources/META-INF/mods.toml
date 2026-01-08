@@ -35,3 +35,10 @@ mandatory = true
 versionRange = "[1.4.6,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.roadweaver_rpg]]
+modId = "cloth_config"
+mandatory = false
+versionRange = "[11.1.136,)"
+ordering = "AFTER"
+side = "BOTH"

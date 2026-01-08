@@ -30,6 +30,7 @@ public final class RewardRegistry {
         register(RewardType.EXPERIENCE, ExperienceReward::fromJson, ExperienceReward::fromNetwork, ExperienceReward::fromNbt);
         register(RewardType.REPUTATION, ReputationReward::fromJson, ReputationReward::fromNetwork, ReputationReward::fromNbt);
         register(RewardType.COIN, CoinReward::fromJson, CoinReward::fromNetwork, CoinReward::fromNbt);
+        register(RewardType.ADVENTURE_EXP, AdventureExpReward::fromJson, AdventureExpReward::fromNetwork, AdventureExpReward::fromNbt);
     }
     
     public static void register(RewardType type,
