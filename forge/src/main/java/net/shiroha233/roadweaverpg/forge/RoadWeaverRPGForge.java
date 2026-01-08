@@ -17,6 +17,7 @@ import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
 import net.shiroha233.roadweaverpg.forge.entity.ModEntitiesForge;
 import net.shiroha233.roadweaverpg.forge.entity.NPCSoundProviderForge;
 import net.shiroha233.roadweaverpg.forge.item.ModItemsForge;
+import net.shiroha233.roadweaverpg.forge.loot.ModLootModifiersForge;
 import net.shiroha233.roadweaverpg.forge.network.NetworkHandlerForge;
 import net.shiroha233.roadweaverpg.quest.chain.QuestChainManager;
 import net.shiroha233.roadweaverpg.quest.event.QuestEventHandler;
@@ -50,6 +51,12 @@ public class RoadWeaverRPGForge {
         // 注册物品
         ModItemsForge.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModItemsForge.init();
+        
+        // 注册全局战利品修改器
+        ModLootModifiersForge.register(FMLJavaModLoadingContext.get().getModEventBus());
+        
+        // 初始化金币事件处理
+        net.shiroha233.roadweaverpg.forge.event.CoinEventsForge.init();
         
         // 注册数据包重载监听器
         MinecraftForge.EVENT_BUS.addListener(RoadWeaverRPGForge::onAddReloadListeners);
@@ -131,6 +138,9 @@ public class RoadWeaverRPGForge {
                 net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.onPlayerLogin(player);
                 // 同步玩家等级数据
                 net.shiroha233.roadweaverpg.playerlevel.PlayerLevelEventHandler.onPlayerLogin(player);
+                // 同步钱包数据
+                long coins = net.shiroha233.roadweaverpg.wallet.WalletService.getCoins(player);
+                NetworkHandlerForge.sendSyncWallet(player, coins);
             }
         }
         

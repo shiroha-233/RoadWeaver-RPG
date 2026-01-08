@@ -4,11 +4,10 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.shiroha233.roadweaverpg.item.ModItems;
+import net.shiroha233.roadweaverpg.wallet.WalletService;
 
 /**
- * 金币奖励
+ * 金币奖励 - 直接存入玩家钱包
  */
 public class CoinReward implements QuestReward {
     
@@ -30,23 +29,13 @@ public class CoinReward implements QuestReward {
     
     @Override
     public void grant(ServerPlayer player) {
-        if (ModItems.COIN == null) return;
-        
-        int remaining = amount;
-        while (remaining > 0) {
-            int stackSize = Math.min(remaining, 64);
-            ItemStack coinStack = new ItemStack(ModItems.COIN.get(), stackSize);
-            
-            if (!player.getInventory().add(coinStack)) {
-                player.drop(coinStack, false);
-            }
-            remaining -= stackSize;
-        }
+        // 直接存入钱包，不再给物品
+        WalletService.addCoins(player, amount);
     }
     
     @Override
     public boolean canGrant(ServerPlayer player) {
-        return ModItems.COIN != null;
+        return true; // 钱包系统始终可用
     }
     
     @Override
@@ -75,9 +64,6 @@ public class CoinReward implements QuestReward {
         return new CoinReward(amount);
     }
     
-    /**
-     * 从 NBT 反序列化
-     */
     public static CoinReward fromNbt(net.minecraft.nbt.CompoundTag tag) {
         int amount = tag.getInt("amount");
         return new CoinReward(amount);

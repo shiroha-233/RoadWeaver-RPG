@@ -89,6 +89,22 @@ public final class QuestPacketHandler {
         }
     }
     
+    // 冒险等级GUI回调
+    private static java.util.function.Consumer<ServerPlayer> onOpenAdventureLevelGui;
+    
+    public static void setOnOpenAdventureLevelGui(java.util.function.Consumer<ServerPlayer> callback) {
+        onOpenAdventureLevelGui = callback;
+    }
+    
+    /**
+     * 打开冒险等级界面（供外部调用）
+     */
+    public static void openAdventureLevelGui(ServerPlayer player) {
+        if (onOpenAdventureLevelGui != null) {
+            onOpenAdventureLevelGui.accept(player);
+        }
+    }
+    
     /**
      * 处理接受委托
      * @param syncPacket 同步数据包的回调

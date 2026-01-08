@@ -62,6 +62,7 @@ public class NetworkHandlerFabric {
         });
         
         initializeCallbacks();
+        registerWalletReceivers();
         registerShopReceivers();
         registerInteractionReceivers();
         registerDialogReceivers();
@@ -168,6 +169,12 @@ public class NetworkHandlerFabric {
         ServerPlayNetworking.send(player, NetworkHandler.SYNC_PLAYER_ADVENTURE, buf);
     }
     
+    public static void sendOpenAdventureLevelGui(ServerPlayer player) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new OpenAdventureLevelGuiPacket().encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.OPEN_ADVENTURE_LEVEL_GUI, buf);
+    }
+    
     /** 初始化回调 */
     private static void initializeCallbacks() {
         PlayerQuestService manager = PlayerQuestService.getInstance();
@@ -189,6 +196,7 @@ public class NetworkHandlerFabric {
                 NetworkHandlerFabric::sendAdventureLevels);
         net.shiroha233.roadweaverpg.adventure.AdventureDataService.getInstance().setOnSyncAdventure(
                 (player, data) -> sendPlayerAdventure(player, data.getAdventureExp(), data.getAdventureLevel()));
+        QuestPacketHandler.setOnOpenAdventureLevelGui(NetworkHandlerFabric::sendOpenAdventureLevelGui);
         
         // 初始化对话系统回调
         initializeDialogCallbacks();
@@ -334,6 +342,31 @@ public class NetworkHandlerFabric {
         FriendlyByteBuf buf = PacketByteBufs.create();
         new SyncCoinsPacket(coins).encode(buf);
         ServerPlayNetworking.send(player, NetworkHandler.SYNC_COINS, buf);
+    }
+    
+    // ==================== 钱包系统网络方法 ====================
+    
+    public static void sendSyncWallet(ServerPlayer player, long coins, long addedAmount) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket(coins, addedAmount).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.SYNC_WALLET, buf);
+    }
+    
+    public static void sendSyncWallet(ServerPlayer player, long coins) {
+        sendSyncWallet(player, coins, 0);
+    }
+    
+    /** 注册钱包相关的服务端接收器 */
+    public static void registerWalletReceivers() {
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.DEPOSIT_COINS, (server, player, handler, buf, responseSender) -> {
+            server.execute(() -> {
+                long deposited = net.shiroha233.roadweaverpg.wallet.WalletService.depositCoinsFromInventory(player);
+                if (deposited > 0) {
+                    long total = net.shiroha233.roadweaverpg.wallet.WalletService.getCoins(player);
+                    sendSyncWallet(player, total, deposited);
+                }
+            });
+        });
     }
     
     /** 注册商店相关的服务端接收器 */

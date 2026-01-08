@@ -89,6 +89,9 @@ public class ClientNetworkHandlerFabric {
         // 注册冒险等级接收器
         registerAdventureReceivers();
         
+        // 注册钱包系统接收器
+        registerWalletReceivers();
+        
         // 注册商店相关接收器
         registerShopReceivers();
         
@@ -114,6 +117,13 @@ public class ClientNetworkHandlerFabric {
         ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_PLAYER_ADVENTURE, (client, handler, buf, responseSender) -> {
             SyncPlayerAdventurePacket packet = SyncPlayerAdventurePacket.decode(buf);
             client.execute(() -> ClientAdventureCache.setPlayerData(packet.exp(), packet.level()));
+        });
+        
+        // 处理打开冒险等级界面
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.OPEN_ADVENTURE_LEVEL_GUI, (client, handler, buf, responseSender) -> {
+            OpenAdventureLevelGuiPacket.decode(buf);
+            client.execute(() -> Minecraft.getInstance().setScreen(
+                    new net.shiroha233.roadweaverpg.client.gui.adventure.AdventureLevelScreen()));
         });
     }
     
@@ -204,6 +214,32 @@ public class ClientNetworkHandlerFabric {
         ClientPlayNetworking.send(NetworkHandler.INTERACTION_SELECT, buf);
     }
     
+    // ==================== 钱包系统客户端处理 ====================
+    
+    private static void registerWalletReceivers() {
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_WALLET, (client, handler, buf, responseSender) -> {
+            net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket packet = 
+                    net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket.decode(buf);
+            client.execute(() -> handleSyncWallet(packet));
+        });
+    }
+    
+    private static void handleSyncWallet(net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket packet) {
+        ClientWalletCache.updateCoins(packet.coins(), packet.addedAmount());
+        // 同时更新商店界面的金币显示
+        currentShopCoins = (int) Math.min(packet.coins(), Integer.MAX_VALUE);
+        if (Minecraft.getInstance().screen instanceof ShopScreen shopScreen) {
+            shopScreen.updateCoins(currentShopCoins);
+        }
+    }
+    
+    /** 发送存入金币请求 */
+    public static void sendDepositCoins() {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new net.shiroha233.roadweaverpg.network.packet.wallet.DepositCoinsPacket().encode(buf);
+        ClientPlayNetworking.send(NetworkHandler.DEPOSIT_COINS, buf);
+    }
+    
     // ==================== 商店系统客户端处理 ====================
     
     private static void registerShopReceivers() {
@@ -250,7 +286,9 @@ public class ClientNetworkHandlerFabric {
     }
     
     private static void handleOpenShop(OpenShopPacket packet) {
-        currentShopCoins = packet.playerCoins();
+        currentShopCoins = (int) Math.min(packet.playerCoins(), Integer.MAX_VALUE);
+        // 同时更新钱包缓存
+        net.shiroha233.roadweaverpg.client.ClientWalletCache.setCoins(packet.playerCoins());
         Minecraft.getInstance().setScreen(new ShopScreen(
                 packet.entityId(),
                 packet.items(),

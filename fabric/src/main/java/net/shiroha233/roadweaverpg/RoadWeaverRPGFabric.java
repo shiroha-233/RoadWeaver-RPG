@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +13,7 @@ import net.minecraft.server.packs.PackType;
 import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
 import net.shiroha233.roadweaverpg.entity.ModEntitiesFabric;
 import net.shiroha233.roadweaverpg.entity.NPCSoundProviderFabric;
+import net.shiroha233.roadweaverpg.event.CoinEventsFabric;
 import net.shiroha233.roadweaverpg.event.QuestEventsFabric;
 import net.shiroha233.roadweaverpg.item.ModItemsFabric;
 import net.shiroha233.roadweaverpg.network.NetworkHandlerFabric;
@@ -75,6 +77,7 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         
         // 注册委托事件监听
         QuestEventsFabric.register();
+        CoinEventsFabric.register();
         registerBlockEvents();
         registerServerTickEvents();
         
@@ -93,6 +96,15 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         // 注册服务器启动事件
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             VillagePoolInjector.injectGuildhallToVillages(server);
+        });
+        
+        // 注册战利品表修改器（向所有宝箱注入金币）
+        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+            // 匹配所有宝箱类型的战利品表（包括第三方结构）
+            String path = id.getPath();
+            if (path.contains("chest") || path.contains("treasure") || path.contains("reward")) {
+                net.shiroha233.roadweaverpg.loot.CoinLootInjector.injectCoinPool(tableBuilder);
+            }
         });
     }
     

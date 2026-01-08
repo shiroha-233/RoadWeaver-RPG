@@ -33,6 +33,8 @@ public final class QuestEventsFabric {
             net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.onPlayerLogin(handler.getPlayer());
             // 同步玩家等级数据
             net.shiroha233.roadweaverpg.playerlevel.PlayerLevelEventHandler.onPlayerLogin(handler.getPlayer());
+            // 同步钱包数据
+            syncWalletOnLogin(handler.getPlayer());
         });
         
         // 玩家登出事件（清理缓存，防止内存泄漏）
@@ -51,5 +53,11 @@ public final class QuestEventsFabric {
                 QuestEventHandler.onPlayerTick(player);
             }
         });
+    }
+    
+    /** 玩家登录时同步钱包数据 */
+    private static void syncWalletOnLogin(ServerPlayer player) {
+        long coins = net.shiroha233.roadweaverpg.wallet.WalletService.getCoins(player);
+        net.shiroha233.roadweaverpg.network.NetworkHandlerFabric.sendSyncWallet(player, coins);
     }
 }

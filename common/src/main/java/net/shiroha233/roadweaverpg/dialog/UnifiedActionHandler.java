@@ -80,6 +80,17 @@ public final class UnifiedActionHandler {
                     net.shiroha233.roadweaverpg.network.QuestPacketHandler.openReputationGui(player);
                 });
         
+        // 冒险等级功能 - 查看冒险等级
+        registerWithAlias("view_adventure_level",
+                new ResourceLocation(RoadWeaverRPG.MOD_ID, "view_adventure_level"),
+                (player, npcId) -> {
+                    // 同步冒险等级数据到客户端
+                    net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.syncAdventureLevelDefinitions(player);
+                    net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.syncPlayerAdventureData(player);
+                    // 打开冒险等级GUI
+                    net.shiroha233.roadweaverpg.network.QuestPacketHandler.openAdventureLevelGui(player);
+                });
+        
         // 商店功能 - 打开商店
         registerWithAlias("open_shop",
                 new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_shop"),

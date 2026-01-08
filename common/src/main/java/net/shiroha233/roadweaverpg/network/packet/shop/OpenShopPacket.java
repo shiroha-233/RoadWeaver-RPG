@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 打开商店界面数据包（服务端 -> 客户端）
  */
-public record OpenShopPacket(int entityId, List<ShopItem> items, int playerCoins) {
+public record OpenShopPacket(int entityId, List<ShopItem> items, long playerCoins) {
     
     public void encode(FriendlyByteBuf buf) {
         buf.writeInt(entityId);
@@ -17,7 +17,7 @@ public record OpenShopPacket(int entityId, List<ShopItem> items, int playerCoins
         for (ShopItem item : items) {
             item.toNetwork(buf);
         }
-        buf.writeVarInt(playerCoins);
+        buf.writeVarLong(playerCoins);
     }
     
     public static OpenShopPacket decode(FriendlyByteBuf buf) {
@@ -27,7 +27,7 @@ public record OpenShopPacket(int entityId, List<ShopItem> items, int playerCoins
         for (int i = 0; i < size; i++) {
             items.add(ShopItem.fromNetwork(buf));
         }
-        int playerCoins = buf.readVarInt();
+        long playerCoins = buf.readVarLong();
         return new OpenShopPacket(entityId, items, playerCoins);
     }
 }

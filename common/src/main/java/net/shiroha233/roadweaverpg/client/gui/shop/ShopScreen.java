@@ -36,13 +36,13 @@ public class ShopScreen extends Screen {
     private final List<ShopCategory> availableCategories;
     private final BiConsumer<ResourceLocation, Integer> purchaseHandler;
     
-    private int playerCoins;
+    private long playerCoins;
     private ShopCategory selectedCategory;
     private ShopItem hoveredItem = null;
     private int scrollOffset = 0;
     private int guiLeft, guiTop, guiWidth, guiHeight;
     
-    public ShopScreen(int entityId, List<ShopItem> items, int playerCoins,
+    public ShopScreen(int entityId, List<ShopItem> items, long playerCoins,
                       BiConsumer<ResourceLocation, Integer> purchaseHandler) {
         super(Component.translatable("gui.roadweaver_rpg.shop.title"));
         this.playerCoins = playerCoins;
@@ -145,9 +145,9 @@ public class ShopScreen extends Screen {
         int currentX = statusRect.x + padding;
         int centerY = statusRect.y + statusRect.h / 2;
         
-        // 1. 金币图标和数值
-        if (net.shiroha233.roadweaverpg.item.ModItems.COIN != null) {
-            ItemStack coinStack = new ItemStack(net.shiroha233.roadweaverpg.item.ModItems.COIN.get());
+        // 1. 金币图标和数值（使用金币作为代表）
+        if (net.shiroha233.roadweaverpg.item.ModItems.GOLD_COIN != null) {
+            ItemStack coinStack = new ItemStack(net.shiroha233.roadweaverpg.item.ModItems.GOLD_COIN.get());
             graphics.renderItem(coinStack, currentX, centerY - 8);
             currentX += 18;
         }
@@ -496,6 +496,10 @@ public class ShopScreen extends Screen {
     }
     
     public void updateCoins(int coins) {
+        this.playerCoins = coins;
+    }
+    
+    public void updateCoins(long coins) {
         this.playerCoins = coins;
     }
     

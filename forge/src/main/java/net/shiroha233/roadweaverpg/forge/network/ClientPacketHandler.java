@@ -112,6 +112,11 @@ public class ClientPacketHandler {
         net.shiroha233.roadweaverpg.client.ClientAdventureCache.setPlayerData(packet.exp(), packet.level());
     }
     
+    public static void handleOpenAdventureLevelGui() {
+        Minecraft.getInstance().setScreen(
+                new net.shiroha233.roadweaverpg.client.gui.adventure.AdventureLevelScreen());
+    }
+    
     // ==================== 商店系统客户端处理 ====================
     
     private static int currentShopCoins = 0;
@@ -144,7 +149,9 @@ public class ClientPacketHandler {
     }
     
     public static void handleOpenShop(OpenShopPacket packet) {
-        currentShopCoins = packet.playerCoins();
+        currentShopCoins = (int) Math.min(packet.playerCoins(), Integer.MAX_VALUE);
+        // 同时更新钱包缓存
+        net.shiroha233.roadweaverpg.client.ClientWalletCache.setCoins(packet.playerCoins());
         Minecraft.getInstance().setScreen(new ShopScreen(
                 packet.entityId(),
                 packet.items(),
@@ -158,6 +165,23 @@ public class ClientPacketHandler {
         if (Minecraft.getInstance().screen instanceof ShopScreen shopScreen) {
             shopScreen.updateCoins(packet.coins());
         }
+    }
+    
+    // ==================== 钱包系统客户端处理 ====================
+    
+    public static void handleSyncWallet(net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket packet) {
+        net.shiroha233.roadweaverpg.client.ClientWalletCache.updateCoins(packet.coins(), packet.addedAmount());
+        // 同时更新商店界面的金币显示
+        currentShopCoins = (int) Math.min(packet.coins(), Integer.MAX_VALUE);
+        if (Minecraft.getInstance().screen instanceof ShopScreen shopScreen) {
+            shopScreen.updateCoins(currentShopCoins);
+        }
+    }
+    
+    /** 发送存入金币请求 */
+    public static void sendDepositCoins() {
+        NetworkHandlerForge.CHANNEL.sendToServer(
+                new net.shiroha233.roadweaverpg.network.packet.wallet.DepositCoinsPacket());
     }
     
     public static void sendShopDialogResponse(int entityId, ShopDialogResponsePacket.ShopDialogOption option) {

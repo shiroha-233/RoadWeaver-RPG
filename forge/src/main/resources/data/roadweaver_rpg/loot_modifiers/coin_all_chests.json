@@ -1,0 +1,10 @@
+{
+  "type": "roadweaver_rpg:coin",
+  "conditions": [
+    {
+      "condition": "minecraft:random_chance",
+      "chance": 1.0
+    }
+  ],
+  "parameter_set_name": "minecraft:chest"
+}

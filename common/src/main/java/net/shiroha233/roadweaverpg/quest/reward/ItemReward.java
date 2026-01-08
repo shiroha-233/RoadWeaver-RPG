@@ -100,4 +100,21 @@ public class ItemReward implements QuestReward {
         CompoundTag nbt = tag.contains("nbt") ? tag.getCompound("nbt") : null;
         return new ItemReward(id, count, nbt);
     }
+    
+    /**
+     * 创建用于显示的ItemStack（客户端使用）
+     */
+    public ItemStack createDisplayStack() {
+        Optional<Item> item = RegistryHelper.getItem(itemId);
+        if (item.isEmpty()) return ItemStack.EMPTY;
+        
+        ItemStack stack = new ItemStack(item.get(), count);
+        if (nbt != null) {
+            stack.setTag(nbt.copy());
+        }
+        return stack;
+    }
+    
+    public ResourceLocation getItemId() { return itemId; }
+    public int getCount() { return count; }
 }

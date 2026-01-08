@@ -3,11 +3,14 @@ package net.shiroha233.roadweaverpg;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.Minecraft;
 import net.shiroha233.roadweaverpg.client.ClientNetworkHandlerFabric;
 import net.shiroha233.roadweaverpg.client.DebugOverlayHandlerFabric;
 import net.shiroha233.roadweaverpg.client.ModEntityRenderersFabric;
 import net.shiroha233.roadweaverpg.client.ModItemPropertiesFabric;
 import net.shiroha233.roadweaverpg.client.QuestScrollClientHandler;
+import net.shiroha233.roadweaverpg.client.gui.hud.CoinNotificationRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +41,23 @@ public class RoadWeaverRPGFabricClient implements ClientModInitializer {
         // 注册调试覆盖层（Z+V切换）
         DebugOverlayHandlerFabric.register();
         
+        // 注册金币获取通知HUD
+        registerCoinNotificationHud();
+        
         LOGGER.info("RoadWeaver RPG client initialized!");
+    }
+    
+    /**
+     * 注册金币获取通知HUD渲染
+     */
+    private void registerCoinNotificationHud() {
+        HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null && !mc.options.hideGui) {
+                CoinNotificationRenderer.render(graphics, 
+                        mc.getWindow().getGuiScaledWidth(), 
+                        mc.getWindow().getGuiScaledHeight());
+            }
+        });
     }
 }

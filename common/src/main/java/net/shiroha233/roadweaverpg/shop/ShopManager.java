@@ -8,7 +8,6 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
-import net.shiroha233.roadweaverpg.item.ModItems;
 
 import java.util.*;
 
@@ -100,7 +99,7 @@ public class ShopManager extends SimpleJsonResourceReloadListener {
         return Optional.ofNullable(itemsById.get(id));
     }
     
-    /** 处理购买请求 */
+    /** 处理购买请求 - 使用钱包系统 */
     public PurchaseResult purchase(ServerPlayer player, ResourceLocation itemId, int quantity) {
         Optional<ShopItem> itemOpt = getItem(itemId);
         if (itemOpt.isEmpty()) {
@@ -119,14 +118,15 @@ public class ShopManager extends SimpleJsonResourceReloadListener {
             }
         }
         
-        int totalPrice = shopItem.price() * quantity;
+        long totalPrice = (long) shopItem.price() * quantity;
         
-        int playerCoins = countPlayerCoins(player);
+        // 使用钱包系统
+        long playerCoins = net.shiroha233.roadweaverpg.wallet.WalletService.getCoins(player);
         if (playerCoins < totalPrice) {
             return PurchaseResult.INSUFFICIENT_COINS;
         }
         
-        if (!removeCoins(player, totalPrice)) {
+        if (!net.shiroha233.roadweaverpg.wallet.WalletService.removeCoins(player, totalPrice)) {
             return PurchaseResult.INSUFFICIENT_COINS;
         }
         
@@ -140,32 +140,9 @@ public class ShopManager extends SimpleJsonResourceReloadListener {
         return PurchaseResult.SUCCESS;
     }
     
-    public int countPlayerCoins(ServerPlayer player) {
-        if (ModItems.COIN == null) return 0;
-        
-        int count = 0;
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (stack.getItem() == ModItems.COIN.get()) {
-                count += stack.getCount();
-            }
-        }
-        return count;
-    }
-    
-    private boolean removeCoins(ServerPlayer player, int amount) {
-        if (ModItems.COIN == null) return false;
-        
-        int remaining = amount;
-        for (int i = 0; i < player.getInventory().getContainerSize() && remaining > 0; i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (stack.getItem() == ModItems.COIN.get()) {
-                int toRemove = Math.min(remaining, stack.getCount());
-                stack.shrink(toRemove);
-                remaining -= toRemove;
-            }
-        }
-        return remaining == 0;
+    /** 获取玩家钱包金币数量 */
+    public long countPlayerCoins(ServerPlayer player) {
+        return net.shiroha233.roadweaverpg.wallet.WalletService.getCoins(player);
     }
     
     public enum PurchaseResult {

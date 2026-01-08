@@ -37,7 +37,7 @@ public final class ShopPacketHandler {
     }
     
     /**
-     * 处理购买请求
+     * 处理购买请求 - 使用钱包系统
      */
     public static void handlePurchase(ServerPlayer player, ShopPurchasePacket packet,
                                        BiConsumer<ServerPlayer, SyncCoinsPacket> syncCoins) {
@@ -51,9 +51,9 @@ public final class ShopPacketHandler {
             case SUCCESS -> {
                 player.displayClientMessage(
                         Component.translatable("gui.roadweaver_rpg.shop.purchase_success"), false);
-                // 同步金币数量
-                int coins = ShopManager.getInstance().countPlayerCoins(player);
-                syncCoins.accept(player, new SyncCoinsPacket(coins));
+                // 同步钱包金币数量（使用int兼容旧接口）
+                long coins = net.shiroha233.roadweaverpg.wallet.WalletService.getCoins(player);
+                syncCoins.accept(player, new SyncCoinsPacket((int) Math.min(coins, Integer.MAX_VALUE)));
             }
             case INSUFFICIENT_COINS -> player.displayClientMessage(
                     Component.translatable("gui.roadweaver_rpg.shop.insufficient_coins"), false);
@@ -66,13 +66,13 @@ public final class ShopPacketHandler {
     }
     
     /**
-     * 创建打开商店数据包
+     * 创建打开商店数据包 - 使用钱包系统
      */
     public static OpenShopPacket createOpenShopPacket(ServerPlayer player, int entityId) {
         return new OpenShopPacket(
                 entityId,
                 ShopManager.getInstance().getAllItems(),
-                ShopManager.getInstance().countPlayerCoins(player)
+                net.shiroha233.roadweaverpg.wallet.WalletService.getCoins(player)
         );
     }
 }

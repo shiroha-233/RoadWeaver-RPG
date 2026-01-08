@@ -48,6 +48,9 @@ public class PlayerQuestData {
     // 数据版本号（用于同步检测）
     private final AtomicLong version = new AtomicLong(0);
     
+    // 钱包金币数量
+    private final AtomicLong walletCoins = new AtomicLong(0);
+    
     // 每日委托相关（使用 volatile 保证可见性）
     private volatile List<ResourceLocation> dailyQuests = new ArrayList<>();
     private volatile String lastDailyRefreshDate = "";
@@ -126,6 +129,9 @@ public class PlayerQuestData {
     // 玩家等级相关
     public int getPlayerExp() { return playerExp.get(); }
     public int getPlayerLevel() { return playerLevel.get(); }
+    
+    // 钱包金币相关
+    public long getWalletCoins() { return walletCoins.get(); }
     
     // 每日委托相关
     public List<ResourceLocation> getDailyQuests() {
@@ -257,6 +263,37 @@ public class PlayerQuestData {
     }
     // endregion
     
+    // region 钱包金币操作（线程安全）
+    
+    /**
+     * 添加金币到钱包
+     * @return 添加后的总金币数
+     */
+    public long addWalletCoins(long amount) {
+        long result = walletCoins.addAndGet(amount);
+        incrementVersion();
+        return result;
+    }
+    
+    /**
+     * 从钱包扣除金币
+     * @return 是否扣除成功
+     */
+    public synchronized boolean removeWalletCoins(long amount) {
+        if (walletCoins.get() < amount) return false;
+        walletCoins.addAndGet(-amount);
+        incrementVersion();
+        return true;
+    }
+    
+    /**
+     * 设置钱包金币数量
+     */
+    public void setWalletCoins(long amount) {
+        walletCoins.set(Math.max(0, amount));
+        incrementVersion();
+    }
+    
     // region 委托操作（线程安全）
     public synchronized void addActiveQuest(QuestInstance instance) {
         activeQuests.put(instance.getQuestId(), instance);
@@ -352,6 +389,9 @@ public class PlayerQuestData {
         // 玩家等级数据
         tag.putInt("playerExp", playerExp.get());
         tag.putInt("playerLevel", playerLevel.get());
+        
+        // 钱包金币数据
+        tag.putLong("walletCoins", walletCoins.get());
         
         // 每日委托数据
         ListTag dailyList = new ListTag();
@@ -463,6 +503,11 @@ public class PlayerQuestData {
             }
             if (tag.contains("playerLevel")) {
                 data.playerLevel.set(tag.getInt("playerLevel"));
+            }
+            
+            // 钱包金币数据
+            if (tag.contains("walletCoins")) {
+                data.walletCoins.set(tag.getLong("walletCoins"));
             }
             
             // 每日委托数据

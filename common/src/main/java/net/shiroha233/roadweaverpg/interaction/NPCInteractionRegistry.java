@@ -68,6 +68,15 @@ public final class NPCInteractionRegistry {
                 40
         ));
         
+        // 查看冒险等级入口
+        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.function(
+                "view_adventure_level",
+                "gui.roadweaver_rpg.dialog.view_adventure_level",
+                NPCInteractionEntry.ICON_REPUTATION,
+                new ResourceLocation(RoadWeaverRPG.MOD_ID, "view_adventure_level"),
+                45
+        ));
+        
         // 商店女仆的交互入口
         registerEntry(INPCEntity.NPCType.SHOP_MAID.getId(), NPCInteractionEntry.dialog(
                 "chat",

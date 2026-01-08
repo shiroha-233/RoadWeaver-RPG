@@ -172,6 +172,7 @@ public class NetworkHandlerForge {
                 }, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         
         initializeCallbacks();
+        registerWalletPackets();
         registerShopPackets();
         registerInteractionPackets();
         registerDialogPackets();
@@ -195,6 +196,14 @@ public class NetworkHandlerForge {
                 SyncPlayerAdventurePacket::encode, SyncPlayerAdventurePacket::decode,
                 (packet, ctx) -> {
                     ctx.get().enqueueWork(() -> ClientPacketHandler.handleSyncPlayerAdventure(packet));
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
+        // 服务端 -> 客户端：打开冒险等级界面
+        CHANNEL.registerMessage(packetId++, OpenAdventureLevelGuiPacket.class,
+                OpenAdventureLevelGuiPacket::encode, OpenAdventureLevelGuiPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> ClientPacketHandler.handleOpenAdventureLevelGui());
                     ctx.get().setPacketHandled(true);
                 }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
@@ -333,6 +342,7 @@ public class NetworkHandlerForge {
                 NetworkHandlerForge::sendAdventureLevels);
         net.shiroha233.roadweaverpg.adventure.AdventureDataService.getInstance().setOnSyncAdventure(
                 (player, data) -> sendPlayerAdventure(player, data.getAdventureExp(), data.getAdventureLevel()));
+        QuestPacketHandler.setOnOpenAdventureLevelGui(NetworkHandlerForge::sendOpenAdventureLevelGui);
         
         // 初始化对话系统回调
         initializeDialogCallbacks();
@@ -409,6 +419,10 @@ public class NetworkHandlerForge {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SyncPlayerAdventurePacket(exp, level));
     }
     
+    public static void sendOpenAdventureLevelGui(ServerPlayer player) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new OpenAdventureLevelGuiPacket());
+    }
+    
     public static void sendAllDefinitions(ServerPlayer player, Collection<QuestDefinition> definitions) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), 
                 new SyncQuestsPacket(new java.util.ArrayList<>(definitions)));
@@ -481,6 +495,47 @@ public class NetworkHandlerForge {
     
     public static void sendSyncCoins(ServerPlayer player, int coins) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SyncCoinsPacket(coins));
+    }
+    
+    // ==================== 钱包系统网络方法 ====================
+    
+    public static void sendSyncWallet(ServerPlayer player, long coins, long addedAmount) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), 
+                new net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket(coins, addedAmount));
+    }
+    
+    public static void sendSyncWallet(ServerPlayer player, long coins) {
+        sendSyncWallet(player, coins, 0);
+    }
+    
+    /** 注册钱包相关的网络包 */
+    public static void registerWalletPackets() {
+        // 服务端 -> 客户端：同步钱包
+        CHANNEL.registerMessage(packetId++, net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket.class,
+                net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket::encode,
+                net.shiroha233.roadweaverpg.network.packet.wallet.SyncWalletPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> ClientPacketHandler.handleSyncWallet(packet));
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
+        // 客户端 -> 服务端：存入金币
+        CHANNEL.registerMessage(packetId++, net.shiroha233.roadweaverpg.network.packet.wallet.DepositCoinsPacket.class,
+                net.shiroha233.roadweaverpg.network.packet.wallet.DepositCoinsPacket::encode,
+                net.shiroha233.roadweaverpg.network.packet.wallet.DepositCoinsPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> {
+                        ServerPlayer player = ctx.get().getSender();
+                        if (player != null) {
+                            long deposited = net.shiroha233.roadweaverpg.wallet.WalletService.depositCoinsFromInventory(player);
+                            if (deposited > 0) {
+                                long total = net.shiroha233.roadweaverpg.wallet.WalletService.getCoins(player);
+                                sendSyncWallet(player, total, deposited);
+                            }
+                        }
+                    });
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_SERVER));
     }
     
     /** 注册商店相关的网络包 */

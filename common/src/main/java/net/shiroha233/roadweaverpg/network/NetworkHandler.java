@@ -55,6 +55,12 @@ public class NetworkHandler {
     public static final ResourceLocation SYNC_COINS = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_coins");
     
+    // 钱包系统消息类型
+    public static final ResourceLocation SYNC_WALLET = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_wallet");
+    public static final ResourceLocation DEPOSIT_COINS = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "deposit_coins");
+    
     // 对话系统消息类型
     public static final ResourceLocation DIALOG_DATA = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "dialog_data");
@@ -84,6 +90,8 @@ public class NetworkHandler {
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_adventure_levels");
     public static final ResourceLocation SYNC_PLAYER_ADVENTURE = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_player_adventure");
+    public static final ResourceLocation OPEN_ADVENTURE_LEVEL_GUI = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_adventure_level_gui");
     
     private NetworkHandler() {}
 }
