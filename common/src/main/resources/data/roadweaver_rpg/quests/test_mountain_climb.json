@@ -1,0 +1,37 @@
+{
+  "title": "登山挑战",
+  "description": "攀登到Y=200以上的高度",
+  "rank": "C",
+  "type": "explore",
+  "objectives": [
+    {
+      "type": "explore",
+      "description": "到达高空区域 (Y>=200)",
+      "targets": [
+        {"x": 0, "y": 200, "z": 0, "radius": 32}
+      ],
+      "extra_conditions": [
+        {"type": "min_y", "value": 200}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 3
+    },
+    {
+      "type": "experience",
+      "amount": 120
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 40
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 3600,
+  "time_limit": 0
+}

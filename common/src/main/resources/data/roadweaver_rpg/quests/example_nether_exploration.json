@@ -1,0 +1,58 @@
+{
+  "title": "下界探险",
+  "description": "在下界探索指定区域",
+  "rank": "A",
+  "type": "explore",
+  "objectives": [
+    {
+      "type": "explore",
+      "targets": [
+        {
+          "x": 0,
+          "y": 64,
+          "z": 0,
+          "radius": 64,
+          "dimension": "minecraft:the_nether",
+          "name": "下界中心"
+        },
+        {
+          "x": 100,
+          "y": 32,
+          "z": 100,
+          "radius": 48,
+          "dimension": "minecraft:the_nether",
+          "name": "下界堡垒"
+        }
+      ],
+      "description": "探索下界区域 (0/2)",
+      "extra_conditions": [
+        {"type": "in_nether"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 10
+    },
+    {
+      "type": "item",
+      "item": "minecraft:netherite_scrap",
+      "count": 1
+    },
+    {
+      "type": "experience",
+      "amount": 300
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:explorer",
+      "amount": 100
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 7200,
+  "time_limit": 0,
+  "base_difficulty": 1.5
+}

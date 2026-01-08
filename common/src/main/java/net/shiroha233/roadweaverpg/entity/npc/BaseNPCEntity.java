@@ -25,6 +25,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.shiroha233.roadweaverpg.entity.npc.action.INPCAnimatable;
+import net.shiroha233.roadweaverpg.entity.npc.action.NPCActionManager;
+import net.shiroha233.roadweaverpg.entity.npc.action.NPCActionType;
+import net.shiroha233.roadweaverpg.entity.npc.behavior.NPCBehaviorManager;
+import net.shiroha233.roadweaverpg.entity.npc.voice.INPCVoiceable;
+import net.shiroha233.roadweaverpg.entity.npc.voice.NPCVoiceManager;
+import net.shiroha233.roadweaverpg.entity.npc.voice.NPCVoiceType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -35,7 +42,7 @@ import java.util.UUID;
  * 原理：模板方法模式 - 定义通用流程，子类实现具体细节
  */
 public abstract class BaseNPCEntity extends EntityMaid implements INPCEntity, 
-        NPCBehavior.Counterable, NPCBehavior.Immovable {
+        NPCBehavior.Counterable, NPCBehavior.Immovable, INPCAnimatable, INPCVoiceable {
     
     private static final double MAX_HEALTH = 10000.0;
     
@@ -44,6 +51,10 @@ public abstract class BaseNPCEntity extends EntityMaid implements INPCEntity,
     private long lastHitTime = 0;
     private boolean weaponDrawn = false;
     private UUID lastAttacker = null;
+    
+    // 语音设置
+    private String soundPackId = "";
+    private boolean voiceEnabled = true;
     
     @SuppressWarnings("unchecked")
     public BaseNPCEntity(EntityType<? extends BaseNPCEntity> type, Level level) {

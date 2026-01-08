@@ -1,0 +1,60 @@
+{
+  "title": "深层采矿",
+  "description": "在深层地下采集矿物",
+  "rank": "B",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:iron_ore",
+      "amount": 16,
+      "description": "采集铁矿 (0/16)",
+      "conditions": [
+        {"type": "in_height_range", "min_y": -64, "max_y": 0}
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:copper_ore",
+      "amount": 12,
+      "description": "采集铜矿 (0/12)",
+      "conditions": [
+        {"type": "in_height_range", "min_y": -64, "max_y": 48}
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:diamond_ore",
+      "amount": 4,
+      "description": "采集钻石矿 (0/4)",
+      "conditions": [
+        {"type": "in_height_range", "min_y": -64, "max_y": 16}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 8
+    },
+    {
+      "type": "item",
+      "item": "minecraft:diamond",
+      "count": 2
+    },
+    {
+      "type": "experience",
+      "amount": 200
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:miner",
+      "amount": 80
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 3600,
+  "time_limit": 0,
+  "base_difficulty": 1.3
+}

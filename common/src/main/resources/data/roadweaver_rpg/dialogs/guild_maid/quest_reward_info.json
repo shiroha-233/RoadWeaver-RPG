@@ -1,0 +1,41 @@
+{
+  "npc_type": "guild_maid",
+  "lines": [
+    {
+      "speaker": "npc",
+      "text": "完成这个委托后，你可以获得："
+    },
+    {
+      "speaker": "npc",
+      "text": "- 100枚金币"
+    },
+    {
+      "speaker": "npc",
+      "text": "- 50点冒险者经验"
+    },
+    {
+      "speaker": "npc",
+      "text": "- 公会声望+10"
+    },
+    {
+      "speaker": "npc",
+      "text": "怎么样，很丰厚吧？"
+    }
+  ],
+  "choices": [
+    {
+      "id": "accept_now",
+      "text": "好的，我接受",
+      "response": "听起来不错，我接受这个委托！",
+      "action": "accept_quest:roadweaver_rpg:test_location_kill_zombie",
+      "next": "roadweaver_rpg:guild_maid/quest_accepted"
+    },
+    {
+      "id": "think_about",
+      "text": "让我再考虑一下",
+      "response": "我再想想...",
+      "action": "none",
+      "next": "roadweaver_rpg:guild_maid/greeting"
+    }
+  ]
+}

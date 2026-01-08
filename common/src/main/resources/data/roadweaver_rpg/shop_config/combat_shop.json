@@ -1,0 +1,472 @@
+{
+  "items": [
+    {
+      "id": "wooden_sword",
+      "item": "minecraft:wooden_sword",
+      "category": "combat",
+      "price": 10,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "stone_sword",
+      "item": "minecraft:stone_sword",
+      "category": "combat",
+      "price": 40,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_sword",
+      "item": "minecraft:iron_sword",
+      "category": "combat",
+      "price": 120,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_sword",
+      "item": "minecraft:golden_sword",
+      "category": "combat",
+      "price": 200,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_sword",
+      "item": "minecraft:diamond_sword",
+      "category": "combat",
+      "price": 1000,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_sword",
+      "item": "minecraft:netherite_sword",
+      "category": "combat",
+      "price": 4000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "wooden_axe",
+      "item": "minecraft:wooden_axe",
+      "category": "combat",
+      "price": 15,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "stone_axe",
+      "item": "minecraft:stone_axe",
+      "category": "combat",
+      "price": 50,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_axe",
+      "item": "minecraft:iron_axe",
+      "category": "combat",
+      "price": 150,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_axe",
+      "item": "minecraft:golden_axe",
+      "category": "combat",
+      "price": 250,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_axe",
+      "item": "minecraft:diamond_axe",
+      "category": "combat",
+      "price": 1200,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_axe",
+      "item": "minecraft:netherite_axe",
+      "category": "combat",
+      "price": 5000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "trident",
+      "item": "minecraft:trident",
+      "category": "combat",
+      "price": 2500,
+      "required_level": 50,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "shield",
+      "item": "minecraft:shield",
+      "category": "combat",
+      "price": 80,
+      "required_level": 15,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "leather_helmet",
+      "item": "minecraft:leather_helmet",
+      "category": "combat",
+      "price": 10,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "leather_chestplate",
+      "item": "minecraft:leather_chestplate",
+      "category": "combat",
+      "price": 20,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "leather_leggings",
+      "item": "minecraft:leather_leggings",
+      "category": "combat",
+      "price": 15,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "leather_boots",
+      "item": "minecraft:leather_boots",
+      "category": "combat",
+      "price": 10,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "chainmail_helmet",
+      "item": "minecraft:chainmail_helmet",
+      "category": "combat",
+      "price": 40,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "chainmail_chestplate",
+      "item": "minecraft:chainmail_chestplate",
+      "category": "combat",
+      "price": 70,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "chainmail_leggings",
+      "item": "minecraft:chainmail_leggings",
+      "category": "combat",
+      "price": 60,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "chainmail_boots",
+      "item": "minecraft:chainmail_boots",
+      "category": "combat",
+      "price": 40,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_helmet",
+      "item": "minecraft:iron_helmet",
+      "category": "combat",
+      "price": 100,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_chestplate",
+      "item": "minecraft:iron_chestplate",
+      "category": "combat",
+      "price": 200,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_leggings",
+      "item": "minecraft:iron_leggings",
+      "category": "combat",
+      "price": 160,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_boots",
+      "item": "minecraft:iron_boots",
+      "category": "combat",
+      "price": 100,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_helmet",
+      "item": "minecraft:golden_helmet",
+      "category": "combat",
+      "price": 150,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_chestplate",
+      "item": "minecraft:golden_chestplate",
+      "category": "combat",
+      "price": 300,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_leggings",
+      "item": "minecraft:golden_leggings",
+      "category": "combat",
+      "price": 250,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_boots",
+      "item": "minecraft:golden_boots",
+      "category": "combat",
+      "price": 150,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_helmet",
+      "item": "minecraft:diamond_helmet",
+      "category": "combat",
+      "price": 800,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_chestplate",
+      "item": "minecraft:diamond_chestplate",
+      "category": "combat",
+      "price": 1500,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_leggings",
+      "item": "minecraft:diamond_leggings",
+      "category": "combat",
+      "price": 1200,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_boots",
+      "item": "minecraft:diamond_boots",
+      "category": "combat",
+      "price": 800,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_helmet",
+      "item": "minecraft:netherite_helmet",
+      "category": "combat",
+      "price": 3000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_chestplate",
+      "item": "minecraft:netherite_chestplate",
+      "category": "combat",
+      "price": 6000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_leggings",
+      "item": "minecraft:netherite_leggings",
+      "category": "combat",
+      "price": 5000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_boots",
+      "item": "minecraft:netherite_boots",
+      "category": "combat",
+      "price": 3000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "turtle_helmet",
+      "item": "minecraft:turtle_helmet",
+      "category": "combat",
+      "price": 600,
+      "required_level": 40,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "leather_horse_armor",
+      "item": "minecraft:leather_horse_armor",
+      "category": "combat",
+      "price": 100,
+      "required_level": 15,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_horse_armor",
+      "item": "minecraft:iron_horse_armor",
+      "category": "combat",
+      "price": 300,
+      "required_level": 25,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_horse_armor",
+      "item": "minecraft:golden_horse_armor",
+      "category": "combat",
+      "price": 500,
+      "required_level": 35,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_horse_armor",
+      "item": "minecraft:diamond_horse_armor",
+      "category": "combat",
+      "price": 1500,
+      "required_level": 50,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "totem_of_undying",
+      "item": "minecraft:totem_of_undying",
+      "category": "combat",
+      "price": 8000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "tnt",
+      "item": "minecraft:tnt",
+      "category": "combat",
+      "price": 50,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "end_crystal",
+      "item": "minecraft:end_crystal",
+      "category": "combat",
+      "price": 2000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "snowball",
+      "item": "minecraft:snowball",
+      "category": "combat",
+      "price": 2,
+      "required_level": 0,
+      "count": 16,
+      "stock": -1
+    },
+    {
+      "id": "egg",
+      "item": "minecraft:egg",
+      "category": "combat",
+      "price": 2,
+      "required_level": 0,
+      "count": 16,
+      "stock": -1
+    },
+    {
+      "id": "bow",
+      "item": "minecraft:bow",
+      "category": "combat",
+      "price": 50,
+      "required_level": 5,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "crossbow",
+      "item": "minecraft:crossbow",
+      "category": "combat",
+      "price": 150,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "arrow",
+      "item": "minecraft:arrow",
+      "category": "combat",
+      "price": 5,
+      "required_level": 0,
+      "count": 16,
+      "stock": -1
+    },
+    {
+      "id": "spectral_arrow",
+      "item": "minecraft:spectral_arrow",
+      "category": "combat",
+      "price": 20,
+      "required_level": 25,
+      "count": 16,
+      "stock": -1
+    }
+  ]
+}

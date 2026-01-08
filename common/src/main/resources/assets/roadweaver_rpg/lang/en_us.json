@@ -22,6 +22,7 @@
   "gui.roadweaver_rpg.dialog.retrieve_scroll": "Retrieve Lost Scrolls",
   "gui.roadweaver_rpg.dialog.view_reputation": "View Reputation",
   "gui.roadweaver_rpg.dialog.cancel": "Leave",
+  "gui.roadweaver_rpg.dialog.leave": "Leave",
   "gui.roadweaver_rpg.dialog.retrieve_scrolls": "Retrieve Lost Scrolls",
   
   "gui.roadweaver_rpg.dialog.response.who_are_you": "I'm the receptionist here at the Adventurer's Guild. I manage the quest boards. How can I help you?",
@@ -30,6 +31,7 @@
   
   "npc.roadweaver_rpg.guild_maid.who_are_you": "I'm the receptionist here at the Adventurer's Guild!",
   "npc.roadweaver_rpg.guild_maid.greeting": "Welcome to the Adventurer's Guild! How can I help you?",
+  "npc.roadweaver_rpg.guild_maid.ask_help": "Is there anything I can help you with?",
   "npc.roadweaver_rpg.guild_maid.show_quests": "Let me show you the available quests.",
   "npc.roadweaver_rpg.guild_maid.complete_quest": "Let me check your completed quests.",
   "npc.roadweaver_rpg.guild_maid.view_reputation": "Here's your reputation status.",
@@ -134,16 +136,18 @@
   
   "npc.roadweaver_rpg.shop_maid.who_are_you": "I'm the shop keeper!",
   "npc.roadweaver_rpg.shop_maid.greeting": "Welcome! I have all kinds of gear for adventurers.",
+  "npc.roadweaver_rpg.shop_maid.ask_browse": "Would you like to see what's in stock?",
   "npc.roadweaver_rpg.shop_maid.open_shop": "Welcome! Feel free to browse.",
   
-  "shop.roadweaver_rpg.category.weapons": "Weapons",
-  "shop.roadweaver_rpg.category.armor": "Armor",
+  "shop.roadweaver_rpg.category.combat": "Combat",
   "shop.roadweaver_rpg.category.tools": "Tools",
+  "shop.roadweaver_rpg.category.food": "Supplies",
   "shop.roadweaver_rpg.category.materials": "Materials",
-  "shop.roadweaver_rpg.category.consumables": "Food",
-  "shop.roadweaver_rpg.category.potions": "Potions",
-  "shop.roadweaver_rpg.category.blocks": "Blocks",
-  "shop.roadweaver_rpg.category.decorations": "Decorations",
+  "shop.roadweaver_rpg.category.building": "Building",
+  "shop.roadweaver_rpg.category.functional": "Functional",
+  "shop.roadweaver_rpg.category.redstone": "Redstone",
+  "shop.roadweaver_rpg.category.natural": "Natural",
+  "shop.roadweaver_rpg.category.colored": "Colored",
   "shop.roadweaver_rpg.category.special": "Special",
   
   "chain.roadweaver_rpg.tutorial.name": "Tutorial",
@@ -183,5 +187,12 @@
   "command.rwquest.data.clear.success": "§aCleared all quest data for %s",
   
   "gui.roadweaver_rpg.galgame.continue_hint": "Click to continue",
-  "gui.roadweaver_rpg.galgame.player_name": "Player"
+  "gui.roadweaver_rpg.galgame.player_name": "Player",
+  
+  "gui.roadweaver_rpg.interaction.title": "Interaction Menu",
+  "gui.roadweaver_rpg.interaction.hint": "Select an action",
+  "gui.roadweaver_rpg.interaction.chat": "Chat",
+  
+  "key.categories.roadweaver_rpg": "RoadWeaver RPG",
+  "key.roadweaver_rpg.toggle_env_debug": "Toggle Environment Debug (Z+V)"
 }

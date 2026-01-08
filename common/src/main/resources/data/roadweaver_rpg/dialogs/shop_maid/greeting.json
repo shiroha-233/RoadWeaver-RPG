@@ -1,0 +1,39 @@
+{
+  "npc_type": "shop_maid",
+  "lines": [
+    {
+      "speaker": "npc",
+      "text": "欢迎光临！今天想要挑选些什么吗？这里有最精良的装备和罕见的素材。"
+    },
+    {
+      "speaker": "player",
+      "text": "我听说你这里有很多外面见不到的好宝贝，特意过来看看。"
+    },
+    {
+      "speaker": "npc",
+      "text": "呵呵，客官真是好眼力。我这里的货物可是跑遍了整个大陆才收集到的，绝对不会让您失望。"
+    }
+  ],
+  "choices": [
+    {
+      "id": "open_shop",
+      "text": "让我看看你的货",
+      "action": "open_shop"
+    },
+    {
+      "id": "ask_special",
+      "text": "这里有什么特别的推荐吗？",
+      "next": "roadweaver_rpg:shop_maid/ask_about_goods"
+    },
+    {
+      "id": "ask_story",
+      "text": "你是怎么收集到这么多东西的？",
+      "next": "roadweaver_rpg:shop_maid/tell_story"
+    },
+    {
+      "id": "leave",
+      "text": "我再考虑一下",
+      "action": "close"
+    }
+  ]
+}

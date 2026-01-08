@@ -81,6 +81,15 @@ public final class QuestPacketHandler {
     }
     
     /**
+     * 打开声望界面（供外部调用）
+     */
+    public static void openReputationGui(ServerPlayer player) {
+        if (onOpenReputationGui != null) {
+            onOpenReputationGui.accept(player);
+        }
+    }
+    
+    /**
      * 处理接受委托
      * @param syncPacket 同步数据包的回调
      */
@@ -144,19 +153,25 @@ public final class QuestPacketHandler {
     
     /**
      * 处理请求委托进度
-     * @param syncInstance 同步实例的回调
+     * 修复：支持通过instanceId精确查询
      */
     public static void handleRequestQuestProgress(ServerPlayer player, RequestQuestProgressPacket packet,
                                                    java.util.function.BiConsumer<ServerPlayer, SyncQuestInstancePacket> syncPacket) {
         PlayerQuestService manager = PlayerQuestService.getInstance();
-        Optional<QuestInstance> instanceOpt = manager.getQuestInstance(player, packet.questId());
+        Optional<QuestInstance> instanceOpt;
+        
+        // 优先使用instanceId精确查询
+        if (packet.instanceId() != null) {
+            instanceOpt = manager.getQuestInstanceByUUID(player, packet.instanceId());
+        } else {
+            instanceOpt = manager.getQuestInstance(player, packet.questId());
+        }
         
         if (instanceOpt.isPresent()) {
             syncPacket.accept(player, new SyncQuestInstancePacket(instanceOpt.get()));
         } else {
-            // 如果服务端找不到实例，通知客户端清除该 questId 的缓存
-            RoadWeaverRPG.LOGGER.warn("Player {} requested progress for non-existent quest: {}", 
-                    player.getName().getString(), packet.questId());
+            RoadWeaverRPG.LOGGER.warn("Player {} requested progress for non-existent quest: {} (instanceId: {})", 
+                    player.getName().getString(), packet.questId(), packet.instanceId());
             syncPacket.accept(player, new SyncQuestInstancePacket(packet.questId(), null));
         }
     }

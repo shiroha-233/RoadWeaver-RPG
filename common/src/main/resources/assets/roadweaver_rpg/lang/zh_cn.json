@@ -22,6 +22,7 @@
   "gui.roadweaver_rpg.dialog.retrieve_scroll": "找回丢失的委托书",
   "gui.roadweaver_rpg.dialog.view_reputation": "查看声望",
   "gui.roadweaver_rpg.dialog.cancel": "离开",
+  "gui.roadweaver_rpg.dialog.leave": "离开",
   "gui.roadweaver_rpg.dialog.retrieve_scrolls": "找回丢失的委托书",
   
   "gui.roadweaver_rpg.dialog.response.who_are_you": "我是冒险者公会的公会长，负责管理这里的委托任务。有什么需要帮忙的吗？",
@@ -30,6 +31,7 @@
   
   "npc.roadweaver_rpg.guild_maid.who_are_you": "我是冒险者公会的看板娘！",
   "npc.roadweaver_rpg.guild_maid.greeting": "欢迎来到冒险者公会！有什么需要帮忙的吗？",
+  "npc.roadweaver_rpg.guild_maid.ask_help": "有什么我可以帮你的吗？",
   "npc.roadweaver_rpg.guild_maid.show_quests": "让我为你展示可用的委托。",
   "npc.roadweaver_rpg.guild_maid.complete_quest": "让我检查一下你完成的委托。",
   "npc.roadweaver_rpg.guild_maid.view_reputation": "这是你的声望状态。",
@@ -134,16 +136,18 @@
   
   "npc.roadweaver_rpg.shop_maid.who_are_you": "我是商店店员！",
   "npc.roadweaver_rpg.shop_maid.greeting": "欢迎光临！我这里有各种冒险者需要的物品。",
+  "npc.roadweaver_rpg.shop_maid.ask_browse": "想看看有什么商品吗？",
   "npc.roadweaver_rpg.shop_maid.open_shop": "欢迎光临！请随意浏览。",
   
-  "shop.roadweaver_rpg.category.weapons": "武器",
-  "shop.roadweaver_rpg.category.armor": "护甲",
+  "shop.roadweaver_rpg.category.combat": "战斗",
   "shop.roadweaver_rpg.category.tools": "工具",
+  "shop.roadweaver_rpg.category.food": "补给",
   "shop.roadweaver_rpg.category.materials": "材料",
-  "shop.roadweaver_rpg.category.consumables": "食物",
-  "shop.roadweaver_rpg.category.potions": "药水",
-  "shop.roadweaver_rpg.category.blocks": "方块",
-  "shop.roadweaver_rpg.category.decorations": "装饰",
+  "shop.roadweaver_rpg.category.building": "建筑",
+  "shop.roadweaver_rpg.category.functional": "功能",
+  "shop.roadweaver_rpg.category.redstone": "红石",
+  "shop.roadweaver_rpg.category.natural": "自然",
+  "shop.roadweaver_rpg.category.colored": "染色",
   "shop.roadweaver_rpg.category.special": "特殊",
   
   "chain.roadweaver_rpg.tutorial.name": "新手教程",
@@ -173,6 +177,8 @@
   "quest.error.transaction_already_committed": "事务已提交",
   "quest.error.transaction_execution_failed": "事务执行失败",
   "quest.error.transaction_rollback_failed": "事务回滚失败",
+  "quest.error.validation_failed": "验证失败",
+  "quest.error.invalid_state_transition": "无效的状态转移",
   "quest.error.unknown": "未知错误",
   
   "command.rwquest.reputation.set.success": "§a设置 %s 的 %s 声望等级为 %d",
@@ -186,5 +192,52 @@
   "command.rwquest.data.clear.success": "§a已清除 %s 的所有委托数据",
   
   "gui.roadweaver_rpg.galgame.continue_hint": "点击继续",
-  "gui.roadweaver_rpg.galgame.player_name": "玩家"
+  "gui.roadweaver_rpg.galgame.player_name": "玩家",
+  
+  "gui.roadweaver_rpg.interaction.title": "交互菜单",
+  "gui.roadweaver_rpg.interaction.hint": "请选择要进行的操作",
+  "gui.roadweaver_rpg.interaction.chat": "对话",
+  
+  "gui.roadweaver_rpg.dialog.session_timeout": "对话会话已超时",
+  "gui.roadweaver_rpg.dialog.session_cancelled": "对话已取消",
+  "gui.roadweaver_rpg.dialog.session_error": "对话发生错误",
+  "gui.roadweaver_rpg.dialog.action_error": "执行动作失败: %s",
+  "gui.roadweaver_rpg.dialog.condition_not_met": "条件不满足",
+  
+  "objective.roadweaver_rpg.location_kill": "定点击杀",
+  "objective.roadweaver_rpg.location_kill.description": "在指定位置击杀 %d 个 %s",
+  "objective.roadweaver_rpg.location_kill.progress": "已击杀: %d/%d",
+  "objective.roadweaver_rpg.location_kill.map_marker": "%s 击杀点",
+  
+  "objective.roadweaver_rpg.explore": "探索区域",
+  "objective.roadweaver_rpg.explore.description": "探索指定区域",
+  "objective.roadweaver_rpg.explore.progress": "已探索: %d/%d",
+  "objective.roadweaver_rpg.explore.reached": "已到达目标点",
+  
+  "objective.roadweaver_rpg.collect": "收集物品",
+  "objective.roadweaver_rpg.collect.description": "收集 %d 个 %s",
+  "objective.roadweaver_rpg.collect.progress": "已收集: %d/%d",
+  
+  "objective.roadweaver_rpg.kill": "消灭目标",
+  "objective.roadweaver_rpg.kill.description": "消灭 %d 个 %s",
+  "objective.roadweaver_rpg.kill.progress": "已消灭: %d/%d",
+  
+  "condition.roadweaver_rpg.in_biome": "需要在 %s 群系",
+  "condition.roadweaver_rpg.in_dimension": "需要在 %s 维度",
+  "condition.roadweaver_rpg.is_day": "需要在白天",
+  "condition.roadweaver_rpg.is_night": "需要在夜晚",
+  "condition.roadweaver_rpg.is_raining": "需要在下雨时",
+  "condition.roadweaver_rpg.is_thundering": "需要在雷暴时",
+  "condition.roadweaver_rpg.underground": "需要在地下",
+  "condition.roadweaver_rpg.under_sky": "需要在露天",
+  
+  "message.roadweaver_rpg.loot_collected": "§a已收集掉落物！",
+  "message.roadweaver_rpg.loot_collection_failed": "§c掉落物收集失败",
+  "message.roadweaver_rpg.quest_mob_spawned": "§e委托怪物已刷新",
+  "message.roadweaver_rpg.quest_mob_died": "§6击杀了委托怪物",
+  "message.roadweaver_rpg.map_marker_added": "§a已在地图上标记委托目标",
+  "message.roadweaver_rpg.map_marker_removed": "§c已移除地图标记",
+  
+  "key.categories.roadweaver_rpg": "RoadWeaver RPG",
+  "key.roadweaver_rpg.toggle_env_debug": "切换环境调试信息 (Z+V)"
 }

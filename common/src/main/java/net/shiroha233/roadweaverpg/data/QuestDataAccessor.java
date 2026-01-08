@@ -2,9 +2,12 @@ package net.shiroha233.roadweaverpg.data;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 
 /**
  * 委托数据访问器
+ * 
+ * 修复：增强 markDirty 的可靠性，添加日志
  */
 public class QuestDataAccessor {
     
@@ -13,9 +16,6 @@ public class QuestDataAccessor {
     
     private QuestDataAccessor() {}
     
-    /**
-     * 获取单例实例（双重检查锁定）
-     */
     public static QuestDataAccessor getInstance() {
         if (instance == null) {
             synchronized (LOCK) {
@@ -33,9 +33,28 @@ public class QuestDataAccessor {
         return savedData.getOrCreatePlayerData(player.getUUID());
     }
     
+    /**
+     * 标记数据需要保存
+     * 修复：确保正确获取 SavedData 并标记
+     */
     public void markDirty(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
-        QuestSavedData.get(level).setDirty();
+        try {
+            ServerLevel level = player.serverLevel();
+            QuestSavedData savedData = QuestSavedData.get(level);
+            savedData.setDirty();
+            RoadWeaverRPG.LOGGER.debug("Marked QuestSavedData dirty for player: {}", 
+                    player.getName().getString());
+        } catch (Exception e) {
+            RoadWeaverRPG.LOGGER.error("Failed to mark dirty for player {}: {}", 
+                    player.getName().getString(), e.getMessage());
+        }
+    }
+    
+    /**
+     * 强制保存数据（用于关键操作后）
+     */
+    public void forceSave(ServerPlayer player) {
+        markDirty(player);
     }
     
     public QuestSavedData getSavedData(ServerLevel level) {

@@ -1,0 +1,36 @@
+{
+  "title": "地狱猎手",
+  "description": "在下界击杀10只烈焰人",
+  "rank": "B",
+  "type": "location_kill",
+  "objectives": [
+    {
+      "type": "location_kill",
+      "target": "minecraft:blaze",
+      "amount": 10,
+      "description": "在下界击杀烈焰人 (0/10)",
+      "locations": [
+        {"x": 0, "y": 64, "z": 0, "radius": 10000, "dimension": "minecraft:the_nether"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 8
+    },
+    {
+      "type": "experience",
+      "amount": 300
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 80
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 3600,
+  "time_limit": 0
+}

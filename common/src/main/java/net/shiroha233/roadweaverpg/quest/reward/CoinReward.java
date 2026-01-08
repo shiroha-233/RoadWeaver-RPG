@@ -74,4 +74,12 @@ public class CoinReward implements QuestReward {
         int amount = json.has("amount") ? json.get("amount").getAsInt() : 1;
         return new CoinReward(amount);
     }
+    
+    /**
+     * 从 NBT 反序列化
+     */
+    public static CoinReward fromNbt(net.minecraft.nbt.CompoundTag tag) {
+        int amount = tag.getInt("amount");
+        return new CoinReward(amount);
+    }
 }

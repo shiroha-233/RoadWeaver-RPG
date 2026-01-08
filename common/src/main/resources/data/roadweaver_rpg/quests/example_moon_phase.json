@@ -1,0 +1,53 @@
+{
+  "title": "月相仪式",
+  "description": "在满月时进行特殊采集",
+  "rank": "B",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:glowstone",
+      "amount": 24,
+      "description": "在满月采集荧石 (0/24)",
+      "conditions": [
+        {"type": "full_moon"},
+        {"type": "is_night"}
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:amethyst_shard",
+      "amount": 16,
+      "description": "在满月采集紫晶碎片 (0/16)",
+      "conditions": [
+        {"type": "full_moon"},
+        {"type": "in_height_range", "min_y": -64, "max_y": 0}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 8
+    },
+    {
+      "type": "item",
+      "item": "minecraft:diamond",
+      "count": 2
+    },
+    {
+      "type": "experience",
+      "amount": 160
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:mystic",
+      "amount": 80
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 1728000,
+  "time_limit": 0,
+  "base_difficulty": 1.3
+}

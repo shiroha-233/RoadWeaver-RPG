@@ -1,0 +1,63 @@
+{
+  "title": "定点清剿",
+  "description": "在指定位置击杀怪物",
+  "rank": "B",
+  "type": "location_kill",
+  "objectives": [
+    {
+      "type": "location_kill",
+      "target": "minecraft:zombie",
+      "amount": 15,
+      "description": "在地下击杀僵尸 (0/15)",
+      "locations": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "radius": 32,
+          "dimension": "minecraft:overworld",
+          "name": "地下洞穴"
+        }
+      ],
+      "spawn_config": {
+        "enabled": true,
+        "max_count": 5,
+        "respawn_delay": 200,
+        "spawn_radius": 16,
+        "persistent_mobs": false
+      },
+      "auto_collect_drops": true,
+      "show_on_map": true,
+      "map_icon": "quest_target",
+      "map_color": 16711680,
+      "conditions": [
+        {"type": "underground"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 7
+    },
+    {
+      "type": "item",
+      "item": "minecraft:diamond",
+      "count": 1
+    },
+    {
+      "type": "experience",
+      "amount": 180
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:warrior",
+      "amount": 75
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 3600,
+  "time_limit": 0,
+  "base_difficulty": 1.4
+}

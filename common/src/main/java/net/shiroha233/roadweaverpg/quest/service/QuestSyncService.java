@@ -92,6 +92,14 @@ public class QuestSyncService {
         return Optional.ofNullable(data.getActiveQuest(questId));
     }
     
+    /** 通过instanceId精确查询委托实例 */
+    public Optional<QuestInstance> getQuestInstanceByUUID(ServerPlayer player, java.util.UUID instanceId) {
+        PlayerQuestData data = dataAccessor.getPlayerData(player);
+        return data.getActiveQuests().stream()
+                .filter(inst -> inst.getInstanceId().equals(instanceId))
+                .findFirst();
+    }
+    
     public List<QuestDefinition> getAvailableQuests(ServerPlayer player) {
         PlayerQuestData data = dataAccessor.getPlayerData(player);
         return QuestDefinitionLoader.getInstance().getAvailableQuests(

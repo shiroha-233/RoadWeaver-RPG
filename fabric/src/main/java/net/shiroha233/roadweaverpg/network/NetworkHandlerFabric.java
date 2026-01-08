@@ -5,10 +5,15 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.shiroha233.roadweaverpg.dialog.DialogData;
+import net.shiroha233.roadweaverpg.dialog.DialogManager;
+import net.shiroha233.roadweaverpg.init.QuestSystemInitializer;
 import net.shiroha233.roadweaverpg.network.packet.quest.*;
 import net.shiroha233.roadweaverpg.network.packet.sync.*;
 import net.shiroha233.roadweaverpg.network.packet.ui.*;
 import net.shiroha233.roadweaverpg.network.packet.shop.*;
+import net.shiroha233.roadweaverpg.network.packet.dialog.*;
+import net.shiroha233.roadweaverpg.network.packet.interaction.*;
 import net.shiroha233.roadweaverpg.quest.definition.QuestDefinition;
 import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
 import net.shiroha233.roadweaverpg.quest.service.PlayerQuestService;
@@ -58,6 +63,72 @@ public class NetworkHandlerFabric {
         
         initializeCallbacks();
         registerShopReceivers();
+        registerInteractionReceivers();
+        registerDialogReceivers();
+    }
+    
+    /**
+     * 注册对话系统相关的服务端接收器
+     */
+    public static void registerDialogReceivers() {
+        // 处理对话选择（带版本验证）
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.DIALOG_CHOICE, (server, player, handler, buf, responseSender) -> {
+            DialogChoicePacket packet = DialogChoicePacket.decode(buf);
+            server.execute(() -> DialogManager.getInstance().handleChoice(player, packet.choiceId(), packet.syncVersion()));
+        });
+        
+        // 处理对话推进
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.DIALOG_ADVANCE, (server, player, handler, buf, responseSender) -> {
+            server.execute(() -> DialogManager.getInstance().advanceDialog(player));
+        });
+    }
+    
+    /**
+     * 注册交互菜单相关的服务端接收器
+     */
+    public static void registerInteractionReceivers() {
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.INTERACTION_SELECT, (server, player, handler, buf, responseSender) -> {
+            InteractionSelectPacket packet = InteractionSelectPacket.decode(buf);
+            server.execute(() -> {
+                var entries = net.shiroha233.roadweaverpg.interaction.NPCInteractionRegistry.getEntries(
+                        getEntityNPCType(player, packet.npcEntityId()));
+                entries.stream()
+                        .filter(e -> e.id().equals(packet.entryId()))
+                        .findFirst()
+                        .ifPresent(entry -> net.shiroha233.roadweaverpg.interaction.NPCInteractionHandler
+                                .handleInteraction(player, packet.npcEntityId(), entry));
+            });
+        });
+    }
+    
+    /**
+     * 获取实体的NPC类型
+     */
+    private static String getEntityNPCType(ServerPlayer player, int entityId) {
+        var entity = player.level().getEntity(entityId);
+        if (entity instanceof net.shiroha233.roadweaverpg.entity.npc.INPCEntity npc) {
+            return npc.getNPCType().getId();
+        }
+        return "";
+    }
+    
+    /**
+     * 发送打开交互菜单数据包
+     */
+    public static void sendOpenInteractionMenu(ServerPlayer player, int npcEntityId, 
+            List<net.shiroha233.roadweaverpg.interaction.NPCInteractionEntry> entries) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new OpenInteractionMenuPacket(npcEntityId, entries).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.OPEN_INTERACTION_MENU, buf);
+    }
+    
+    /**
+     * 发送委托地图标点到客户端
+     */
+    public static void sendSyncQuestMarkers(ServerPlayer player, SyncQuestMarkersPacket packet) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        packet.encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.SYNC_QUEST_MARKERS, buf);
     }
     
     public static void sendReputationLevels(ServerPlayer player, Collection<net.shiroha233.roadweaverpg.reputation.ReputationLevel> levels) {
@@ -68,7 +139,6 @@ public class NetworkHandlerFabric {
 
     public static void sendPlayerReputation(ServerPlayer player, java.util.Map<ResourceLocation, Integer> reputations, java.util.Map<ResourceLocation, Integer> levels) {
         FriendlyByteBuf buf = PacketByteBufs.create();
-        // 将 ResourceLocation 转为 String 进行网络传输，因为 SyncPlayerReputationPacket 接收 Map<String, Integer>
         java.util.Map<String, Integer> repStrings = new java.util.HashMap<>();
         reputations.forEach((k, v) -> repStrings.put(k.toString(), v));
         java.util.Map<String, Integer> levelStrings = new java.util.HashMap<>();
@@ -84,7 +154,7 @@ public class NetworkHandlerFabric {
         ServerPlayNetworking.send(player, NetworkHandler.OPEN_REPUTATION_GUI, buf);
     }
     
-    /** 初始化 PlayerQuestService 的回调 */
+    /** 初始化回调 */
     private static void initializeCallbacks() {
         PlayerQuestService manager = PlayerQuestService.getInstance();
         manager.setOnQuestUpdated(NetworkHandlerFabric::sendQuestInstance);
@@ -93,14 +163,56 @@ public class NetworkHandlerFabric {
         manager.setOnSyncAllDefinitions(NetworkHandlerFabric::sendAllDefinitions);
         manager.setOnSyncDailyQuests(NetworkHandlerFabric::sendDailyQuests);
 
-        // 初始化声望同步回调
         manager.setOnSyncReputation((player, data) -> 
                 sendPlayerReputation(player, data.getAllReputationXp(), data.getAllReputationLevels()));
         
         net.shiroha233.roadweaverpg.reputation.ReputationManager.setSyncCallback(
                 NetworkHandlerFabric::sendReputationLevels);
-        net.shiroha233.roadweaverpg.network.QuestPacketHandler.setOnOpenReputationGui(
-                NetworkHandlerFabric::sendOpenReputationGui);
+        QuestPacketHandler.setOnOpenReputationGui(NetworkHandlerFabric::sendOpenReputationGui);
+        
+        // 初始化对话系统回调
+        initializeDialogCallbacks();
+        
+        // 初始化交互系统回调
+        QuestSystemInitializer.setOnShowQuestsBoard((player, quests) -> {
+            SyncQuestsPacket packet = new SyncQuestsPacket(quests);
+            FriendlyByteBuf buf = PacketByteBufs.create();
+            packet.encode(buf);
+            ServerPlayNetworking.send(player, NetworkHandler.SYNC_QUESTS, buf);
+            
+            FriendlyByteBuf openBuf = PacketByteBufs.create();
+            ServerPlayNetworking.send(player, NetworkHandler.OPEN_QUEST_BOARD, openBuf);
+        });
+        
+        QuestSystemInitializer.setOnOpenShop(NetworkHandlerFabric::sendOpenShop);
+    }
+    
+    /**
+     * 初始化对话系统回调
+     */
+    private static void initializeDialogCallbacks() {
+        // 初始化对话网络处理器（包含会话关闭发送器）
+        QuestSystemInitializer.initializeDialogNetworkHandler(
+                (player, data) -> sendDialogData(player, data.npcEntityId(), data.dialog(), data.syncVersion()),
+                (player, data) -> sendDialogLine(player, data.npcEntityId(), data.line(), data.lineIndex()),
+                (player, data) -> sendDialogChoices(player, data.dialogId(), data.choices()),
+                NetworkHandlerFabric::sendDialogSessionClose
+        );
+        
+        // 发送完整对话数据（带版本号）
+        DialogManager.setDialogDataSender((player, npcId, dialog, visibleLines, syncVersion) -> 
+                sendDialogData(player, npcId, dialog, syncVersion));
+        
+        // 发送单行对话
+        DialogManager.setDialogLineSender((player, npcId, line, lineIndex) -> 
+                sendDialogLine(player, npcId, line, lineIndex));
+        
+        // 发送对话选项
+        DialogManager.setDialogChoicesSender((player, dialog, visibleChoices) -> 
+                sendDialogChoices(player, dialog.id(), visibleChoices));
+        
+        // 发送会话无效通知
+        DialogManager.setSessionInvalidSender(NetworkHandlerFabric::sendDialogSessionClose);
     }
     
     public static void sendDailyQuests(ServerPlayer player, List<ResourceLocation> dailyQuestIds) {
@@ -148,6 +260,42 @@ public class NetworkHandlerFabric {
         ServerPlayNetworking.send(player, NetworkHandler.OPEN_DIALOG, buf);
     }
     
+    /**
+     * 发送对话数据到客户端（带版本号）
+     */
+    public static void sendDialogData(ServerPlayer player, int npcEntityId, DialogData dialog, long syncVersion) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new DialogDataPacket(npcEntityId, dialog, syncVersion).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.DIALOG_DATA, buf);
+    }
+    
+    /**
+     * 发送单行对话到客户端
+     */
+    public static void sendDialogLine(ServerPlayer player, int npcEntityId, DialogData.DialogLine line, int lineIndex) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new DialogLinePacket(npcEntityId, line, lineIndex).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.DIALOG_LINE, buf);
+    }
+    
+    /**
+     * 发送对话选项到客户端
+     */
+    public static void sendDialogChoices(ServerPlayer player, ResourceLocation dialogId, List<DialogData.DialogChoice> choices) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new DialogChoicesPacket(dialogId, choices).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.DIALOG_CHOICES, buf);
+    }
+    
+    /**
+     * 发送会话关闭通知
+     */
+    public static void sendDialogSessionClose(ServerPlayer player) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        DialogSessionClosePacket.normal().encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.DIALOG_SESSION_CLOSE, buf);
+    }
+    
     // ==================== 商店系统网络方法 ====================
     
     public static void sendOpenShopDialog(ServerPlayer player, int entityId) {
@@ -158,7 +306,7 @@ public class NetworkHandlerFabric {
     
     public static void sendOpenShop(ServerPlayer player, int entityId) {
         FriendlyByteBuf buf = PacketByteBufs.create();
-        net.shiroha233.roadweaverpg.network.ShopPacketHandler.createOpenShopPacket(player, entityId).encode(buf);
+        ShopPacketHandler.createOpenShopPacket(player, entityId).encode(buf);
         ServerPlayNetworking.send(player, NetworkHandler.OPEN_SHOP, buf);
     }
     
@@ -170,17 +318,15 @@ public class NetworkHandlerFabric {
     
     /** 注册商店相关的服务端接收器 */
     public static void registerShopReceivers() {
-        // 商店对话响应
         ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.SHOP_DIALOG_RESPONSE, (server, player, handler, buf, responseSender) -> {
             ShopDialogResponsePacket packet = ShopDialogResponsePacket.decode(buf);
-            server.execute(() -> net.shiroha233.roadweaverpg.network.ShopPacketHandler.handleShopDialogResponse(
+            server.execute(() -> ShopPacketHandler.handleShopDialogResponse(
                     player, packet, p -> sendOpenShop(p, packet.entityId())));
         });
         
-        // 商店购买请求
         ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.SHOP_PURCHASE, (server, player, handler, buf, responseSender) -> {
             ShopPurchasePacket packet = ShopPurchasePacket.decode(buf);
-            server.execute(() -> net.shiroha233.roadweaverpg.network.ShopPacketHandler.handlePurchase(
+            server.execute(() -> ShopPacketHandler.handlePurchase(
                     player, packet, (p, syncPacket) -> sendSyncCoins(p, syncPacket.coins())));
         });
     }

@@ -12,11 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 /**
- * 委托事务管理器（增强版）
+ * 委托事务管理器（优化版）
  * 
  * 改进点：
  * - 事务超时控制：防止长时间阻塞
- * - 事务隔离级别：支持不同的隔离策略
  * - 回滚失败处理：回滚失败时停止后续步骤
  * - 详细日志：记录事务执行过程
  * 
@@ -24,7 +23,6 @@ import java.util.function.Supplier;
  * <pre>
  * QuestTransaction.begin(player)
  *     .withTimeout(5000)
- *     .withIsolation(IsolationLevel.READ_COMMITTED)
  *     .validate(() -> checkCondition())
  *     .execute(() -> doOperation1(), () -> rollback1())
  *     .commit();
@@ -41,7 +39,6 @@ public class QuestTransaction {
     private final List<RollbackAction> rollbackActions = new ArrayList<>();
     
     private long timeoutMs = QuestSystemConfig.TRANSACTION_TIMEOUT;
-    private IsolationLevel isolationLevel = IsolationLevel.READ_COMMITTED;
     private boolean committed = false;
     private long startTime;
     private int executedSteps = 0;
@@ -59,12 +56,6 @@ public class QuestTransaction {
     /** 设置超时时间（毫秒） */
     public QuestTransaction withTimeout(long timeoutMs) {
         this.timeoutMs = timeoutMs;
-        return this;
-    }
-    
-    /** 设置隔离级别 */
-    public QuestTransaction withIsolation(IsolationLevel level) {
-        this.isolationLevel = level;
         return this;
     }
     
@@ -184,14 +175,6 @@ public class QuestTransaction {
     }
     
     // ==================== 内部类 ====================
-    
-    /** 事务隔离级别 */
-    public enum IsolationLevel {
-        READ_UNCOMMITTED,  // 允许脏读
-        READ_COMMITTED,    // 不允许脏读（默认）
-        REPEATABLE_READ,   // 不允许脏读和不可重复读
-        SERIALIZABLE       // 完全隔离
-    }
     
     /** 事务步骤接口 */
     private interface TransactionStep {

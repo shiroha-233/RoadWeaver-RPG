@@ -4,6 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.shiroha233.roadweaverpg.client.ClientNetworkHandlerFabric;
+import net.shiroha233.roadweaverpg.client.DebugOverlayHandlerFabric;
 import net.shiroha233.roadweaverpg.client.ModEntityRenderersFabric;
 import net.shiroha233.roadweaverpg.client.ModItemPropertiesFabric;
 import net.shiroha233.roadweaverpg.client.QuestScrollClientHandler;
@@ -33,6 +34,9 @@ public class RoadWeaverRPGFabricClient implements ClientModInitializer {
         
         // 注册委托书客户端交互
         QuestScrollClientHandler.register();
+        
+        // 注册调试覆盖层（Z+V切换）
+        DebugOverlayHandlerFabric.register();
         
         LOGGER.info("RoadWeaver RPG client initialized!");
     }

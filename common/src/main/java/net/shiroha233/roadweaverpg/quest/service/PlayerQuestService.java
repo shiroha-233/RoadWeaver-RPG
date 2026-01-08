@@ -12,35 +12,57 @@ import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 
 /**
  * 玩家委托服务（门面类）
- * 统一对外接口，内部委托给专职处理器
+ * 
+ * 设计原理：
+ * - 门面模式：统一对外接口，隐藏内部复杂性
+ * - 依赖倒置：通过接口与各服务交互
+ * - 单例模式：全局唯一实例
+ * 
+ * V2重构改进：
+ * - 使用 QuestProgressServiceV2 替代旧版进度服务
+ * - 条件系统与进度系统完全整合
+ * - 更清晰的职责划分
  */
 public class PlayerQuestService {
     
-    private static PlayerQuestService instance;
+    private static volatile PlayerQuestService instance;
+    private static final Object LOCK = new Object();
     
     private final QuestDataAccessor dataAccessor;
     private final QuestAcceptanceService acceptanceService;
-    private final QuestProgressService progressService;
+    private final QuestProgressServiceV2 progressService; // 使用V2版本
     private final QuestRewardService rewardService;
     private final QuestSyncService syncService;
     
     private PlayerQuestService() {
         this.dataAccessor = QuestDataAccessor.getInstance();
         this.acceptanceService = new QuestAcceptanceService(dataAccessor);
-        this.progressService = new QuestProgressService(dataAccessor);
+        this.progressService = new QuestProgressServiceV2(dataAccessor); // V2版本
         this.rewardService = new QuestRewardService(dataAccessor);
         this.syncService = new QuestSyncService(dataAccessor);
     }
     
     public static PlayerQuestService getInstance() {
         if (instance == null) {
-            instance = new PlayerQuestService();
+            synchronized (LOCK) {
+                if (instance == null) {
+                    instance = new PlayerQuestService();
+                }
+            }
         }
         return instance;
+    }
+    
+    /**
+     * 清理玩家数据（登出时调用）
+     */
+    public void clearPlayerCache(UUID playerId) {
+        progressService.clearPlayerData(playerId);
     }
     
     // region 回调设置
@@ -150,6 +172,11 @@ public class PlayerQuestService {
     
     public Optional<QuestInstance> getQuestInstance(ServerPlayer player, ResourceLocation questId) {
         return syncService.getQuestInstance(player, questId);
+    }
+    
+    /** 通过instanceId精确查询委托实例 */
+    public Optional<QuestInstance> getQuestInstanceByUUID(ServerPlayer player, java.util.UUID instanceId) {
+        return syncService.getQuestInstanceByUUID(player, instanceId);
     }
     
     public Collection<QuestInstance> getAllActiveQuests(ServerPlayer player) {

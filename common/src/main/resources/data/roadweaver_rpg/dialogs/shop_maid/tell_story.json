@@ -1,0 +1,34 @@
+{
+  "npc_type": "shop_maid",
+  "lines": [
+    {
+      "speaker": "npc",
+      "text": "那可是一段很长的故事了... 在来到这里之前，我曾跟随一支冒险团跨越了极寒之地。"
+    },
+    {
+      "speaker": "player",
+      "text": "难怪你这里的很多素材都带着寒气。"
+    },
+    {
+      "speaker": "npc",
+      "text": "是啊，虽然那次冒险损失惨重，但带回来的这些‘纪念品’也算是一种慰藉吧。如果你能帮我找到更多那样的极寒矿石，我会给你非常丰厚的回报。"
+    }
+  ],
+  "choices": [
+    {
+      "id": "open_shop",
+      "text": "令人敬佩的经历。还是先做生意吧。",
+      "action": "open_shop"
+    },
+    {
+      "id": "back",
+      "text": "很有意思，让我们回到正题。",
+      "next": "roadweaver_rpg:shop_maid/greeting"
+    },
+    {
+      "id": "leave",
+      "text": "以后有空再听你讲故事。",
+      "action": "close"
+    }
+  ]
+}

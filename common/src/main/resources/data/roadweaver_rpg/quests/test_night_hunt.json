@@ -1,0 +1,36 @@
+{
+  "title": "夜间狩猎",
+  "description": "在夜间击杀5只蜘蛛",
+  "rank": "D",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:spider",
+      "amount": 5,
+      "description": "在夜间击杀蜘蛛 (0/5)",
+      "conditions": [
+        {"type": "is_night"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 2
+    },
+    {
+      "type": "experience",
+      "amount": 75
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 30
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 1800,
+  "time_limit": 0
+}

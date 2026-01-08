@@ -1,0 +1,32 @@
+{
+  "title": "高空采集测试",
+  "description": "在高处采集物品（持续条件测试）",
+  "rank": "D",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:dirt",
+      "amount": 16,
+      "description": "在Y>200的高度持有泥土 (0/16)",
+      "conditions": [
+        {"type": "min_y", "value": 200}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 2
+    },
+    {
+      "type": "experience",
+      "amount": 50
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 600,
+  "time_limit": 0,
+  "base_difficulty": 1.0
+}

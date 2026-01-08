@@ -116,25 +116,41 @@ public class GalgameDialogBuilder {
     }
     
     /**
-     * 添加选项
+     * 添加选项（带动作类型和回话内容）
      */
-    public GalgameDialogBuilder addOption(Component text, String actionId) {
-        options.add(new GalgameDialogScreen.DialogOptionData(text, actionId));
+    public GalgameDialogBuilder addOption(Component text, String choiceId, String action, Component responseText) {
+        options.add(new GalgameDialogScreen.DialogOptionData(text, choiceId, action, responseText));
         return this;
     }
     
     /**
-     * 添加选项（字符串版本）
+     * 添加选项（带回话内容，choiceId同时作为action）
      */
-    public GalgameDialogBuilder addOption(String text, String actionId) {
-        return addOption(Component.literal(text), actionId);
+    public GalgameDialogBuilder addOption(Component text, String choiceId, Component responseText) {
+        options.add(new GalgameDialogScreen.DialogOptionData(text, choiceId, choiceId, responseText));
+        return this;
     }
     
     /**
-     * 添加选项（翻译键版本）
+     * 添加选项（choiceId同时作为action）
      */
-    public GalgameDialogBuilder addOptionTranslatable(String key, String actionId) {
-        return addOption(Component.translatable(key), actionId);
+    public GalgameDialogBuilder addOption(Component text, String choiceId) {
+        options.add(new GalgameDialogScreen.DialogOptionData(text, choiceId, choiceId, Component.empty()));
+        return this;
+    }
+    
+    /**
+     * 添加选项（字符串版本，choiceId同时作为action）
+     */
+    public GalgameDialogBuilder addOption(String text, String choiceId) {
+        return addOption(Component.literal(text), choiceId);
+    }
+    
+    /**
+     * 添加选项（翻译键版本，choiceId同时作为action）
+     */
+    public GalgameDialogBuilder addOptionTranslatable(String key, String choiceId) {
+        return addOption(Component.translatable(key), choiceId);
     }
     
     /**

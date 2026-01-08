@@ -1,0 +1,34 @@
+{
+  "npc_type": "shop_maid",
+  "lines": [
+    {
+      "speaker": "npc",
+      "text": "哦？您是说那些‘特别’的东西吗？"
+    },
+    {
+      "speaker": "player",
+      "text": "没错，最好是那种能保命或者瞬间逆转局势的宝贝。"
+    },
+    {
+      "speaker": "npc",
+      "text": "那你可问对人了。看到货架高处那个闪烁着紫光的护符了吗？那是在影界裂缝边缘发现的，虽然副作用是会让人偶尔听到幻听，但它能让你在致命伤下逃生。"
+    }
+  ],
+  "choices": [
+    {
+      "id": "open_shop",
+      "text": "听起来不错，让我看看店里的清单",
+      "action": "open_shop"
+    },
+    {
+      "id": "ask_more",
+      "text": "还有其他的故事吗？",
+      "next": "roadweaver_rpg:shop_maid/tell_story"
+    },
+    {
+      "id": "back",
+      "text": "我还是先看看普通的货吧",
+      "next": "roadweaver_rpg:shop_maid/greeting"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "title": "黎明收获",
+  "description": "在黎明时分收集小麦和南瓜",
+  "rank": "D",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:wheat",
+      "amount": 32,
+      "description": "收集小麦 (0/32)",
+      "conditions": [
+        {"type": "is_dawn"}
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:pumpkin",
+      "amount": 16,
+      "description": "收集南瓜 (0/16)",
+      "conditions": [
+        {"type": "is_dawn"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 3
+    },
+    {
+      "type": "experience",
+      "amount": 100
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:farmer",
+      "amount": 50
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 1200,
+  "time_limit": 0,
+  "base_difficulty": 1.0
+}

@@ -1,0 +1,46 @@
+{
+  "title": "潜行大师",
+  "description": "在潜行状态下完成任务",
+  "rank": "D",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:creeper",
+      "amount": 5,
+      "description": "潜行击杀爬行者 (0/5)",
+      "conditions": [
+        {"type": "is_sneaking"}
+      ]
+    },
+    {
+      "type": "kill",
+      "target": "minecraft:spider",
+      "amount": 5,
+      "description": "潜行击杀蜘蛛 (0/5)",
+      "conditions": [
+        {"type": "is_sneaking"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 3
+    },
+    {
+      "type": "experience",
+      "amount": 80
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:assassin",
+      "amount": 50
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 1200,
+  "time_limit": 0,
+  "base_difficulty": 1.0
+}

@@ -1,0 +1,55 @@
+{
+  "title": "群系采集",
+  "description": "在不同群系采集特定物品",
+  "rank": "C",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:cactus",
+      "amount": 16,
+      "description": "在沙漠采集仙人掌 (0/16)",
+      "conditions": [
+        {"type": "in_biome", "biome": "minecraft:desert"}
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:snow_block",
+      "amount": 20,
+      "description": "在雪地采集雪块 (0/20)",
+      "conditions": [
+        {"type": "in_biome_tag", "tag": "minecraft:is_cold"}
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:lily_pad",
+      "amount": 12,
+      "description": "在沼泽采集睡莲 (0/12)",
+      "conditions": [
+        {"type": "in_biome", "biome": "minecraft:swamp"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 6
+    },
+    {
+      "type": "experience",
+      "amount": 120
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:naturalist",
+      "amount": 70
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 2400,
+  "time_limit": 0,
+  "base_difficulty": 1.1
+}

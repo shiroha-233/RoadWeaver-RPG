@@ -64,6 +64,8 @@ public class RoadWeaverRPGForge {
         event.addListener(new QuestChainManager());
         event.addListener(new ReputationManager());
         event.addListener(new net.shiroha233.roadweaverpg.shop.ShopManager());
+        // 注册对话数据加载器
+        event.addListener(net.shiroha233.roadweaverpg.dialog.DialogRegistry.getInstance());
     }
     
     @Mod.EventBusSubscriber(modid = RoadWeaverRPG.MOD_ID)
@@ -71,6 +73,24 @@ public class RoadWeaverRPGForge {
         @SubscribeEvent
         public static void onServerStarting(ServerStartingEvent event) {
             VillagePoolInjector.injectGuildhallToVillages(event.getServer());
+        }
+        
+        @SubscribeEvent
+        public static void onServerStopping(net.minecraftforge.event.server.ServerStoppingEvent event) {
+            LOGGER.info("Server stopping, forcing save of all quest data...");
+            try {
+                // 强制保存所有世界的委托数据
+                for (net.minecraft.server.level.ServerLevel level : event.getServer().getAllLevels()) {
+                    net.shiroha233.roadweaverpg.data.QuestSavedData savedData = 
+                            net.shiroha233.roadweaverpg.data.QuestSavedData.get(level);
+                    savedData.setDirty();
+                    LOGGER.info("Marked quest data dirty for level: {}, player count: {}", 
+                            level.dimension().location(), savedData.getPlayerCount());
+                }
+                LOGGER.info("Quest data save completed");
+            } catch (Exception e) {
+                LOGGER.error("Failed to save quest data on server stop: {}", e.getMessage(), e);
+            }
         }
         
         @SubscribeEvent
@@ -91,6 +111,15 @@ public class RoadWeaverRPGForge {
         public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
             if (event.getEntity() instanceof ServerPlayer player) {
                 QuestEventHandler.onPlayerLogout(player);
+                
+                // 玩家登出时强制保存数据
+                try {
+                    net.shiroha233.roadweaverpg.data.QuestDataAccessor.getInstance().forceSave(player);
+                    LOGGER.debug("Forced save quest data for player: {}", player.getName().getString());
+                } catch (Exception e) {
+                    LOGGER.error("Failed to force save on logout for {}: {}", 
+                            player.getName().getString(), e.getMessage());
+                }
             }
         }
         
@@ -98,6 +127,14 @@ public class RoadWeaverRPGForge {
         public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
             if (event.phase == TickEvent.Phase.END && event.player instanceof ServerPlayer player) {
                 QuestEventHandler.onPlayerTick(player);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void onLevelTick(TickEvent.LevelTickEvent event) {
+            if (event.phase == TickEvent.Phase.END && 
+                event.level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                QuestEventHandler.onServerLevelTick(serverLevel);
             }
         }
         

@@ -19,7 +19,12 @@ import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
 import net.shiroha233.roadweaverpg.quest.objective.CollectObjective;
 import net.shiroha233.roadweaverpg.quest.objective.QuestObjective;
 import net.shiroha233.roadweaverpg.quest.reward.QuestReward;
-import net.shiroha233.roadweaverpg.quest.reward.RewardQueueManager;
+import net.shiroha233.roadweaverpg.quest.reward.PriorityRewardQueue;
+import net.shiroha233.roadweaverpg.quest.event.QuestEvent;
+import net.shiroha233.roadweaverpg.quest.event.QuestEventBus;
+import net.shiroha233.roadweaverpg.quest.index.ObjectiveIndex;
+import net.shiroha233.roadweaverpg.quest.state.StateTransitionLog;
+import net.shiroha233.roadweaverpg.quest.sync.IncrementalSyncManager;
 import net.shiroha233.roadweaverpg.reputation.ReputationLevel;
 import net.shiroha233.roadweaverpg.reputation.ReputationManager;
 
@@ -28,21 +33,31 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 
 /**
- * 委托奖励服务
+ * 委托奖励服务（优化版）
  * 
  * 改进点：
- * - 使用RewardQueueManager确保奖励不丢失
- * - 去重机制防止重复发放
- * - 指数退避重试机制
+ * - 使用 PriorityRewardQueue 分级处理奖励
+ * - 集成事件总线
+ * - 增量同步支持
+ * - 更完善的事务处理
  */
 public class QuestRewardService {
     
     private final QuestDataAccessor dataAccessor;
+    private final PriorityRewardQueue rewardQueue;
+    private final QuestEventBus eventBus;
+    private final IncrementalSyncManager syncManager;
+    private final ObjectiveIndex objectiveIndex;
+    
     private BiConsumer<ServerPlayer, QuestInstance> onQuestTurnedIn;
     private BiConsumer<ServerPlayer, PlayerQuestData> onSyncReputation;
     
     public QuestRewardService(QuestDataAccessor dataAccessor) {
         this.dataAccessor = dataAccessor;
+        this.rewardQueue = PriorityRewardQueue.getInstance();
+        this.eventBus = QuestEventBus.getInstance();
+        this.syncManager = IncrementalSyncManager.getInstance();
+        this.objectiveIndex = ObjectiveIndex.getInstance();
     }
     
     public void setOnQuestTurnedIn(BiConsumer<ServerPlayer, QuestInstance> callback) {
@@ -84,47 +99,33 @@ public class QuestRewardService {
     
     private Result<Void> turnInQuestInternal(ServerPlayer player, ResourceLocation questId) {
         PlayerQuestData playerData = dataAccessor.getPlayerData(player);
+        QuestInstance instance = playerData.getActiveQuest(questId);
         
-        // 使用事务确保原子性
-        return net.shiroha233.roadweaverpg.quest.transaction.QuestTransaction.begin(player)
-                // 验证步骤
-                .validate(() -> ValidationUtils.validateHasActiveQuest(playerData, questId)
-                        .map(instance -> null))
-                .validate(() -> {
-                    QuestInstance instance = playerData.getActiveQuest(questId);
-                    return ValidationUtils.validateQuestState(instance, QuestState.COMPLETED)
-                            .map(i -> null);
+        // 验证
+        if (instance == null) {
+            return Result.failure(QuestException.ErrorCode.QUEST_NOT_ACTIVE, "Quest not active");
+        }
+        if (instance.getState() != QuestState.COMPLETED) {
+            return Result.failure(QuestException.ErrorCode.QUEST_NOT_COMPLETED, "Quest not completed");
+        }
+        
+        QuestDefinition definition = QuestDefinitionLoader.getInstance().getDefinition(questId);
+        if (definition == null) {
+            return Result.failure(QuestException.ErrorCode.DEFINITION_NOT_FOUND, "Definition not found");
+        }
+        
+        QuestState oldState = instance.getState();
+        
+        // 使用事务执行提交操作
+        Result<Void> txResult = net.shiroha233.roadweaverpg.quest.transaction.QuestTransaction.begin(player)
+                // 消耗收集物品
+                .execute(() -> consumeCollectItems(player, definition), () -> {
+                    RoadWeaverRPG.LOGGER.warn("Cannot rollback consumed items for player {}", player.getName().getString());
                 })
-                .validate(() -> ValidationUtils.validateDefinitionExists(questId)
-                        .map(def -> null))
-                
-                // 执行步骤（带回滚）
+                // 发放奖励（使用优先级队列）
+                .execute(() -> grantRewards(player, definition, instance.getDifficultyMultiplier()))
+                // 更新状态
                 .execute(() -> {
-                    QuestDefinition definition = QuestDefinitionLoader.getInstance().getDefinition(questId);
-                    
-                    // 消耗物品
-                    consumeCollectItems(player, definition);
-                }, () -> {
-                    // 回滚：恢复物品（实际上很难完美回滚，所以先验证再执行）
-                    RoadWeaverRPG.LOGGER.warn("Rollback consume items for player {}", player.getName().getString());
-                })
-                
-                .execute(() -> {
-                    QuestInstance instance = playerData.getActiveQuest(questId);
-                    QuestDefinition definition = QuestDefinitionLoader.getInstance().getDefinition(questId);
-                    
-                    // 发放奖励
-                    grantRewards(player, definition, instance != null ? instance.getDifficultyMultiplier() : 1.0f);
-                }, () -> {
-                    // 回滚：移除奖励（实际上很难完美回滚）
-                    RoadWeaverRPG.LOGGER.warn("Rollback grant rewards for player {}", player.getName().getString());
-                })
-                
-                .execute(() -> {
-                    QuestInstance instance = playerData.getActiveQuest(questId);
-                    QuestDefinition definition = QuestDefinitionLoader.getInstance().getDefinition(questId);
-                    
-                    // 更新状态
                     instance.setState(QuestState.TURNED_IN);
                     playerData.removeActiveQuest(questId);
                     playerData.markQuestCompleted(questId);
@@ -132,27 +133,32 @@ public class QuestRewardService {
                     if (definition.isRepeatable() && definition.getCooldown() > 0) {
                         playerData.setCooldown(questId, definition.getCooldown());
                     }
-                    
-                    dataAccessor.markDirty(player);
-                }, () -> {
-                    // 回滚：恢复状态
-                    QuestInstance instance = playerData.getActiveQuest(questId);
-                    if (instance != null) {
-                        instance.setState(QuestState.COMPLETED);
-                    }
                 })
-                
-                .execute(() -> {
-                    // 触发回调
-                    if (onQuestTurnedIn != null) {
-                        QuestInstance instance = playerData.getActiveQuest(questId);
-                        if (instance != null) {
-                            onQuestTurnedIn.accept(player, instance);
-                        }
-                    }
-                })
-                
+                // 更新索引
+                .execute(() -> objectiveIndex.updateIndex(player.getUUID(), instance, false))
+                // 记录状态转移
+                .execute(() -> StateTransitionLog.getInstance().log(
+                        instance.getInstanceId(), questId, oldState, QuestState.TURNED_IN, "turned_in"))
+                // 记录增量同步
+                .execute(() -> syncManager.recordQuestRemoved(player.getUUID(), questId))
                 .commit();
+        
+        if (txResult.isFailure()) {
+            return txResult;
+        }
+        
+        dataAccessor.markDirty(player);
+        
+        // 发布事件
+        eventBus.publish(new QuestEvent.QuestTurnedInEvent(player, questId, definition));
+        
+        // 触发回调
+        if (onQuestTurnedIn != null) {
+            onQuestTurnedIn.accept(player, instance);
+        }
+        
+        RoadWeaverRPG.LOGGER.info("Player {} turned in quest {}", player.getName().getString(), questId);
+        return Result.success(null);
     }
     
     private void consumeCollectItems(ServerPlayer player, QuestDefinition definition) {
@@ -177,37 +183,47 @@ public class QuestRewardService {
     }
     
     /**
-     * 发放奖励（使用队列系统）
-     * 
-     * 改进原理：
-     * - 使用RewardQueueManager管理奖励发放
-     * - 去重机制防止重复发放
-     * - 失败的奖励进入重试队列，指数退避重试
-     * - 确保奖励不丢失
+     * 发放奖励（使用优先级队列）
      */
     private void grantRewards(ServerPlayer player, QuestDefinition definition, float difficultyMod) {
-        RewardQueueManager queueManager = RewardQueueManager.getInstance();
         ResourceLocation questId = definition.getId();
         
         for (QuestReward reward : definition.getRewards()) {
+            // 确定优先级
+            PriorityRewardQueue.RewardPriority priority = determinePriority(reward);
+            
             // 先尝试直接发放
             if (tryGrantRewardDirect(player, reward, questId)) {
+                // 发布奖励事件
+                eventBus.publish(new QuestEvent.RewardGrantedEvent(player, questId, reward.getType().name(), reward));
                 continue;
             }
             
-            // 直接发放失败，加入队列等待重试
-            if (!queueManager.enqueue(player.getUUID(), questId, reward)) {
-                RoadWeaverRPG.LOGGER.debug("Reward already in queue or history: quest={}, type={}",
-                        questId, reward.getType());
+            // 直接发放失败，加入优先级队列
+            if (!rewardQueue.enqueue(player.getUUID(), questId, reward, priority)) {
+                RoadWeaverRPG.LOGGER.debug("Reward already in queue: quest={}, type={}", questId, reward.getType());
             }
         }
         
         // 处理队列中的待发放奖励
-        int granted = queueManager.processPlayerRewards(player);
+        int granted = rewardQueue.processPlayerRewards(player);
         if (granted > 0) {
-            RoadWeaverRPG.LOGGER.debug("Processed {} queued rewards for player {}",
-                    granted, player.getName().getString());
+            RoadWeaverRPG.LOGGER.debug("Processed {} queued rewards for player {}", granted, player.getName().getString());
         }
+    }
+    
+    /**
+     * 确定奖励优先级
+     */
+    private PriorityRewardQueue.RewardPriority determinePriority(QuestReward reward) {
+        return switch (reward.getType()) {
+            case ITEM -> PriorityRewardQueue.RewardPriority.HIGH;
+            case EXPERIENCE -> PriorityRewardQueue.RewardPriority.LOW;
+            case COIN -> PriorityRewardQueue.RewardPriority.NORMAL;
+            case REPUTATION -> PriorityRewardQueue.RewardPriority.NORMAL;
+            case UNLOCK_QUEST -> PriorityRewardQueue.RewardPriority.NORMAL;
+            case COMMAND -> PriorityRewardQueue.RewardPriority.NORMAL;
+        };
     }
     
     /**

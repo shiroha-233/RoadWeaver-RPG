@@ -55,5 +55,29 @@ public class NetworkHandler {
     public static final ResourceLocation SYNC_COINS = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_coins");
     
+    // 对话系统消息类型
+    public static final ResourceLocation DIALOG_DATA = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "dialog_data");
+    public static final ResourceLocation DIALOG_CHOICE = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "dialog_choice");
+    public static final ResourceLocation DIALOG_ADVANCE = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "dialog_advance");
+    public static final ResourceLocation DIALOG_LINE = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "dialog_line");
+    public static final ResourceLocation DIALOG_CHOICES = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "dialog_choices");
+    public static final ResourceLocation DIALOG_SESSION_CLOSE = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "dialog_session_close");
+    
+    // 委托地图标点系统
+    public static final ResourceLocation SYNC_QUEST_MARKERS = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_quest_markers");
+    
+    // NPC交互菜单系统
+    public static final ResourceLocation OPEN_INTERACTION_MENU = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_interaction_menu");
+    public static final ResourceLocation INTERACTION_SELECT = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "interaction_select");
+    
     private NetworkHandler() {}
 }

@@ -31,12 +31,13 @@ public class GuildMaidEntity extends BaseNPCEntity implements NPCBehavior.Dialog
     
     @Override
     public void handlePlayerInteraction(ServerPlayer player) {
-        openDialog(player);
+        // 打开交互菜单（由平台特定代码实现）
+        openInteractionMenu(player);
     }
     
     @Override
     public void openDialog(ServerPlayer player) {
-        // 由平台特定代码实现（Fabric/Forge）
+        // 由交互菜单中的"对话"按钮触发
         openDialogForPlayer(player);
     }
     
@@ -55,7 +56,14 @@ public class GuildMaidEntity extends BaseNPCEntity implements NPCBehavior.Dialog
     }
     
     /**
-     * 为玩家打开对话界面（由平台实现）
+     * 打开交互菜单（由平台实现）
+     */
+    protected void openInteractionMenu(ServerPlayer player) {
+        // 由子类或平台特定代码实现
+    }
+    
+    /**
+     * 为玩家打开对话界面（回退方案，由平台实现）
      */
     protected void openDialogForPlayer(ServerPlayer player) {
         // 由子类或平台特定代码实现

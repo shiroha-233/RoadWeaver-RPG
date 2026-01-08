@@ -1,0 +1,68 @@
+{
+  "title": "复杂条件挑战",
+  "description": "在特定条件下完成多个目标",
+  "rank": "S",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:enderman",
+      "amount": 10,
+      "description": "在末地击杀末影人 (0/10)",
+      "conditions": [
+        {"type": "in_end"},
+        {"type": "is_night"}
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:ender_pearl",
+      "amount": 20,
+      "description": "收集末影珍珠 (0/20)",
+      "conditions": [
+        {"type": "in_end"},
+        {"type": "health_percent", "value": 0.5}
+      ]
+    },
+    {
+      "type": "kill",
+      "target": "minecraft:wither_skeleton",
+      "amount": 8,
+      "description": "在下界击杀凋零骷髅 (0/8)",
+      "conditions": [
+        {"type": "in_nether"},
+        {"type": "is_thundering"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 15
+    },
+    {
+      "type": "item",
+      "item": "minecraft:diamond",
+      "count": 5
+    },
+    {
+      "type": "item",
+      "item": "minecraft:netherite_ingot",
+      "count": 1
+    },
+    {
+      "type": "experience",
+      "amount": 500
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:legend",
+      "amount": 150
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 7200,
+  "time_limit": 3600,
+  "base_difficulty": 2.0
+}

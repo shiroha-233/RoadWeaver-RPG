@@ -4,11 +4,15 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.shiroha233.roadweaverpg.quest.type.QuestType;
 
 /**
  * 委托目标接口
+ * 
+ * 设计原理：
+ * - 定义目标的基本属性和序列化方法
+ * - 进度检查逻辑由 ObjectiveProgressChecker 统一处理
+ * - 各目标类只需提供必要的配置信息
  */
 public interface QuestObjective {
     
@@ -25,10 +29,4 @@ public interface QuestObjective {
     ResourceLocation getTargetResource();
     void toNetwork(FriendlyByteBuf buf);
     JsonObject toJson();
-    
-    /**
-     * 检查事件是否匹配此目标
-     * @return 匹配则返回增加的进度，否则返回0
-     */
-    int checkProgress(ServerPlayer player, String eventType, Object eventData);
 }

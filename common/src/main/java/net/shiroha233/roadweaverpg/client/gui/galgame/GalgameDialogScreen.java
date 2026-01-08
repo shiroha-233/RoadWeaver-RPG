@@ -7,6 +7,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.shiroha233.roadweaverpg.dialog.DialogData;
+import net.shiroha233.roadweaverpg.dialog.client.ClientDialogHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +17,11 @@ import java.util.function.Consumer;
 /**
  * Galgame风格对话界面
  * 职责：管理Galgame风格的NPC对话显示
- * 特性：底部对话框、左右角色展示（实体渲染）、打字机效果、选项按钮
- * 布局：屏幕分为三部分 - 左侧NPC视口、右侧玩家视口、底部对话框
+ * 特性：底部对话框、左右角色展示、打字机效果、选项按钮
+ * 
+ * 实现DialogScreenInterface以支持动态更新对话内容
  */
-public class GalgameDialogScreen extends Screen {
+public class GalgameDialogScreen extends Screen implements ClientDialogHandler.DialogScreenInterface {
     
     private final int npcEntityId;
     private final DialogTextRenderer textRenderer;
@@ -41,8 +44,11 @@ public class GalgameDialogScreen extends Screen {
     private LivingEntity npcEntity;
     private Player playerEntity;
     
-    // 当前说话者（用于高亮效果）
+    // 当前说话者
     private boolean isNpcSpeaking = true;
+    
+    // 当前对话数据引用（用于动态更新）
+    private DialogData currentDialogData;
     
     public GalgameDialogScreen(int npcEntityId) {
         super(Component.empty());
@@ -113,14 +119,25 @@ public class GalgameDialogScreen extends Screen {
             return;
         }
         
+        // 如果有待发送的选择，发送它
+        if (pendingChoiceIndex >= 0) {
+            if (optionCallback != null) {
+                optionCallback.accept(pendingChoiceIndex);
+            }
+            pendingChoiceIndex = -1;
+            return;
+        }
+        
         // 前进到下一条
         if (currentEntryIndex < dialogEntries.size() - 1) {
             showEntry(currentEntryIndex + 1);
         } else {
             // 对话结束，显示选项或关闭
-            if (!currentOptions.isEmpty()) {
+            if (!currentOptions.isEmpty() && !showingOptions) {
                 showingOptions = true;
                 createOptionButtons();
+            } else if (showingOptions) {
+                // 已经在显示选项，不做任何事
             } else {
                 onClose();
             }
@@ -158,11 +175,45 @@ public class GalgameDialogScreen extends Screen {
     }
     
     private void handleOptionSelected(int index) {
-        if (optionCallback != null) {
-            optionCallback.accept(index);
+        if (index < 0 || index >= currentOptions.size()) return;
+        
+        DialogOptionData option = currentOptions.get(index);
+        
+        // 检查是否是关闭动作（close动作直接关闭，不显示回话）
+        if (option.isCloseAction()) {
+            if (optionCallback != null) {
+                optionCallback.accept(index);
+            }
+            return;
         }
-        onClose();
+        
+        // 如果选项有回话内容，先显示玩家的回话
+        if (option.hasResponse()) {
+            showingOptions = false;
+            clearWidgets();
+            
+            // 添加玩家回话到对话列表
+            if (playerEntity != null) {
+                dialogEntries.add(new DialogEntry(
+                        playerEntity.getDisplayName(), 
+                        option.responseText(), 
+                        false
+                ));
+                showEntry(dialogEntries.size() - 1);
+            }
+            
+            // 延迟发送选择到服务端（让玩家看到自己的回话）
+            pendingChoiceIndex = index;
+        } else {
+            // 没有回话内容，直接发送选择
+            if (optionCallback != null) {
+                optionCallback.accept(index);
+            }
+        }
     }
+    
+    // 待发送的选择索引（-1表示没有待发送的选择）
+    private int pendingChoiceIndex = -1;
     
     @Override
     public void tick() {
@@ -372,13 +423,139 @@ public class GalgameDialogScreen extends Screen {
         return false;
     }
     
+    // ==================== DialogScreenInterface 实现 ====================
+    
+    @Override
+    public void updateDialogLine(DialogData.DialogLine line, int lineIndex) {
+        // 更新指定索引的对话行
+        Component speaker = line.isNpc() && npcEntity != null 
+                ? npcEntity.getDisplayName() 
+                : (playerEntity != null ? playerEntity.getDisplayName() : Component.literal("???"));
+        
+        DialogEntry entry = new DialogEntry(speaker, line.getTextComponent(), line.isNpc());
+        
+        if (lineIndex < dialogEntries.size()) {
+            dialogEntries.set(lineIndex, entry);
+        } else {
+            dialogEntries.add(entry);
+        }
+        
+        showEntry(lineIndex);
+    }
+    
+    @Override
+    public void showChoices(List<DialogData.DialogChoice> choices) {
+        // 转换为内部选项格式
+        currentOptions.clear();
+        for (DialogData.DialogChoice choice : choices) {
+            currentOptions.add(new DialogOptionData(
+                    choice.getTextComponent(), 
+                    choice.id(),
+                    choice.action(),
+                    choice.hasResponse() ? choice.getResponseComponent() : Component.empty()
+            ));
+        }
+        
+        // 更新回调
+        this.optionCallback = index -> {
+            if (index >= 0 && index < choices.size()) {
+                ClientDialogHandler.selectChoice(choices.get(index).id());
+            }
+        };
+        
+        if (!currentOptions.isEmpty()) {
+            showingOptions = true;
+            createOptionButtons();
+        }
+    }
+    
+    @Override
+    public void updateDialog(DialogData dialog) {
+        // 判断是否是同一个对话的更新
+        boolean isSameDialog = currentDialogData != null && 
+                              currentDialogData.id().equals(dialog.id());
+        
+        this.currentDialogData = dialog;
+        
+        // 重置状态
+        showingOptions = false;
+        pendingChoiceIndex = -1;
+        currentOptions.clear();
+        clearWidgets();
+        
+        // 如果是新对话，清空对话历史
+        if (!isSameDialog) {
+            dialogEntries.clear();
+            
+            // 添加新的对话行
+            for (DialogData.DialogLine line : dialog.lines()) {
+                Component speaker = line.isNpc() && npcEntity != null 
+                        ? npcEntity.getDisplayName() 
+                        : (playerEntity != null ? playerEntity.getDisplayName() : Component.literal("???"));
+                dialogEntries.add(new DialogEntry(speaker, line.getTextComponent(), line.isNpc()));
+            }
+        }
+        
+        // 设置选项（同时保存choiceId和action）
+        for (DialogData.DialogChoice choice : dialog.choices()) {
+            currentOptions.add(new DialogOptionData(
+                    choice.getTextComponent(), 
+                    choice.id(),
+                    choice.action(),
+                    choice.hasResponse() ? choice.getResponseComponent() : Component.empty()
+            ));
+        }
+        
+        // 更新回调，确保使用最新的dialog引用
+        this.optionCallback = index -> {
+            if (index >= 0 && index < dialog.choices().size()) {
+                ClientDialogHandler.selectChoice(dialog.choices().get(index).id());
+            }
+        };
+        
+        // 显示第一行或选项
+        if (!dialogEntries.isEmpty()) {
+            showEntry(0);
+        } else if (!currentOptions.isEmpty()) {
+            showingOptions = true;
+            createOptionButtons();
+        }
+    }
+    
+    /**
+     * 设置对话数据引用
+     */
+    public void setDialogData(DialogData dialog) {
+        this.currentDialogData = dialog;
+    }
+    
     /**
      * 对话条目数据
      */
     public record DialogEntry(Component speaker, Component text, boolean isNpc) {}
     
     /**
-     * 对话选项数据
+     * 对话选项数据（包含选项ID、动作类型和回话内容）
+     * choiceId: 选项ID，用于发送到服务端
+     * action: 动作类型，用于判断是否是关闭动作
      */
-    public record DialogOptionData(Component text, String actionId) {}
+    public record DialogOptionData(Component text, String choiceId, String action, Component responseText) {
+        public DialogOptionData(Component text, String choiceId) {
+            this(text, choiceId, "", Component.empty());
+        }
+        
+        /** 兼容旧构造器（actionId作为choiceId使用） */
+        public DialogOptionData(Component text, String choiceId, Component responseText) {
+            this(text, choiceId, choiceId, responseText);
+        }
+        
+        public boolean hasResponse() {
+            return responseText != null && !responseText.getString().isEmpty();
+        }
+        
+        /** 检查是否是关闭动作 */
+        public boolean isCloseAction() {
+            return "close".equals(action) || "leave".equals(action);
+        }
+    }
 }

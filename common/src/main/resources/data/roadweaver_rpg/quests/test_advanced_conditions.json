@@ -1,0 +1,50 @@
+{
+  "title": "综合挑战",
+  "description": "完成多个复杂条件的挑战任务",
+  "rank": "B",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:zombie",
+      "amount": 10,
+      "description": "击杀僵尸 (0/10)"
+    },
+    {
+      "type": "kill",
+      "target": "minecraft:skeleton",
+      "amount": 10,
+      "description": "击杀骷髅 (0/10)"
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:bone",
+      "amount": 16,
+      "description": "收集骨头 (0/16)"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 6
+    },
+    {
+      "type": "item",
+      "item": "minecraft:diamond",
+      "count": 2
+    },
+    {
+      "type": "experience",
+      "amount": 250
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 70
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 3600,
+  "time_limit": 0
+}

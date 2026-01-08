@@ -1,0 +1,36 @@
+{
+  "title": "沙漠探险",
+  "description": "在沙漠群系击杀8只尸壳",
+  "rank": "C",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:husk",
+      "amount": 8,
+      "description": "在沙漠击杀尸壳 (0/8)",
+      "conditions": [
+        {"type": "in_biome_tag", "tag": "minecraft:is_desert"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 4
+    },
+    {
+      "type": "experience",
+      "amount": 150
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 45
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 2400,
+  "time_limit": 0
+}

@@ -1,0 +1,109 @@
+{
+  "title": "委托定义指南",
+  "description": "这是一个完整的委托定义示例，展示了所有可用的功能和条件系统的使用方法",
+  "rank": "S",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:zombie",
+      "amount": 10,
+      "description": "击杀僵尸 (0/10)",
+      "conditions": [
+        {
+          "type": "is_night"
+        },
+        {
+          "type": "in_biome",
+          "biome": "minecraft:plains"
+        }
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:diamond",
+      "amount": 5,
+      "description": "收集钻石 (0/5)",
+      "conditions": [
+        {
+          "type": "in_height_range",
+          "min_y": -64,
+          "max_y": 16
+        }
+      ]
+    },
+    {
+      "type": "explore",
+      "targets": [
+        {
+          "x": 100,
+          "y": 64,
+          "z": 100,
+          "radius": 32,
+          "dimension": "minecraft:overworld",
+          "name": "探索点1"
+        }
+      ],
+      "description": "探索指定区域 (0/1)",
+      "extra_conditions": [
+        {
+          "type": "is_day"
+        }
+      ]
+    },
+    {
+      "type": "location_kill",
+      "target": "minecraft:creeper",
+      "amount": 8,
+      "description": "在指定位置击杀爬行者 (0/8)",
+      "locations": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "radius": 64,
+          "dimension": "minecraft:overworld",
+          "name": "目标区域"
+        }
+      ],
+      "spawn_config": {
+        "enabled": true,
+        "max_count": 5,
+        "respawn_delay": 200,
+        "spawn_radius": 16,
+        "persistent_mobs": false
+      },
+      "auto_collect_drops": true,
+      "show_on_map": true,
+      "map_icon": "quest_target",
+      "map_color": 16711680,
+      "conditions": [
+        {
+          "type": "is_raining"
+        }
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 10
+    },
+    {
+      "type": "experience",
+      "amount": 500
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 100
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 3600,
+  "time_limit": 1800,
+  "base_difficulty": 1.5,
+  "prerequisites": [],
+  "unlocks": []
+}

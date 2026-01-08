@@ -77,4 +77,13 @@ public class ReputationReward implements QuestReward {
         int amount = json.has("amount") ? json.get("amount").getAsInt() : 10;
         return new ReputationReward(faction, amount);
     }
+    
+    /**
+     * 从 NBT 反序列化
+     */
+    public static ReputationReward fromNbt(net.minecraft.nbt.CompoundTag tag) {
+        ResourceLocation faction = new ResourceLocation(tag.getString("faction"));
+        int amount = tag.getInt("amount");
+        return new ReputationReward(faction, amount);
+    }
 }

@@ -3,8 +3,10 @@ package net.shiroha233.roadweaverpg;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
@@ -47,9 +49,14 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new net.shiroha233.roadweaverpg.shop.ShopManagerFabric());
         
+        // 注册对话数据加载器（使用Fabric包装类）
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(net.shiroha233.roadweaverpg.dialog.DialogRegistryFabric.getInstance());
+        
         // 注册委托事件监听
         QuestEventsFabric.register();
         registerBlockEvents();
+        registerServerTickEvents();
         
         // 注册调试指令
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> 
@@ -74,6 +81,15 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
             if (player instanceof ServerPlayer serverPlayer) {
                 QuestEventHandler.onBlockBroken(serverPlayer, state);
+            }
+        });
+    }
+    
+    private void registerServerTickEvents() {
+        // 服务端Level Tick事件
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            for (ServerLevel level : server.getAllLevels()) {
+                QuestEventHandler.onServerLevelTick(level);
             }
         });
     }

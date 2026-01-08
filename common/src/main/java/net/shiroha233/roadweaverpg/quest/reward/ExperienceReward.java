@@ -65,4 +65,13 @@ public class ExperienceReward implements QuestReward {
         boolean isLevels = json.has("levels") && json.get("levels").getAsBoolean();
         return new ExperienceReward(amount, isLevels);
     }
+    
+    /**
+     * 从 NBT 反序列化
+     */
+    public static ExperienceReward fromNbt(net.minecraft.nbt.CompoundTag tag) {
+        int amount = tag.getInt("amount");
+        boolean isLevels = tag.contains("levels") && tag.getBoolean("levels");
+        return new ExperienceReward(amount, isLevels);
+    }
 }

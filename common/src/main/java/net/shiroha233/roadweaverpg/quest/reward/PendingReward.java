@@ -1,5 +1,6 @@
 package net.shiroha233.roadweaverpg.quest.reward;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
@@ -7,6 +8,10 @@ import java.util.UUID;
 /**
  * 待发放奖励记录
  * 用于奖励队列系统，确保奖励不丢失
+ * 
+ * 改进：
+ * - 支持 NBT 序列化，可持久化到存档
+ * - 优化去重键生成算法
  */
 public record PendingReward(
         UUID rewardId,           // 奖励唯一ID（用于去重）
@@ -63,8 +68,43 @@ public record PendingReward(
         return System.currentTimeMillis() >= nextRetryTime;
     }
     
-    /** 生成去重键 */
+    /** 生成去重键（优化版本，使用奖励ID确保唯一性） */
     public String getDeduplicationKey() {
-        return playerId + ":" + questId + ":" + reward.getType() + ":" + reward.hashCode();
+        return rewardId.toString();
+    }
+    
+    /**
+     * 序列化到 NBT
+     */
+    public CompoundTag toNbt() {
+        CompoundTag tag = new CompoundTag();
+        tag.putUUID("rewardId", rewardId);
+        tag.putUUID("playerId", playerId);
+        tag.putString("questId", questId.toString());
+        tag.put("reward", RewardRegistry.toNbt(reward));
+        tag.putLong("createTime", createTime);
+        tag.putInt("retryCount", retryCount);
+        tag.putLong("nextRetryTime", nextRetryTime);
+        if (lastError != null) {
+            tag.putString("lastError", lastError);
+        }
+        return tag;
+    }
+    
+    /**
+     * 从 NBT 反序列化
+     */
+    public static PendingReward fromNbt(CompoundTag tag) {
+        UUID rewardId = tag.getUUID("rewardId");
+        UUID playerId = tag.getUUID("playerId");
+        ResourceLocation questId = new ResourceLocation(tag.getString("questId"));
+        QuestReward reward = RewardRegistry.fromNbt(tag.getCompound("reward"));
+        long createTime = tag.getLong("createTime");
+        int retryCount = tag.getInt("retryCount");
+        long nextRetryTime = tag.getLong("nextRetryTime");
+        String lastError = tag.contains("lastError") ? tag.getString("lastError") : null;
+        
+        return new PendingReward(rewardId, playerId, questId, reward, 
+                createTime, retryCount, nextRetryTime, lastError);
     }
 }

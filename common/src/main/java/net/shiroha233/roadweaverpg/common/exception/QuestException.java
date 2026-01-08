@@ -58,6 +58,9 @@ public class QuestException extends RuntimeException {
         TRANSACTION_ALREADY_COMMITTED("quest.error.transaction_already_committed"),
         TRANSACTION_EXECUTION_FAILED("quest.error.transaction_execution_failed"),
         TRANSACTION_ROLLBACK_FAILED("quest.error.transaction_rollback_failed"),
+        // 验证相关
+        VALIDATION_FAILED("quest.error.validation_failed"),
+        INVALID_STATE_TRANSITION("quest.error.invalid_state_transition"),
         UNKNOWN_ERROR("quest.error.unknown");
         
         private final String translationKey;

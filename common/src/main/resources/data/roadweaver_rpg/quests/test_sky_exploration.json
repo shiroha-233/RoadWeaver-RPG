@@ -1,0 +1,36 @@
+{
+  "title": "末地猎手",
+  "description": "在末地击杀15只末影人",
+  "rank": "A",
+  "type": "location_kill",
+  "objectives": [
+    {
+      "type": "location_kill",
+      "target": "minecraft:enderman",
+      "amount": 15,
+      "description": "在末地击杀末影人 (0/15)",
+      "locations": [
+        {"x": 0, "y": 64, "z": 0, "radius": 10000, "dimension": "minecraft:the_end"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 10
+    },
+    {
+      "type": "experience",
+      "amount": 400
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 100
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 7200,
+  "time_limit": 0
+}

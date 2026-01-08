@@ -13,7 +13,7 @@ import net.shiroha233.roadweaverpg.network.packet.quest.*;
 import net.shiroha233.roadweaverpg.network.packet.sync.*;
 import net.shiroha233.roadweaverpg.network.packet.ui.*;
 import net.shiroha233.roadweaverpg.network.packet.shop.*;
-import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
+import net.shiroha233.roadweaverpg.network.packet.interaction.*;
 
 /**
  * Forge 客户端数据包处理器
@@ -54,6 +54,7 @@ public class ClientPacketHandler {
     }
     
     public static void handleSyncQuests(SyncQuestsPacket packet) {
+        // 使用合并策略，不清空已有的定义缓存
         ClientQuestCache.setQuests(packet.quests());
     }
     
@@ -74,12 +75,14 @@ public class ClientPacketHandler {
         }
         ClientQuestCache.setCurrentInstance(packet.instance());
         ClientQuestCache.cacheInstance(packet.instance());
+        
+        // 通知委托书处理器（用于延迟打开）
+        net.shiroha233.roadweaverpg.forge.client.QuestScrollClientHandler.onInstanceSynced(packet.instance());
     }
     
     public static void handleSyncAllQuestInstances(SyncAllQuestInstancesPacket packet) {
-        for (QuestInstance instance : packet.instances()) {
-            ClientQuestCache.cacheInstance(instance);
-        }
+        // 批量缓存所有实例
+        ClientQuestCache.cacheAllInstances(packet.instances());
     }
 
     public static void handleSyncReputationLevels(SyncReputationLevelsPacket packet) {
@@ -171,5 +174,84 @@ public class ClientPacketHandler {
     
     public static void sendRequestQuestProgress(ResourceLocation questId) {
         NetworkHandlerForge.CHANNEL.sendToServer(new RequestQuestProgressPacket(questId));
+    }
+    
+    /** 发送请求委托进度（带instanceId精确匹配） */
+    public static void sendRequestQuestProgress(ResourceLocation questId, java.util.UUID instanceId) {
+        NetworkHandlerForge.CHANNEL.sendToServer(new RequestQuestProgressPacket(questId, instanceId));
+    }
+    
+    // ==================== 交互菜单系统客户端处理 ====================
+    
+    public static void handleOpenInteractionMenu(OpenInteractionMenuPacket packet) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return;
+        
+        mc.setScreen(new net.shiroha233.roadweaverpg.client.gui.interaction.NPCInteractionScreen(
+                packet.npcEntityId(),
+                packet.entries(),
+                entry -> sendInteractionSelect(packet.npcEntityId(), entry.id())
+        ));
+    }
+    
+    public static void sendInteractionSelect(int npcEntityId, String entryId) {
+        NetworkHandlerForge.CHANNEL.sendToServer(new InteractionSelectPacket(npcEntityId, entryId));
+    }
+    
+    // ==================== 对话系统客户端处理 ====================
+    
+    /**
+     * 处理对话数据（带版本号）
+     */
+    public static void handleDialogData(net.shiroha233.roadweaverpg.network.packet.dialog.DialogDataPacket packet) {
+        // 初始化对话回调（如果尚未初始化）
+        net.shiroha233.roadweaverpg.dialog.client.ClientDialogHandler.init(
+                ClientPacketHandler::sendDialogChoice,
+                ClientPacketHandler::sendDialogAdvance
+        );
+        
+        // 委托给公共处理器（包含版本号）
+        net.shiroha233.roadweaverpg.dialog.client.ClientDialogHandler.handleDialogData(
+                packet.npcEntityId(), packet.dialog(), packet.syncVersion());
+    }
+    
+    /**
+     * 处理单行对话
+     */
+    public static void handleDialogLine(net.shiroha233.roadweaverpg.network.packet.dialog.DialogLinePacket packet) {
+        net.shiroha233.roadweaverpg.dialog.client.ClientDialogHandler.handleDialogLine(
+                packet.npcEntityId(), packet.line(), packet.lineIndex());
+    }
+    
+    /**
+     * 处理对话选项
+     */
+    public static void handleDialogChoices(net.shiroha233.roadweaverpg.network.packet.dialog.DialogChoicesPacket packet) {
+        net.shiroha233.roadweaverpg.dialog.client.ClientDialogHandler.handleDialogChoices(
+                packet.dialogId(), packet.choices());
+    }
+    
+    /**
+     * 处理会话关闭
+     */
+    public static void handleDialogSessionClose(net.shiroha233.roadweaverpg.network.packet.dialog.DialogSessionClosePacket packet) {
+        net.shiroha233.roadweaverpg.dialog.client.ClientDialogHandler.handleSessionClose(packet.reason());
+    }
+    
+    /**
+     * 发送对话选择到服务端（带版本号）
+     */
+    public static void sendDialogChoice(String choiceId) {
+        long syncVersion = net.shiroha233.roadweaverpg.dialog.client.ClientDialogHandler.getCurrentSyncVersion();
+        NetworkHandlerForge.CHANNEL.sendToServer(
+                new net.shiroha233.roadweaverpg.network.packet.dialog.DialogChoicePacket(choiceId, syncVersion));
+    }
+    
+    /**
+     * 发送对话推进请求到服务端
+     */
+    public static void sendDialogAdvance() {
+        NetworkHandlerForge.CHANNEL.sendToServer(
+                new net.shiroha233.roadweaverpg.network.packet.dialog.DialogAdvancePacket());
     }
 }

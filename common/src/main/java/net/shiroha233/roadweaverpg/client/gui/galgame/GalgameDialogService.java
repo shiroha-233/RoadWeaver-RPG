@@ -39,9 +39,9 @@ public final class GalgameDialogService {
                 .npcSays(message)
                 .onOptionSelected(onOptionSelected);
         
-        // 添加选项
+        // 添加选项（使用choiceId）
         for (GalgameDialogScreen.DialogOptionData option : options) {
-            builder.addOption(option.text(), option.actionId());
+            builder.addOption(option.text(), option.choiceId());
         }
         
         Minecraft.getInstance().setScreen(builder.build());

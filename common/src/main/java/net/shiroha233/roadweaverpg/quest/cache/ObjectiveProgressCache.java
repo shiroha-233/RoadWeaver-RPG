@@ -215,21 +215,26 @@ public class ObjectiveProgressCache {
     
     /**
      * 定期清理过期缓存（防止内存泄漏）
+     * 
+     * 原理：使用迭代器安全地删除元素，避免并发修改异常
      */
     public void cleanupExpiredCaches() {
-        // 清理过期的L1缓存
+        // 清理过期的L1缓存（使用迭代器避免并发修改）
+        Set<UUID> emptyL1Players = ConcurrentHashMap.newKeySet();
         l1Cache.forEach((playerId, cache) -> {
             cache.entrySet().removeIf(e -> e.getValue().isExpired());
             if (cache.isEmpty()) {
-                l1Cache.remove(playerId);
+                emptyL1Players.add(playerId);
             }
         });
+        emptyL1Players.forEach(l1Cache::remove);
         
         // 清理过期的L2缓存
         l2Cache.entrySet().removeIf(e -> e.getValue().isExpired());
         
         // 清理孤立的数据
-        Set<UUID> activePlayerIds = l2Cache.keySet();
+        Set<UUID> activePlayerIds = ConcurrentHashMap.newKeySet();
+        activePlayerIds.addAll(l2Cache.keySet());
         collectCache.keySet().removeIf(id -> !activePlayerIds.contains(id));
         playerDataVersions.keySet().removeIf(id -> !activePlayerIds.contains(id));
         
@@ -256,6 +261,7 @@ public class ObjectiveProgressCache {
     private String getEventTypeForObjective(QuestObjective objective) {
         return switch (objective.getType()) {
             case KILL -> "entity_kill";
+            case LOCATION_KILL -> "location_kill";
             case COLLECT -> "inventory_check";
             case EXPLORE -> "player_move";
             case BUILD -> "block_place";

@@ -1,0 +1,55 @@
+{
+  "title": "环境适应",
+  "description": "在各种环境中完成任务（注意：收集类目标不支持瞬时条件）",
+  "rank": "C",
+  "type": "kill",
+  "objectives": [
+    {
+      "type": "kill",
+      "target": "minecraft:drowned",
+      "amount": 10,
+      "description": "在水中击杀溺尸 (0/10)",
+      "conditions": [
+        {"type": "in_water"}
+      ]
+    },
+    {
+      "type": "kill",
+      "target": "minecraft:blaze",
+      "amount": 8,
+      "description": "在下界击杀烈焰人 (0/8)",
+      "conditions": [
+        {"type": "in_nether"}
+      ]
+    },
+    {
+      "type": "collect",
+      "target": "minecraft:oak_log",
+      "amount": 16,
+      "description": "在地表采集木头 (0/16)",
+      "conditions": [
+        {"type": "in_height_range", "min_y": 60, "max_y": 320}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 5
+    },
+    {
+      "type": "experience",
+      "amount": 100
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:adventurer",
+      "amount": 60
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 1800,
+  "time_limit": 0,
+  "base_difficulty": 1.2
+}

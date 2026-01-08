@@ -1,0 +1,36 @@
+{
+  "title": "雨中收集",
+  "description": "在雨天收集32个小麦",
+  "rank": "D",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:wheat",
+      "amount": 32,
+      "description": "在雨天收集小麦 (0/32)",
+      "conditions": [
+        {"type": "is_raining"}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 2
+    },
+    {
+      "type": "experience",
+      "amount": 60
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 20
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 1800,
+  "time_limit": 0
+}

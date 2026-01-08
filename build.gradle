@@ -68,6 +68,8 @@ allprojects {
 		javaLauncher = javaToolchains.launcherFor {
 			languageVersion = JavaLanguageVersion.of(17)
 		}
+		// 设置运行游戏时的玩家名称
+		systemProperty 'minecraft.username', rootProject.properties.getOrDefault('minecraft_username', 'Player')
 	}
 }
 
@@ -89,5 +91,11 @@ subprojects {
         // 添加对 RoadWeaver 主模组的依赖
         // 注意：在实际发布时需要配置正确的依赖
         // modImplementation "net.shiroha233.roadweaver:roadweaver-${project.name}:2.1.0-1.20.1"
+	}
+	
+	// 配置runClient任务，设置固定的玩家名称
+	tasks.named('runClient', JavaExec).configure {
+		def username = rootProject.properties.getOrDefault('minecraft_username', 'Player')
+		args '--username', username
 	}
 }

@@ -1,0 +1,45 @@
+{
+  "npc_type": "guild_maid",
+  "lines": [
+    {
+      "speaker": "npc",
+      "text": "欢迎来到冒险者公会！我是这里的接待员。"
+    },
+    {
+      "speaker": "npc",
+      "text": "请问有什么可以帮到您的吗？"
+    }
+  ],
+  "choices": [
+    {
+      "id": "show_quests",
+      "text": "查看委托",
+      "response": "我想看看有什么委托可以接。",
+      "action": "show_quests"
+    },
+    {
+      "id": "complete_quest",
+      "text": "提交委托",
+      "response": "我完成了一个委托，想来交付。",
+      "action": "complete_quest"
+    },
+    {
+      "id": "retrieve_scroll",
+      "text": "领取卷轴",
+      "response": "我想领取委托卷轴。",
+      "action": "retrieve_scroll"
+    },
+    {
+      "id": "view_reputation",
+      "text": "查看声望",
+      "response": "我想看看我的冒险者等级。",
+      "action": "view_reputation"
+    },
+    {
+      "id": "leave",
+      "text": "离开",
+      "response": "没什么事了，告辞。",
+      "action": "close"
+    }
+  ]
+}

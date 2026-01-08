@@ -1,0 +1,427 @@
+{
+  "items": [
+    {
+      "id": "wooden_shovel",
+      "item": "minecraft:wooden_shovel",
+      "category": "tools",
+      "price": 5,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "wooden_pickaxe",
+      "item": "minecraft:wooden_pickaxe",
+      "category": "tools",
+      "price": 10,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "wooden_hoe",
+      "item": "minecraft:wooden_hoe",
+      "category": "tools",
+      "price": 5,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "stone_shovel",
+      "item": "minecraft:stone_shovel",
+      "category": "tools",
+      "price": 20,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "stone_pickaxe",
+      "item": "minecraft:stone_pickaxe",
+      "category": "tools",
+      "price": 30,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "stone_hoe",
+      "item": "minecraft:stone_hoe",
+      "category": "tools",
+      "price": 20,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_shovel",
+      "item": "minecraft:iron_shovel",
+      "category": "tools",
+      "price": 60,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_pickaxe",
+      "item": "minecraft:iron_pickaxe",
+      "category": "tools",
+      "price": 100,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "iron_hoe",
+      "item": "minecraft:iron_hoe",
+      "category": "tools",
+      "price": 60,
+      "required_level": 20,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_shovel",
+      "item": "minecraft:golden_shovel",
+      "category": "tools",
+      "price": 100,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_pickaxe",
+      "item": "minecraft:golden_pickaxe",
+      "category": "tools",
+      "price": 150,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "golden_hoe",
+      "item": "minecraft:golden_hoe",
+      "category": "tools",
+      "price": 100,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_shovel",
+      "item": "minecraft:diamond_shovel",
+      "category": "tools",
+      "price": 500,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_pickaxe",
+      "item": "minecraft:diamond_pickaxe",
+      "category": "tools",
+      "price": 800,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "diamond_hoe",
+      "item": "minecraft:diamond_hoe",
+      "category": "tools",
+      "price": 500,
+      "required_level": 45,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_shovel",
+      "item": "minecraft:netherite_shovel",
+      "category": "tools",
+      "price": 2000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_pickaxe",
+      "item": "minecraft:netherite_pickaxe",
+      "category": "tools",
+      "price": 3500,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "netherite_hoe",
+      "item": "minecraft:netherite_hoe",
+      "category": "tools",
+      "price": 2000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "bucket",
+      "item": "minecraft:bucket",
+      "category": "tools",
+      "price": 50,
+      "required_level": 5,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "water_bucket",
+      "item": "minecraft:water_bucket",
+      "category": "tools",
+      "price": 60,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "lava_bucket",
+      "item": "minecraft:lava_bucket",
+      "category": "tools",
+      "price": 150,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "milk_bucket",
+      "item": "minecraft:milk_bucket",
+      "category": "tools",
+      "price": 80,
+      "required_level": 15,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "fishing_rod",
+      "item": "minecraft:fishing_rod",
+      "category": "tools",
+      "price": 30,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "flint_and_steel",
+      "item": "minecraft:flint_and_steel",
+      "category": "tools",
+      "price": 20,
+      "required_level": 5,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "shears",
+      "item": "minecraft:shears",
+      "category": "tools",
+      "price": 30,
+      "required_level": 5,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "brush",
+      "item": "minecraft:brush",
+      "category": "tools",
+      "price": 40,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "name_tag",
+      "item": "minecraft:name_tag",
+      "category": "tools",
+      "price": 200,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "lead",
+      "item": "minecraft:lead",
+      "category": "tools",
+      "price": 20,
+      "required_level": 5,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "compass",
+      "item": "minecraft:compass",
+      "category": "tools",
+      "price": 100,
+      "required_level": 15,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "recovery_compass",
+      "item": "minecraft:recovery_compass",
+      "category": "tools",
+      "price": 2000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "clock",
+      "item": "minecraft:clock",
+      "category": "tools",
+      "price": 100,
+      "required_level": 15,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "spyglass",
+      "item": "minecraft:spyglass",
+      "category": "tools",
+      "price": 250,
+      "required_level": 25,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "map",
+      "item": "minecraft:map",
+      "category": "tools",
+      "price": 50,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "ender_pearl",
+      "item": "minecraft:ender_pearl",
+      "category": "tools",
+      "price": 150,
+      "required_level": 40,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "ender_eye",
+      "item": "minecraft:ender_eye",
+      "category": "tools",
+      "price": 500,
+      "required_level": 50,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "elytra",
+      "item": "minecraft:elytra",
+      "category": "tools",
+      "price": 15000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "saddle",
+      "item": "minecraft:saddle",
+      "category": "tools",
+      "price": 400,
+      "required_level": 30,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "oak_boat",
+      "item": "minecraft:oak_boat",
+      "category": "tools",
+      "price": 60,
+      "required_level": 0,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "oak_chest_boat",
+      "item": "minecraft:oak_chest_boat",
+      "category": "tools",
+      "price": 120,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "rail",
+      "item": "minecraft:rail",
+      "category": "tools",
+      "price": 10,
+      "required_level": 5,
+      "count": 8,
+      "stock": -1
+    },
+    {
+      "id": "powered_rail",
+      "item": "minecraft:powered_rail",
+      "category": "tools",
+      "price": 50,
+      "required_level": 20,
+      "count": 8,
+      "stock": -1
+    },
+    {
+      "id": "minecart",
+      "item": "minecraft:minecart",
+      "category": "tools",
+      "price": 80,
+      "required_level": 10,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "chest_minecart",
+      "item": "minecraft:chest_minecart",
+      "category": "tools",
+      "price": 150,
+      "required_level": 15,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "hopper_minecart",
+      "item": "minecraft:hopper_minecart",
+      "category": "tools",
+      "price": 250,
+      "required_level": 25,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "music_disc_otherside",
+      "item": "minecraft:music_disc_otherside",
+      "category": "tools",
+      "price": 2000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "music_disc_pigstep",
+      "item": "minecraft:music_disc_pigstep",
+      "category": "tools",
+      "price": 5000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    },
+    {
+      "id": "music_disc_5",
+      "item": "minecraft:music_disc_5",
+      "category": "tools",
+      "price": 3000,
+      "required_level": 60,
+      "count": 1,
+      "stock": -1
+    }
+  ]
+}

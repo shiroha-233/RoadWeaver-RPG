@@ -1,0 +1,36 @@
+{
+  "title": "地下采矿",
+  "description": "在Y=0以下收集16个铁矿石",
+  "rank": "D",
+  "type": "collect",
+  "objectives": [
+    {
+      "type": "collect",
+      "target": "minecraft:raw_iron",
+      "amount": 16,
+      "description": "在地下收集铁矿石 (0/16)",
+      "conditions": [
+        {"type": "max_y", "value": 0}
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "item",
+      "item": "minecraft:emerald",
+      "count": 3
+    },
+    {
+      "type": "experience",
+      "amount": 100
+    },
+    {
+      "type": "reputation",
+      "faction": "roadweaver_rpg:guild",
+      "amount": 25
+    }
+  ],
+  "repeatable": true,
+  "cooldown": 1200,
+  "time_limit": 0
+}

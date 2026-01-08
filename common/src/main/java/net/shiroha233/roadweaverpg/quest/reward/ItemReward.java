@@ -90,4 +90,14 @@ public class ItemReward implements QuestReward {
         int count = json.has("count") ? json.get("count").getAsInt() : 1;
         return new ItemReward(id, count);
     }
+    
+    /**
+     * 从 NBT 反序列化
+     */
+    public static ItemReward fromNbt(CompoundTag tag) {
+        ResourceLocation id = new ResourceLocation(tag.getString("item"));
+        int count = tag.getInt("count");
+        CompoundTag nbt = tag.contains("nbt") ? tag.getCompound("nbt") : null;
+        return new ItemReward(id, count, nbt);
+    }
 }

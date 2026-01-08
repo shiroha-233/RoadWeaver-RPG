@@ -1,0 +1,36 @@
+{
+  "npc_type": "guild_maid",
+  "lines": [
+    {
+      "speaker": "npc",
+      "text": "这里有一个紧急委托，需要有人去村外清理僵尸。"
+    },
+    {
+      "speaker": "npc",
+      "text": "完成后会有丰厚的报酬，你愿意接受吗？"
+    }
+  ],
+  "choices": [
+    {
+      "id": "accept",
+      "text": "接受委托",
+      "response": "好的，交给我吧！",
+      "action": "accept_quest:roadweaver_rpg:test_location_kill_zombie",
+      "next": "roadweaver_rpg:guild_maid/quest_accepted"
+    },
+    {
+      "id": "decline",
+      "text": "暂时不接",
+      "response": "我现在有其他事情要做。",
+      "action": "none",
+      "next": "roadweaver_rpg:guild_maid/greeting"
+    },
+    {
+      "id": "ask_reward",
+      "text": "报酬是什么？",
+      "response": "能告诉我具体的报酬吗？",
+      "action": "none",
+      "next": "roadweaver_rpg:guild_maid/quest_reward_info"
+    }
+  ]
+}

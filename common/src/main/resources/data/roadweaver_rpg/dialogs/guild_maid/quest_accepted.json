@@ -1,0 +1,25 @@
+{
+  "npc_type": "guild_maid",
+  "lines": [
+    {
+      "speaker": "npc",
+      "text": "太好了！这是你的委托卷轴，请收好。"
+    },
+    {
+      "speaker": "npc",
+      "text": "村外的僵尸最近越来越多了，请小心。"
+    },
+    {
+      "speaker": "npc",
+      "text": "完成后记得回来找我领取报酬哦！"
+    }
+  ],
+  "choices": [
+    {
+      "id": "understood",
+      "text": "明白了",
+      "response": "我这就去！",
+      "action": "close"
+    }
+  ]
+}

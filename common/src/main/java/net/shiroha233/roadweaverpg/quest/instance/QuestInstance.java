@@ -77,12 +77,36 @@ public class QuestInstance {
     // endregion
     
     // region 状态管理
+    /**
+     * 设置状态（内部使用，不验证状态转移）
+     * 外部应通过服务层进行状态变更以确保验证
+     */
     public void setState(QuestState newState) {
         if (this.state.isTerminal()) return;
         this.state = newState;
         if (newState == QuestState.COMPLETED || newState == QuestState.TURNED_IN) {
             this.completedTime = System.currentTimeMillis();
         }
+    }
+    
+    /**
+     * 安全地设置状态（验证状态转移合法性）
+     * @return 是否成功转移
+     */
+    public boolean setStateSafe(QuestState newState) {
+        if (this.state.isTerminal()) return false;
+        
+        // 使用状态机验证
+        var stateMachine = net.shiroha233.roadweaverpg.quest.state.QuestStateMachine.getInstance();
+        if (!stateMachine.canTransition(this.state, newState)) {
+            return false;
+        }
+        
+        this.state = newState;
+        if (newState == QuestState.COMPLETED || newState == QuestState.TURNED_IN) {
+            this.completedTime = System.currentTimeMillis();
+        }
+        return true;
     }
     
     public void setDifficultyMultiplier(float multiplier) {

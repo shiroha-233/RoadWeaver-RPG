@@ -9,6 +9,7 @@ import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 public enum QuestType {
     COLLECT("collect", true, false),
     KILL("kill", true, false),
+    LOCATION_KILL("location_kill", true, true),  // 定点击杀
     EXPLORE("explore", false, true),
     ESCORT("escort", false, true),
     BUILD("build", true, false),
