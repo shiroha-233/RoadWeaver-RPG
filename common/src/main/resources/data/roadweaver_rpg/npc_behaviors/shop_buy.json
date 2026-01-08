@@ -1,0 +1,7 @@
+{
+  "task_id": "",
+  "duration_ticks": 20,
+  "sound_event_id": "maid.ai.item_get",
+  "sound_probability": 1.0,
+  "force_sound": true
+}

@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
 import net.shiroha233.roadweaverpg.entity.ModEntitiesFabric;
+import net.shiroha233.roadweaverpg.entity.NPCSoundProviderFabric;
 import net.shiroha233.roadweaverpg.event.QuestEventsFabric;
 import net.shiroha233.roadweaverpg.item.ModItemsFabric;
 import net.shiroha233.roadweaverpg.network.NetworkHandlerFabric;
@@ -39,6 +40,9 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         // 注册网络处理器
         NetworkHandlerFabric.registerServerReceivers();
         
+        // 初始化NPC声音事件提供者
+        NPCSoundProviderFabric.init();
+        
         // 注册委托数据加载器
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new QuestManagerFabric());
@@ -52,6 +56,10 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         // 注册对话数据加载器（使用Fabric包装类）
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(net.shiroha233.roadweaverpg.dialog.DialogRegistryFabric.getInstance());
+        
+        // 注册NPC行为数据加载器
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorLoaderFabric());
         
         // 注册委托事件监听
         QuestEventsFabric.register();

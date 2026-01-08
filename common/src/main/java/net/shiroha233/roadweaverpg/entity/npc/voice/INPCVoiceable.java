@@ -1,5 +1,7 @@
 package net.shiroha233.roadweaverpg.entity.npc.voice;
 
+import net.minecraft.resources.ResourceLocation;
+
 /**
  * 可发声NPC接口
  * 职责：定义NPC语音相关的行为
@@ -9,15 +11,15 @@ public interface INPCVoiceable {
     
     /**
      * 播放语音
-     * @param voiceType 语音类型
+     * @param voiceId 语音ID（从数据包加载）
      */
-    void playVoice(NPCVoiceType voiceType);
+    void playVoice(ResourceLocation voiceId);
     
     /**
      * 播放语音（强制播放，忽略概率）
-     * @param voiceType 语音类型
+     * @param voiceId 语音ID
      */
-    void playVoiceForced(NPCVoiceType voiceType);
+    void playVoiceForced(ResourceLocation voiceId);
     
     /**
      * 停止当前语音

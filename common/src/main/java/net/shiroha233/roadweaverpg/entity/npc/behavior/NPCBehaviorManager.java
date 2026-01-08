@@ -1,21 +1,19 @@
 package net.shiroha233.roadweaverpg.entity.npc.behavior;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import net.minecraft.resources.ResourceLocation;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.entity.npc.action.NPCActionManager;
-import net.shiroha233.roadweaverpg.entity.npc.action.NPCActionType;
+import net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorConfig;
+import net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorLoader;
 import net.shiroha233.roadweaverpg.entity.npc.voice.NPCVoiceManager;
-import net.shiroha233.roadweaverpg.entity.npc.voice.NPCVoiceType;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * NPC行为管理器
  * 职责：协调动作和语音的组合播放
  * 原理：
  * - 门面模式 - 提供统一的接口来协调动作和语音
- * - 预设行为组合，简化调用
+ * - 数据包驱动：从NPCBehaviorLoader加载配置
  */
 public final class NPCBehaviorManager {
     
@@ -24,138 +22,45 @@ public final class NPCBehaviorManager {
     private final NPCActionManager actionManager = NPCActionManager.getInstance();
     private final NPCVoiceManager voiceManager = NPCVoiceManager.getInstance();
     
-    // 预设行为组合
-    private final Map<String, BehaviorPreset> presets = new ConcurrentHashMap<>();
-    
-    private NPCBehaviorManager() {
-        initDefaultPresets();
-    }
+    private NPCBehaviorManager() {}
     
     public static NPCBehaviorManager getInstance() {
         return INSTANCE;
     }
     
     /**
-     * 初始化默认预设
-     */
-    private void initDefaultPresets() {
-        // 打招呼
-        registerPreset("greeting", new BehaviorPreset(
-                NPCActionType.GREETING, NPCVoiceType.GREETING, true));
-        
-        // 告别
-        registerPreset("farewell", new BehaviorPreset(
-                NPCActionType.BOW, NPCVoiceType.FAREWELL, true));
-        
-        // 开心
-        registerPreset("happy", new BehaviorPreset(
-                NPCActionType.HAPPY, NPCVoiceType.HAPPY, true));
-        
-        // 悲伤
-        registerPreset("sad", new BehaviorPreset(
-                NPCActionType.SAD, NPCVoiceType.SAD, true));
-        
-        // 生气
-        registerPreset("angry", new BehaviorPreset(
-                NPCActionType.ANGRY, NPCVoiceType.ANGRY, true));
-        
-        // 思考
-        registerPreset("thinking", new BehaviorPreset(
-                NPCActionType.THINKING, NPCVoiceType.THINKING, false));
-        
-        // 点头确认
-        registerPreset("confirm", new BehaviorPreset(
-                NPCActionType.NOD, NPCVoiceType.CONFIRM, true));
-        
-        // 摇头拒绝
-        registerPreset("deny", new BehaviorPreset(
-                NPCActionType.SHAKE_HEAD, NPCVoiceType.DENY, true));
-        
-        // 接受任务
-        registerPreset("quest_accept", new BehaviorPreset(
-                NPCActionType.NOD, NPCVoiceType.QUEST_ACCEPT, true));
-        
-        // 完成任务
-        registerPreset("quest_complete", new BehaviorPreset(
-                NPCActionType.HAPPY, NPCVoiceType.QUEST_COMPLETE, true));
-        
-        // 商店欢迎
-        registerPreset("shop_welcome", new BehaviorPreset(
-                NPCActionType.BOW, NPCVoiceType.SHOP_WELCOME, true));
-        
-        // 购买成功
-        registerPreset("shop_buy", new BehaviorPreset(
-                NPCActionType.NOD, NPCVoiceType.SHOP_BUY, true));
-        
-        // 攻击
-        registerPreset("attack", new BehaviorPreset(
-                NPCActionType.ATTACK, NPCVoiceType.ATTACK, true));
-        
-        // 拔武器
-        registerPreset("draw_weapon", new BehaviorPreset(
-                NPCActionType.DRAW_WEAPON, NPCVoiceType.FIND_TARGET, true));
-        
-        RoadWeaverRPG.LOGGER.info("已注册 {} 个NPC行为预设", presets.size());
-    }
-    
-    /**
-     * 注册行为预设
-     */
-    public void registerPreset(String id, BehaviorPreset preset) {
-        presets.put(id, preset);
-    }
-    
-    /**
-     * 播放预设行为
+     * 播放行为（从数据包加载）
      * @param entity NPC实体
-     * @param presetId 预设ID
+     * @param behaviorId 行为ID
      */
-    public void playPreset(EntityMaid entity, String presetId) {
-        playPreset(entity, presetId, null);
+    public void playPreset(EntityMaid entity, ResourceLocation behaviorId) {
+        playPreset(entity, behaviorId, null);
     }
     
     /**
-     * 播放预设行为（带回调）
+     * 播放行为（带回调）
      * @param entity NPC实体
-     * @param presetId 预设ID
+     * @param behaviorId 行为ID
      * @param onComplete 完成回调
      */
-    public void playPreset(EntityMaid entity, String presetId, Runnable onComplete) {
-        BehaviorPreset preset = presets.get(presetId);
-        if (preset == null) {
-            RoadWeaverRPG.LOGGER.warn("找不到行为预设: {}", presetId);
+    public void playPreset(EntityMaid entity, ResourceLocation behaviorId, Runnable onComplete) {
+        if (entity == null) return;
+        
+        NPCBehaviorConfig config = NPCBehaviorLoader.getInstance().getBehavior(behaviorId);
+        if (config == null) {
+            RoadWeaverRPG.LOGGER.warn("找不到行为配置: {}", behaviorId);
             return;
         }
         
-        playBehavior(entity, preset.actionType, preset.voiceType, preset.forceVoice, onComplete);
-    }
-    
-    /**
-     * 播放自定义行为组合
-     * @param entity NPC实体
-     * @param actionType 动作类型
-     * @param voiceType 语音类型（可为null）
-     */
-    public void playBehavior(EntityMaid entity, NPCActionType actionType, NPCVoiceType voiceType) {
-        playBehavior(entity, actionType, voiceType, false, null);
-    }
-    
-    /**
-     * 播放自定义行为组合（完整参数）
-     */
-    public void playBehavior(EntityMaid entity, NPCActionType actionType, 
-                             NPCVoiceType voiceType, boolean forceVoice, Runnable onComplete) {
-        if (entity == null) return;
-        
         // 播放动作
-        actionManager.playAction(entity, actionType, onComplete);
+        actionManager.playAction(entity, behaviorId, onComplete);
         
         // 播放语音
-        if (voiceType != null) {
-            if (forceVoice) {
-                voiceManager.playVoiceForced(entity, voiceType);
+        if (config.hasSound()) {
+            if (config.forceSound()) {
+                voiceManager.playVoiceForced(entity, behaviorId);
             } else {
-                voiceManager.playVoice(entity, voiceType);
+                voiceManager.playVoice(entity, behaviorId);
             }
         }
     }
@@ -163,29 +68,29 @@ public final class NPCBehaviorManager {
     /**
      * 仅播放动作
      */
-    public void playAction(EntityMaid entity, NPCActionType actionType) {
-        actionManager.playAction(entity, actionType);
+    public void playAction(EntityMaid entity, ResourceLocation behaviorId) {
+        actionManager.playAction(entity, behaviorId);
     }
     
     /**
      * 仅播放动作（带回调）
      */
-    public void playAction(EntityMaid entity, NPCActionType actionType, Runnable onComplete) {
-        actionManager.playAction(entity, actionType, onComplete);
+    public void playAction(EntityMaid entity, ResourceLocation behaviorId, Runnable onComplete) {
+        actionManager.playAction(entity, behaviorId, onComplete);
     }
     
     /**
      * 仅播放语音
      */
-    public void playVoice(EntityMaid entity, NPCVoiceType voiceType) {
-        voiceManager.playVoice(entity, voiceType);
+    public void playVoice(EntityMaid entity, ResourceLocation behaviorId) {
+        voiceManager.playVoice(entity, behaviorId);
     }
     
     /**
      * 强制播放语音
      */
-    public void playVoiceForced(EntityMaid entity, NPCVoiceType voiceType) {
-        voiceManager.playVoiceForced(entity, voiceType);
+    public void playVoiceForced(EntityMaid entity, ResourceLocation behaviorId) {
+        voiceManager.playVoiceForced(entity, behaviorId);
     }
     
     /**
@@ -223,13 +128,4 @@ public final class NPCBehaviorManager {
     public NPCVoiceManager getVoiceManager() {
         return voiceManager;
     }
-    
-    /**
-     * 行为预设数据
-     */
-    public record BehaviorPreset(
-            NPCActionType actionType,
-            NPCVoiceType voiceType,
-            boolean forceVoice
-    ) {}
 }

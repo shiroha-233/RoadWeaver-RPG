@@ -93,6 +93,8 @@ public final class QuestSystemInitializer {
         NPCInteractionHandler.init();
         // 初始化对话事件监听器
         initializeDialogEventListeners();
+        // 初始化对话行为集成
+        net.shiroha233.roadweaverpg.entity.npc.behavior.DialogBehaviorIntegration.init();
         
         RoadWeaverRPG.LOGGER.debug("Interaction system initialized");
     }

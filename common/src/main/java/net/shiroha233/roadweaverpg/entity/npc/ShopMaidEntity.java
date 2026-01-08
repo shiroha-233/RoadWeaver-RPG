@@ -31,6 +31,10 @@ public class ShopMaidEntity extends BaseNPCEntity implements NPCBehavior.Dialoga
     
     @Override
     public void handlePlayerInteraction(ServerPlayer player) {
+        // 播放打招呼行为
+        playAction(new net.minecraft.resources.ResourceLocation(
+                net.shiroha233.roadweaverpg.RoadWeaverRPG.MOD_ID, "greeting"));
+        
         // 打开交互菜单（由平台特定代码实现）
         openInteractionMenu(player);
     }
@@ -47,6 +51,30 @@ public class ShopMaidEntity extends BaseNPCEntity implements NPCBehavior.Dialoga
         options.add(new NPCBehavior.DialogOption("open_shop", 
                 net.minecraft.network.chat.Component.translatable("gui.roadweaver_rpg.shop_dialog.open_shop")));
         return options;
+    }
+    
+    /**
+     * 打开商店时播放欢迎行为
+     */
+    public void onShopOpened() {
+        playAction(new net.minecraft.resources.ResourceLocation(
+                net.shiroha233.roadweaverpg.RoadWeaverRPG.MOD_ID, "shop_buy"));
+    }
+    
+    /**
+     * 购买成功时播放行为
+     */
+    public void onPurchaseSuccess() {
+        playAction(new net.minecraft.resources.ResourceLocation(
+                net.shiroha233.roadweaverpg.RoadWeaverRPG.MOD_ID, "happy"));
+    }
+    
+    /**
+     * 金币不足时播放行为
+     */
+    public void onInsufficientFunds() {
+        playAction(new net.minecraft.resources.ResourceLocation(
+                net.shiroha233.roadweaverpg.RoadWeaverRPG.MOD_ID, "sad"));
     }
     
     /**

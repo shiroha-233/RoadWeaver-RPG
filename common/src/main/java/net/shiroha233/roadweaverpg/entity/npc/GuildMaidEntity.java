@@ -31,6 +31,10 @@ public class GuildMaidEntity extends BaseNPCEntity implements NPCBehavior.Dialog
     
     @Override
     public void handlePlayerInteraction(ServerPlayer player) {
+        // 播放打招呼行为
+        playAction(new net.minecraft.resources.ResourceLocation(
+                net.shiroha233.roadweaverpg.RoadWeaverRPG.MOD_ID, "greeting"));
+        
         // 打开交互菜单（由平台特定代码实现）
         openInteractionMenu(player);
     }
@@ -53,6 +57,30 @@ public class GuildMaidEntity extends BaseNPCEntity implements NPCBehavior.Dialog
         options.add(new NPCBehavior.DialogOption("retrieve_scroll", 
                 net.minecraft.network.chat.Component.translatable("gui.roadweaver_rpg.dialog.retrieve_scroll")));
         return options;
+    }
+    
+    /**
+     * 接受任务时播放行为
+     */
+    public void onQuestAccepted() {
+        playAction(new net.minecraft.resources.ResourceLocation(
+                net.shiroha233.roadweaverpg.RoadWeaverRPG.MOD_ID, "quest_accept"));
+    }
+    
+    /**
+     * 完成任务时播放行为
+     */
+    public void onQuestCompleted() {
+        playAction(new net.minecraft.resources.ResourceLocation(
+                net.shiroha233.roadweaverpg.RoadWeaverRPG.MOD_ID, "quest_complete"));
+    }
+    
+    /**
+     * 查看声望时播放思考行为
+     */
+    public void onViewReputation() {
+        playAction(new net.minecraft.resources.ResourceLocation(
+                net.shiroha233.roadweaverpg.RoadWeaverRPG.MOD_ID, "thinking"));
     }
     
     /**

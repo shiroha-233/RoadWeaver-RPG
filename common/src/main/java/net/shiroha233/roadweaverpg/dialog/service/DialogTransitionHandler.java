@@ -7,7 +7,6 @@ import net.shiroha233.roadweaverpg.dialog.DialogData;
 import net.shiroha233.roadweaverpg.dialog.DialogRegistry;
 import net.shiroha233.roadweaverpg.dialog.DialogSession;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
@@ -48,9 +47,6 @@ public class DialogTransitionHandler {
         
         DialogData nextDialog = nextDialogOpt.get();
         
-        // 更新会话
-        DialogSession newSession = session.jumpToDialog(nextDialogId);
-        
         // 发送新对话
         if (onDialogSend != null) {
             onDialogSend.accept(player, nextDialog);
@@ -77,9 +73,6 @@ public class DialogTransitionHandler {
         }
         
         DialogData nextDialog = nextDialogOpt.get();
-        
-        // 更新会话
-        DialogSession newSession = session.jumpToDialog(nextDialogId);
         
         // 发送新对话
         if (onDialogSend != null) {

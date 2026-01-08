@@ -4,9 +4,10 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
 import net.minecraft.resources.ResourceLocation;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
+import net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorConfig;
+import net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorLoader;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -16,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * - 单例模式确保全局唯一
  * - 使用TouhouLittleMaid的Task系统控制动画
  * - 线程安全的状态管理
+ * - 数据包驱动：从NPCBehaviorLoader加载动作配置
  */
 public final class NPCActionManager {
     
@@ -36,20 +38,27 @@ public final class NPCActionManager {
     /**
      * 播放NPC动作
      * @param entity NPC实体（必须继承EntityMaid）
-     * @param actionType 动作类型
+     * @param behaviorId 行为ID（从数据包加载）
      */
-    public void playAction(EntityMaid entity, NPCActionType actionType) {
-        playAction(entity, actionType, null);
+    public void playAction(EntityMaid entity, ResourceLocation behaviorId) {
+        playAction(entity, behaviorId, null);
     }
     
     /**
      * 播放NPC动作（带回调）
      * @param entity NPC实体
-     * @param actionType 动作类型
+     * @param behaviorId 行为ID
      * @param onComplete 完成回调
      */
-    public void playAction(EntityMaid entity, NPCActionType actionType, Runnable onComplete) {
+    public void playAction(EntityMaid entity, ResourceLocation behaviorId, Runnable onComplete) {
         if (entity == null || entity.level().isClientSide) return;
+        
+        // 从数据包加载行为配置
+        NPCBehaviorConfig config = NPCBehaviorLoader.getInstance().getBehavior(behaviorId);
+        if (config == null) {
+            RoadWeaverRPG.LOGGER.warn("找不到行为配置: {}", behaviorId);
+            return;
+        }
         
         int entityId = entity.getId();
         
@@ -58,9 +67,9 @@ public final class NPCActionManager {
         
         // 设置新动作状态
         ActionState state = new ActionState(
-                actionType,
-                entity.level().getGameTime(),
-                actionType.getDurationTicks()
+                behaviorId,
+                config,
+                entity.level().getGameTime()
         );
         actionStates.put(entityId, state);
         
@@ -70,9 +79,9 @@ public final class NPCActionManager {
         }
         
         // 应用TouhouLittleMaid的Task
-        applyTask(entity, actionType);
+        applyTask(entity, config);
         
-        RoadWeaverRPG.LOGGER.debug("NPC {} 开始播放动作: {}", entityId, actionType.getId());
+        RoadWeaverRPG.LOGGER.debug("NPC {} 开始播放动作: {}", entityId, behaviorId);
     }
     
     /**
@@ -83,13 +92,13 @@ public final class NPCActionManager {
         
         int entityId = entity.getId();
         ActionState state = actionStates.remove(entityId);
-        Runnable callback = completionCallbacks.remove(entityId);
+        completionCallbacks.remove(entityId);
         
         if (state != null) {
             // 恢复空闲Task
             entity.setTask(TaskManager.getIdleTask());
             
-            RoadWeaverRPG.LOGGER.debug("NPC {} 停止动作: {}", entityId, state.actionType.getId());
+            RoadWeaverRPG.LOGGER.debug("NPC {} 停止动作: {}", entityId, state.behaviorId);
         }
     }
     
@@ -105,9 +114,9 @@ public final class NPCActionManager {
         if (state == null) return;
         
         // 检查是否完成（非循环动作）
-        if (!state.actionType.isLooping()) {
+        if (!state.config.isLooping()) {
             long elapsed = entity.level().getGameTime() - state.startTime;
-            if (elapsed >= state.durationTicks) {
+            if (elapsed >= state.config.durationTicks()) {
                 // 动作完成
                 Runnable callback = completionCallbacks.remove(entityId);
                 actionStates.remove(entityId);
@@ -124,17 +133,17 @@ public final class NPCActionManager {
                     }
                 }
                 
-                RoadWeaverRPG.LOGGER.debug("NPC {} 动作完成: {}", entityId, state.actionType.getId());
+                RoadWeaverRPG.LOGGER.debug("NPC {} 动作完成: {}", entityId, state.behaviorId);
             }
         }
     }
     
     /**
-     * 获取当前动作类型
+     * 获取当前动作ID
      */
-    public NPCActionType getCurrentAction(int entityId) {
+    public ResourceLocation getCurrentAction(int entityId) {
         ActionState state = actionStates.get(entityId);
-        return state != null ? state.actionType : NPCActionType.IDLE;
+        return state != null ? state.behaviorId : null;
     }
     
     /**
@@ -149,11 +158,11 @@ public final class NPCActionManager {
      */
     public int getActionRemainingTicks(EntityMaid entity, int entityId) {
         ActionState state = actionStates.get(entityId);
-        if (state == null || state.actionType.isLooping()) {
+        if (state == null || state.config.isLooping()) {
             return 0;
         }
         long elapsed = entity.level().getGameTime() - state.startTime;
-        return Math.max(0, (int)(state.durationTicks - elapsed));
+        return Math.max(0, (int)(state.config.durationTicks() - elapsed));
     }
     
     /**
@@ -167,8 +176,14 @@ public final class NPCActionManager {
     /**
      * 应用TouhouLittleMaid的Task
      */
-    private void applyTask(EntityMaid entity, NPCActionType actionType) {
-        ResourceLocation taskId = actionType.getTaskResourceLocation();
+    private void applyTask(EntityMaid entity, NPCBehaviorConfig config) {
+        // 如果task_id为空，使用默认idle task
+        if (config.taskId() == null || config.taskId().isEmpty()) {
+            entity.setTask(TaskManager.getIdleTask());
+            return;
+        }
+        
+        ResourceLocation taskId = config.getTaskResourceLocation();
         TaskManager.findTask(taskId).ifPresentOrElse(
                 entity::setTask,
                 () -> {
@@ -183,8 +198,8 @@ public final class NPCActionManager {
      * 动作状态记录
      */
     private record ActionState(
-            NPCActionType actionType,
-            long startTime,
-            int durationTicks
+            ResourceLocation behaviorId,
+            NPCBehaviorConfig config,
+            long startTime
     ) {}
 }

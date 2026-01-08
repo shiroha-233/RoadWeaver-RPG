@@ -19,7 +19,6 @@ import java.util.*;
 public class ShopManager extends SimpleJsonResourceReloadListener {
     
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final ResourceLocation SHOP_CONFIG = new ResourceLocation(RoadWeaverRPG.MOD_ID, "shop");
     private static ShopManager instance;
     
     private final Map<ShopCategory, List<ShopItem>> itemsByCategory = new EnumMap<>(ShopCategory.class);

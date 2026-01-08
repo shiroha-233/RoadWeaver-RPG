@@ -48,7 +48,6 @@ public class ObjectiveIndex {
     // 清理相关
     private volatile long lastCleanupTime = System.currentTimeMillis();
     private static final long CLEANUP_INTERVAL_MS = 300_000L; // 5分钟
-    private static final long CACHE_RETENTION_MS = 600_000L; // 10分钟
     
     private ObjectiveIndex() {}
     

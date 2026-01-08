@@ -116,11 +116,13 @@ public record DialogData(
     /**
      * 对话行数据
      * 文本直接存储内容，不使用翻译键，方便玩家自定义
+     * behavior: 可选的行为ID，用于触发NPC动作和语音
      */
     public record DialogLine(
             String speaker,           // "npc" 或 "player"
             String text,              // 直接文本内容（不是翻译键）
-            Optional<String> condition // 可选条件
+            Optional<String> condition, // 可选条件
+            Optional<ResourceLocation> behavior // 可选行为ID（触发动作和语音）
     ) {
         public static DialogLine fromJson(JsonObject json) {
             String speaker = json.has("speaker") ? json.get("speaker").getAsString() : "npc";
@@ -128,7 +130,10 @@ public record DialogData(
             Optional<String> condition = json.has("condition") 
                     ? Optional.of(json.get("condition").getAsString()) 
                     : Optional.empty();
-            return new DialogLine(speaker, text, condition);
+            Optional<ResourceLocation> behavior = json.has("behavior")
+                    ? Optional.of(new ResourceLocation(json.get("behavior").getAsString()))
+                    : Optional.empty();
+            return new DialogLine(speaker, text, condition, behavior);
         }
         
         public void toNetwork(FriendlyByteBuf buf) {
@@ -136,6 +141,8 @@ public record DialogData(
             buf.writeUtf(text);
             buf.writeBoolean(condition.isPresent());
             condition.ifPresent(buf::writeUtf);
+            buf.writeBoolean(behavior.isPresent());
+            behavior.ifPresent(buf::writeResourceLocation);
         }
         
         public static DialogLine fromNetwork(FriendlyByteBuf buf) {
@@ -144,7 +151,10 @@ public record DialogData(
             Optional<String> condition = buf.readBoolean() 
                     ? Optional.of(buf.readUtf()) 
                     : Optional.empty();
-            return new DialogLine(speaker, text, condition);
+            Optional<ResourceLocation> behavior = buf.readBoolean()
+                    ? Optional.of(buf.readResourceLocation())
+                    : Optional.empty();
+            return new DialogLine(speaker, text, condition, behavior);
         }
         
         /**

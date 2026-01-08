@@ -1,0 +1,7 @@
+{
+  "task_id": "",
+  "duration_ticks": 80,
+  "sound_event_id": "maid.mode.idle",
+  "sound_probability": 0.5,
+  "force_sound": false
+}

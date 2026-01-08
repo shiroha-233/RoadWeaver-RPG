@@ -398,6 +398,20 @@ public final class DialogManager {
     
     private void sendDialogToClient(ServerPlayer player, DialogSession session, DialogData dialog, 
                                      List<DialogData.DialogLine> visibleLines) {
+        RoadWeaverRPG.LOGGER.info("发送对话到客户端: dialogId={}, 行数={}", dialog.id(), visibleLines.size());
+        
+        // 触发第一行的NPC行为（如果有）
+        if (!visibleLines.isEmpty()) {
+            DialogData.DialogLine firstLine = visibleLines.get(0);
+            RoadWeaverRPG.LOGGER.info("第一行: speaker={}, hasBehavior={}", 
+                    firstLine.speaker(), firstLine.behavior().isPresent());
+            
+            if (firstLine.behavior().isPresent() && firstLine.isNpc()) {
+                RoadWeaverRPG.LOGGER.info("触发第一行行为: {}", firstLine.behavior().get());
+                triggerNPCBehavior(player, session.npcEntityId(), firstLine.behavior().get());
+            }
+        }
+        
         if (dialogDataSender != null) {
             try {
                 dialogDataSender.send(player, session.npcEntityId(), dialog, visibleLines, session.syncVersion());
@@ -410,12 +424,45 @@ public final class DialogManager {
     
     private void sendDialogLineToClient(ServerPlayer player, DialogSession session, 
                                          DialogData.DialogLine line, int lineIndex) {
+        // 触发NPC行为（如果有）
+        if (line.behavior().isPresent() && line.isNpc()) {
+            triggerNPCBehavior(player, session.npcEntityId(), line.behavior().get());
+        }
+        
         if (dialogLineSender != null) {
             try {
                 dialogLineSender.send(player, session.npcEntityId(), line, lineIndex);
             } catch (Exception e) {
                 RoadWeaverRPG.LOGGER.error("发送对话行失败", e);
             }
+        }
+    }
+    
+    /**
+     * 触发NPC行为
+     */
+    private void triggerNPCBehavior(ServerPlayer player, int npcEntityId, ResourceLocation behaviorId) {
+        try {
+            RoadWeaverRPG.LOGGER.info("尝试触发NPC行为: entityId={}, behaviorId={}", npcEntityId, behaviorId);
+            
+            net.minecraft.world.entity.Entity entity = player.level().getEntity(npcEntityId);
+            if (entity == null) {
+                RoadWeaverRPG.LOGGER.warn("找不到实体: {}", npcEntityId);
+                return;
+            }
+            
+            RoadWeaverRPG.LOGGER.info("找到实体: {}", entity.getClass().getName());
+            
+            if (entity instanceof com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid maid) {
+                RoadWeaverRPG.LOGGER.info("实体是EntityMaid，触发行为: {}", behaviorId);
+                net.shiroha233.roadweaverpg.entity.npc.behavior.NPCBehaviorManager.getInstance()
+                        .playPreset(maid, behaviorId);
+                RoadWeaverRPG.LOGGER.info("行为触发完成");
+            } else {
+                RoadWeaverRPG.LOGGER.warn("实体不是EntityMaid: {}", entity.getClass().getName());
+            }
+        } catch (Exception e) {
+            RoadWeaverRPG.LOGGER.error("触发NPC行为失败: {}", behaviorId, e);
         }
     }
     

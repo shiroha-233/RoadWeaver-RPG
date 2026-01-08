@@ -3,7 +3,8 @@
   "lines": [
     {
       "speaker": "npc",
-      "text": "欢迎光临！今天想要挑选些什么吗？这里有最精良的装备和罕见的素材。"
+      "text": "欢迎光临！今天想要挑选些什么吗？这里有最精良的装备和罕见的素材。",
+      "behavior": "roadweaver_rpg:greeting"
     },
     {
       "speaker": "player",
@@ -11,7 +12,8 @@
     },
     {
       "speaker": "npc",
-      "text": "呵呵，客官真是好眼力。我这里的货物可是跑遍了整个大陆才收集到的，绝对不会让您失望。"
+      "text": "呵呵，客官真是好眼力。我这里的货物可是跑遍了整个大陆才收集到的，绝对不会让您失望。",
+      "behavior": "roadweaver_rpg:happy"
     }
   ],
   "choices": [

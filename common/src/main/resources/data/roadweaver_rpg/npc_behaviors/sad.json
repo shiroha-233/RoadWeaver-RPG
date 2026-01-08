@@ -1,0 +1,7 @@
+{
+  "task_id": "",
+  "duration_ticks": 60,
+  "sound_event_id": "maid.ai.hurt",
+  "sound_probability": 1.0,
+  "force_sound": true
+}

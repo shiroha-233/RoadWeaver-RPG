@@ -1,0 +1,7 @@
+{
+  "task_id": "attack",
+  "duration_ticks": 15,
+  "sound_event_id": "maid.ai.find_target",
+  "sound_probability": 1.0,
+  "force_sound": true
+}

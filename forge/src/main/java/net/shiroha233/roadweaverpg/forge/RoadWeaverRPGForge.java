@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
 import net.shiroha233.roadweaverpg.forge.entity.ModEntitiesForge;
+import net.shiroha233.roadweaverpg.forge.entity.NPCSoundProviderForge;
 import net.shiroha233.roadweaverpg.forge.item.ModItemsForge;
 import net.shiroha233.roadweaverpg.forge.network.NetworkHandlerForge;
 import net.shiroha233.roadweaverpg.quest.chain.QuestChainManager;
@@ -50,6 +51,9 @@ public class RoadWeaverRPGForge {
         // 注册数据包重载监听器
         MinecraftForge.EVENT_BUS.addListener(RoadWeaverRPGForge::onAddReloadListeners);
         
+        // 初始化NPC声音事件提供者
+        NPCSoundProviderForge.init();
+        
         // 检查前置依赖
         if (!RoadWeaverRPG.isRoadWeaverAvailable()) {
             LOGGER.warn("RoadWeaver main mod not found! Some features will be disabled.");
@@ -66,6 +70,8 @@ public class RoadWeaverRPGForge {
         event.addListener(new net.shiroha233.roadweaverpg.shop.ShopManager());
         // 注册对话数据加载器
         event.addListener(net.shiroha233.roadweaverpg.dialog.DialogRegistry.getInstance());
+        // 注册NPC行为数据加载器
+        event.addListener(net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorLoader.getInstance());
     }
     
     @Mod.EventBusSubscriber(modid = RoadWeaverRPG.MOD_ID)

@@ -27,11 +27,10 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.shiroha233.roadweaverpg.entity.npc.action.INPCAnimatable;
 import net.shiroha233.roadweaverpg.entity.npc.action.NPCActionManager;
-import net.shiroha233.roadweaverpg.entity.npc.action.NPCActionType;
 import net.shiroha233.roadweaverpg.entity.npc.behavior.NPCBehaviorManager;
 import net.shiroha233.roadweaverpg.entity.npc.voice.INPCVoiceable;
 import net.shiroha233.roadweaverpg.entity.npc.voice.NPCVoiceManager;
-import net.shiroha233.roadweaverpg.entity.npc.voice.NPCVoiceType;
+import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -236,6 +235,11 @@ public abstract class BaseNPCEntity extends EntityMaid implements INPCEntity,
             this.setDeltaMovement(0, motion.y, 0);
         }
         
+        // 更新行为管理器
+        if (!this.level().isClientSide) {
+            NPCBehaviorManager.getInstance().tick(this);
+        }
+        
         super.aiStep();
     }
     
@@ -268,6 +272,9 @@ public abstract class BaseNPCEntity extends EntityMaid implements INPCEntity,
         if (lastAttacker != null) {
             tag.putUUID("LastAttacker", lastAttacker);
         }
+        // 保存语音设置
+        tag.putString("SoundPackId", soundPackId);
+        tag.putBoolean("VoiceEnabled", voiceEnabled);
     }
     
     @Override
@@ -279,6 +286,10 @@ public abstract class BaseNPCEntity extends EntityMaid implements INPCEntity,
         if (tag.hasUUID("LastAttacker")) {
             lastAttacker = tag.getUUID("LastAttacker");
         }
+        // 读取语音设置
+        soundPackId = tag.getString("SoundPackId");
+        voiceEnabled = tag.getBoolean("VoiceEnabled");
+        
         initNPCSettings();
         
         if (weaponDrawn) {
@@ -319,11 +330,9 @@ public abstract class BaseNPCEntity extends EntityMaid implements INPCEntity,
     protected void drawWeapon() {
         weaponDrawn = true;
         this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
-        // 触发攻击任务以播放动画
-        if (this.level() instanceof ServerLevel) {
-            TaskManager.findTask(new ResourceLocation("touhoulittlemaid", "attack"))
-                    .ifPresent(this::setTask);
-        }
+        // 使用行为管理器播放拔武器动作和语音
+        ResourceLocation presetId = new ResourceLocation(RoadWeaverRPG.MOD_ID, "draw_weapon");
+        NPCBehaviorManager.getInstance().playPreset(this, presetId);
     }
     
     protected void sheatheWeapon() {
@@ -335,12 +344,89 @@ public abstract class BaseNPCEntity extends EntityMaid implements INPCEntity,
         this.setTask(TaskManager.getIdleTask());
     }
     
+    // ==================== INPCAnimatable 实现 ====================
+    
+    @Override
+    public void playAction(ResourceLocation actionId) {
+        NPCActionManager.getInstance().playAction(this, actionId);
+    }
+    
+    @Override
+    public void playAction(ResourceLocation actionId, Runnable onComplete) {
+        NPCActionManager.getInstance().playAction(this, actionId, onComplete);
+    }
+    
+    @Override
+    public void stopAction() {
+        NPCActionManager.getInstance().stopAction(this);
+    }
+    
+    @Override
+    public ResourceLocation getCurrentAction() {
+        return NPCActionManager.getInstance().getCurrentAction(this.getId());
+    }
+    
+    @Override
+    public boolean isPlayingAction() {
+        return NPCActionManager.getInstance().isPlayingAction(this.getId());
+    }
+    
+    @Override
+    public int getActionRemainingTicks() {
+        return NPCActionManager.getInstance().getActionRemainingTicks(this, this.getId());
+    }
+    
+    // ==================== INPCVoiceable 实现 ====================
+    
+    @Override
+    public void playVoice(ResourceLocation voiceId) {
+        NPCVoiceManager.getInstance().playVoice(this, voiceId);
+    }
+    
+    @Override
+    public void playVoiceForced(ResourceLocation voiceId) {
+        NPCVoiceManager.getInstance().playVoiceForced(this, voiceId);
+    }
+    
+    @Override
+    public void stopVoice() {
+        // 语音播放后自动停止，无需手动停止
+    }
+    
+    @Override
+    public boolean isPlayingVoice() {
+        return false; // 简化实现，语音播放后立即返回
+    }
+    
+    @Override
+    public String getSoundPackId() {
+        return soundPackId;
+    }
+    
+    @Override
+    public void setSoundPackId(String soundPackId) {
+        this.soundPackId = soundPackId != null ? soundPackId : "";
+    }
+    
+    @Override
+    public boolean isVoiceEnabled() {
+        return voiceEnabled;
+    }
+    
+    @Override
+    public void setVoiceEnabled(boolean enabled) {
+        this.voiceEnabled = enabled;
+        NPCVoiceManager.getInstance().setVoiceEnabled(this.getId(), enabled);
+    }
+    
     // ==================== 生命周期 ====================
     
     @Override
     public void remove(RemovalReason reason) {
         // 从服务层注销
         NPCService.getInstance().unregisterNPC(this.getId());
+        // 清理行为管理器状态
+        NPCBehaviorManager.getInstance().cleanup(this.getId());
         super.remove(reason);
     }
 }
