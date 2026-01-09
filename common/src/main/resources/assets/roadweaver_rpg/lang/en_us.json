@@ -21,8 +21,24 @@
   "item.roadweaver_rpg.currency.tooltip": "Currency used in the Guild Shop",
   "item.roadweaver_rpg.currency.deposit_hint": "Shift+Left-click to deposit (held or in container)",
   
+  "item.roadweaver_rpg.exp_book_small": "Small Experience Book",
+  "item.roadweaver_rpg.exp_book_medium": "Medium Experience Book",
+  "item.roadweaver_rpg.exp_book_large": "Large Experience Book",
+  "item.roadweaver_rpg.exp_book_grand": "Grand Experience Book",
+  "item.roadweaver_rpg.exp_book.tooltip": "Grants %d player experience when used",
+  "item.roadweaver_rpg.exp_book.use_hint": "Right-click to use",
+  
   "message.roadweaver_rpg.currency_deposited": "Deposited %s to wallet",
   "message.roadweaver_rpg.coins_received": "+%s",
+  "message.roadweaver_rpg.skill_points_gained": "Gained %d skill points",
+  "message.roadweaver_rpg.stat_allocated": "Increased %s",
+  "message.roadweaver_rpg.stat_deallocated": "Decreased %s",
+  "message.roadweaver_rpg.stats_reset": "All stat allocations have been reset",
+  "message.roadweaver_rpg.no_skill_points": "No skill points available",
+  "message.roadweaver_rpg.stat_not_allocatable": "This stat cannot be allocated",
+  
+  "gui.roadweaver_rpg.skill_points": "Available Skill Points: %d",
+  "gui.roadweaver_rpg.reset_stats": "Reset Stats",
   
   "gui.roadweaver_rpg.dialog.title": "Guild Receptionist",
   "gui.roadweaver_rpg.dialog.who_are_you": "Who are you?",
@@ -111,6 +127,7 @@
   
   "message.roadweaver_rpg.player_exp_gained": "Gained %s Combat EXP",
   "message.roadweaver_rpg.player_level_up": "Congratulations! Your Level is now Lv.%d!",
+  "message.roadweaver_rpg.player_level_capped": "Player level capped at Adventure Level (Lv.%d). Increase Adventure Level first.",
   "gui.roadweaver_rpg.player_level.title": "Player Level",
   "gui.roadweaver_rpg.player_level.current_level": "Current Level: Lv.%d",
   "gui.roadweaver_rpg.player_level.current_exp": "Current EXP: %d",
@@ -119,6 +136,13 @@
   "effect.roadweaver_rpg.max_health": "Max Health %s",
   "effect.roadweaver_rpg.attack_damage": "Attack Damage %s",
   "effect.roadweaver_rpg.armor": "Armor %s",
+  "effect.roadweaver_rpg.movement_speed": "Movement Speed %s",
+  "effect.roadweaver_rpg.attack_speed": "Attack Speed %s",
+  "effect.roadweaver_rpg.spell_power": "Spell Power %s",
+  "effect.roadweaver_rpg.max_mana": "Max Mana %s",
+  "effect.roadweaver_rpg.mana_regen": "Mana Regen %s",
+  "effect.roadweaver_rpg.cooldown_reduction": "Cooldown Reduction %s",
+  "effect.roadweaver_rpg.spell_resist": "Spell Resist %s",
   "effect.roadweaver_rpg.potion": "%s Lv.%d",
   
   "gui.roadweaver_rpg.quest.accepted": "Accepted Quest: %s",
@@ -245,5 +269,70 @@
   "gui.roadweaver_rpg.interaction.chat": "Chat",
   
   "key.categories.roadweaver_rpg": "RoadWeaver RPG",
-  "key.roadweaver_rpg.toggle_env_debug": "Toggle Environment Debug (Z+V)"
+  "key.roadweaver_rpg.toggle_env_debug": "Toggle Environment Debug (Z+V)",
+  "key.roadweaver_rpg.open_character": "Open Character Screen (J)",
+  
+  "gui.roadweaver_rpg.character.title": "Character",
+  "gui.roadweaver_rpg.character.drag_hint": "Drag to rotate",
+  
+  "stats.roadweaver_rpg.category.basic": "Basic Stats",
+  "stats.roadweaver_rpg.category.combat": "Combat Stats",
+  "stats.roadweaver_rpg.category.element_damage": "Elemental DMG",
+  "stats.roadweaver_rpg.category.element_resist": "Elemental RES",
+  "stats.roadweaver_rpg.category.special": "Special Stats",
+  
+  "stats.roadweaver_rpg.max_health": "Max HP",
+  "stats.roadweaver_rpg.max_mana": "Max MP",
+  "stats.roadweaver_rpg.attack": "ATK",
+  "stats.roadweaver_rpg.defense": "DEF",
+  "stats.roadweaver_rpg.magic_attack": "Magic ATK",
+  "stats.roadweaver_rpg.magic_defense": "Magic DEF",
+  
+  "stats.roadweaver_rpg.crit_rate": "CRIT Rate",
+  "stats.roadweaver_rpg.crit_damage": "CRIT DMG",
+  "stats.roadweaver_rpg.hit_rate": "Hit Rate",
+  "stats.roadweaver_rpg.dodge_rate": "Dodge Rate",
+  "stats.roadweaver_rpg.attack_speed": "ATK Speed",
+  "stats.roadweaver_rpg.move_speed": "Move Speed",
+  "stats.roadweaver_rpg.health_regen": "HP Regen",
+  "stats.roadweaver_rpg.mana_regen": "MP Regen",
+  
+  "stats.roadweaver_rpg.fire_damage": "Fire DMG Bonus",
+  "stats.roadweaver_rpg.ice_damage": "Ice DMG Bonus",
+  "stats.roadweaver_rpg.thunder_damage": "Thunder DMG Bonus",
+  "stats.roadweaver_rpg.wind_damage": "Wind DMG Bonus",
+  "stats.roadweaver_rpg.earth_damage": "Earth DMG Bonus",
+  "stats.roadweaver_rpg.nature_damage": "Nature DMG Bonus",
+  "stats.roadweaver_rpg.water_damage": "Water DMG Bonus",
+  "stats.roadweaver_rpg.light_damage": "Light DMG Bonus",
+  "stats.roadweaver_rpg.dark_damage": "Dark DMG Bonus",
+  
+  "stats.roadweaver_rpg.fire_resistance": "Fire RES",
+  "stats.roadweaver_rpg.ice_resistance": "Ice RES",
+  "stats.roadweaver_rpg.thunder_resistance": "Thunder RES",
+  "stats.roadweaver_rpg.wind_resistance": "Wind RES",
+  "stats.roadweaver_rpg.earth_resistance": "Earth RES",
+  "stats.roadweaver_rpg.nature_resistance": "Nature RES",
+  "stats.roadweaver_rpg.water_resistance": "Water RES",
+  "stats.roadweaver_rpg.light_resistance": "Light RES",
+  "stats.roadweaver_rpg.dark_resistance": "Dark RES",
+  
+  "stats.roadweaver_rpg.life_steal": "Life Steal",
+  "stats.roadweaver_rpg.mana_steal": "Mana Steal",
+  "stats.roadweaver_rpg.cooldown_reduction": "Cooldown Reduction",
+  "stats.roadweaver_rpg.exp_bonus": "EXP Bonus",
+  "stats.roadweaver_rpg.drop_bonus": "Drop Bonus",
+
+  "tooltip.roadweaver_rpg.stat.base": "Base",
+  "tooltip.roadweaver_rpg.stat.equipment": "Equipment",
+  "tooltip.roadweaver_rpg.stat.weapon": "Weapon",
+  "tooltip.roadweaver_rpg.stat.armor": "Armor",
+  "tooltip.roadweaver_rpg.stat.armor_toughness": "Armor Toughness",
+  "tooltip.roadweaver_rpg.stat.skill_points": "Skill Points (%d × %s)",
+  "tooltip.roadweaver_rpg.stat.total": "Total",
+
+  "command.roadweaver_rpg.point.add.success": "§aAdded %d skill points to %s",
+  "command.roadweaver_rpg.point.set.success": "§aSet %s's skill points to %d",
+  "command.roadweaver_rpg.point.allocate.success": "§aAllocated %d points to %s for %s",
+  "command.roadweaver_rpg.point.reset.success": "§aReset all stat allocations for %s"
 }

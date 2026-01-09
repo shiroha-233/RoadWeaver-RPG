@@ -49,6 +49,9 @@ public class QuestDefinition {
     private final int maxAcceptPerPeriod;       // 周期内最大领取次数（0=无限制）
     private final int acceptPeriodSeconds;      // 领取周期（秒，0=无周期限制）
     
+    // 玩家等级经验奖励
+    private final int playerExpReward;          // 完成委托获得的玩家等级经验
+    
     private QuestDefinition(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
@@ -70,6 +73,7 @@ public class QuestDefinition {
         this.oneTime = builder.oneTime;
         this.maxAcceptPerPeriod = builder.maxAcceptPerPeriod;
         this.acceptPeriodSeconds = builder.acceptPeriodSeconds;
+        this.playerExpReward = builder.playerExpReward;
     }
     
     // region Getters
@@ -101,6 +105,9 @@ public class QuestDefinition {
     public int getMaxAcceptPerPeriod() { return maxAcceptPerPeriod; }
     public int getAcceptPeriodSeconds() { return acceptPeriodSeconds; }
     public boolean hasAcceptLimit() { return maxAcceptPerPeriod > 0 && acceptPeriodSeconds > 0; }
+    
+    // 玩家等级经验奖励
+    public int getPlayerExpReward() { return playerExpReward; }
     
     public Component getDisplayTitle() {
         return Component.literal("[" + rank.getDisplayName() + "] ")
@@ -152,6 +159,9 @@ public class QuestDefinition {
         buf.writeBoolean(oneTime);
         buf.writeVarInt(maxAcceptPerPeriod);
         buf.writeVarInt(acceptPeriodSeconds);
+        
+        // 玩家等级经验奖励
+        buf.writeVarInt(playerExpReward);
     }
     
     public static QuestDefinition fromNetwork(FriendlyByteBuf buf) {
@@ -194,6 +204,9 @@ public class QuestDefinition {
         builder.oneTime(buf.readBoolean());
         builder.maxAcceptPerPeriod(buf.readVarInt());
         builder.acceptPeriodSeconds(buf.readVarInt());
+        
+        // 玩家等级经验奖励
+        builder.playerExpReward(buf.readVarInt());
         
         return builder.build();
     }
@@ -259,6 +272,9 @@ public class QuestDefinition {
         if (json.has("max_accept_per_period")) builder.maxAcceptPerPeriod(json.get("max_accept_per_period").getAsInt());
         if (json.has("accept_period_seconds")) builder.acceptPeriodSeconds(json.get("accept_period_seconds").getAsInt());
         
+        // 玩家等级经验奖励
+        if (json.has("player_exp_reward")) builder.playerExpReward(json.get("player_exp_reward").getAsInt());
+        
         if (json.has("prerequisites") && json.get("prerequisites").isJsonArray()) {
             for (JsonElement elem : json.getAsJsonArray("prerequisites")) {
                 builder.addPrerequisite(new ResourceLocation(elem.getAsString()));
@@ -313,6 +329,9 @@ public class QuestDefinition {
         private int maxAcceptPerPeriod = 0;
         private int acceptPeriodSeconds = 0;
         
+        // 玩家等级经验奖励
+        private int playerExpReward = 0;
+        
         public Builder(ResourceLocation id) {
             this.id = id;
             this.title = Component.literal("Unnamed Quest");
@@ -344,6 +363,9 @@ public class QuestDefinition {
         public Builder oneTime(boolean val) { this.oneTime = val; return this; }
         public Builder maxAcceptPerPeriod(int max) { this.maxAcceptPerPeriod = max; return this; }
         public Builder acceptPeriodSeconds(int seconds) { this.acceptPeriodSeconds = seconds; return this; }
+        
+        // 玩家等级经验奖励
+        public Builder playerExpReward(int exp) { this.playerExpReward = exp; return this; }
         
         public QuestDefinition build() {
             return new QuestDefinition(this);

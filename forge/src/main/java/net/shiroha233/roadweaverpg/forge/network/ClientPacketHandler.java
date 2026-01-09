@@ -60,7 +60,7 @@ public class ClientPacketHandler {
     
     public static void handleOpenQuestBoard() {
         int playerRepLevel = ClientReputationCache.getPlayerLevel(
-                new ResourceLocation("roadweaver_rpg", "guild"));
+                ResourceLocation.fromNamespaceAndPath("roadweaver_rpg", "guild"));
         Minecraft.getInstance().setScreen(new QuestBoardScreen(
                 ClientQuestCache.getQuests(),
                 ClientPacketHandler::sendAcceptQuest,
@@ -115,6 +115,14 @@ public class ClientPacketHandler {
     public static void handleOpenAdventureLevelGui() {
         Minecraft.getInstance().setScreen(
                 new net.shiroha233.roadweaverpg.client.gui.adventure.AdventureLevelScreen());
+    }
+    
+    // ==================== 属性分配（技能点）系统客户端处理 ====================
+    
+    public static void handleSyncStatAllocation(
+            net.shiroha233.roadweaverpg.network.packet.sync.SyncStatAllocationPacket packet) {
+        net.shiroha233.roadweaverpg.client.ClientStatAllocationCache.update(
+                packet.availablePoints(), packet.allocatedPoints());
     }
     
     // ==================== 商店系统客户端处理 ====================

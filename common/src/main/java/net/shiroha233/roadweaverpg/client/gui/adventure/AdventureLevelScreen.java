@@ -32,7 +32,7 @@ public class AdventureLevelScreen extends Screen {
     private static final int MAX_REWARDS_PER_ROW = 4;
     
     // 颜色常量
-    private static final int COLOR_BG_OVERLAY = 0xCC1A1A2E;
+    private static final int COLOR_BG_OVERLAY = 0x88000000;
     private static final int COLOR_TIMELINE = 0xFF3D3D5C;
     private static final int COLOR_TIMELINE_COMPLETED = 0xFF6B8E23;
     private static final int COLOR_NODE_LOCKED = 0xFF4A4A6A;

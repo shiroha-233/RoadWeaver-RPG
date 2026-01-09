@@ -1,0 +1,18 @@
+{
+  "bonus_per_point": {
+    "max_health": 5.0,
+    "max_mana": 10.0,
+    "attack": 1.0,
+    "defense": 1.0,
+    "magic_attack": 1.0,
+    "magic_defense": 1.0,
+    "crit_rate": 0.5,
+    "crit_damage": 2.0,
+    "hit_rate": 1.0,
+    "dodge_rate": 0.5,
+    "attack_speed": 1.0,
+    "move_speed": 0.5,
+    "health_regen": 0.1,
+    "mana_regen": 0.2
+  }
+}

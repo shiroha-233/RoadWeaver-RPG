@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "roadweaver_rpg:item/zuanshi"
+    "layer0": "roadweaver_rpg:item/diamond_coin"
   }
 }

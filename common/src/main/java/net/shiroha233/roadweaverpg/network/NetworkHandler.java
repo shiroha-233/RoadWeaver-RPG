@@ -93,5 +93,15 @@ public class NetworkHandler {
     public static final ResourceLocation OPEN_ADVENTURE_LEVEL_GUI = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_adventure_level_gui");
     
+    // 属性分配（技能点）系统
+    public static final ResourceLocation SYNC_STAT_ALLOCATION = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_stat_allocation");
+    public static final ResourceLocation ALLOCATE_STAT_POINT = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "allocate_stat_point");
+    public static final ResourceLocation DEALLOCATE_STAT_POINT = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "deallocate_stat_point");
+    public static final ResourceLocation RESET_STAT_ALLOCATION = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "reset_stat_allocation");
+    
     private NetworkHandler() {}
 }

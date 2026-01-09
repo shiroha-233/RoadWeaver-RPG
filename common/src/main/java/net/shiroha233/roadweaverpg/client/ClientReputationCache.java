@@ -61,6 +61,24 @@ public class ClientReputationCache {
     }
     
     /**
+     * 获取下一级所需经验
+     */
+    public static int getExpForNextLevel(String factionId) {
+        int currentLevel = getPlayerLevel(factionId);
+        ReputationLevel nextLevel = levelDefinitions.get(currentLevel + 1);
+        return nextLevel != null ? nextLevel.getRequiredExperience() : -1;
+    }
+    
+    /**
+     * 获取当前级所需经验
+     */
+    public static int getExpForCurrentLevel(String factionId) {
+        int currentLevel = getPlayerLevel(factionId);
+        ReputationLevel levelInfo = levelDefinitions.get(currentLevel);
+        return levelInfo != null ? levelInfo.getRequiredExperience() : 0;
+    }
+    
+    /**
      * 清理所有缓存
      * 在玩家登出或切换世界时调用
      */

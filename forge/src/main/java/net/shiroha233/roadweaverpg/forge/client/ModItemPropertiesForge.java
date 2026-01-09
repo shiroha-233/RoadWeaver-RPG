@@ -24,7 +24,7 @@ public class ModItemPropertiesForge {
             // 注册委托书的has_quest谓词
             ItemProperties.register(
                     ModItemsForge.QUEST_SCROLL.get(),
-                    new ResourceLocation(RoadWeaverRPG.MOD_ID, "has_quest"),
+                    ResourceLocation.fromNamespaceAndPath(RoadWeaverRPG.MOD_ID, "has_quest"),
                     (stack, level, entity, seed) -> QuestScrollItem.hasQuest(stack) ? 1.0f : 0.0f
             );
         });

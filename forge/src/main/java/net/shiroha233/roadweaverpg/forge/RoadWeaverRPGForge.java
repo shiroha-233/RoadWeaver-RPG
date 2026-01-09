@@ -17,7 +17,6 @@ import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
 import net.shiroha233.roadweaverpg.forge.entity.ModEntitiesForge;
 import net.shiroha233.roadweaverpg.forge.entity.NPCSoundProviderForge;
 import net.shiroha233.roadweaverpg.forge.item.ModItemsForge;
-import net.shiroha233.roadweaverpg.forge.loot.ModLootModifiersForge;
 import net.shiroha233.roadweaverpg.forge.network.NetworkHandlerForge;
 import net.shiroha233.roadweaverpg.quest.chain.QuestChainManager;
 import net.shiroha233.roadweaverpg.quest.event.QuestEventHandler;
@@ -52,8 +51,10 @@ public class RoadWeaverRPGForge {
         ModItemsForge.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModItemsForge.init();
         
-        // 注册全局战利品修改器
-        ModLootModifiersForge.register(FMLJavaModLoadingContext.get().getModEventBus());
+        // 初始化经验书回调
+        net.shiroha233.roadweaverpg.item.ExpBookItem.setUseExpBookHandler((player, expAmount) -> {
+            net.shiroha233.roadweaverpg.playerlevel.PlayerLevelDataService.getInstance().addPlayerExp(player, expAmount);
+        });
         
         // 初始化金币事件处理
         net.shiroha233.roadweaverpg.forge.event.CoinEventsForge.init();
@@ -67,6 +68,9 @@ public class RoadWeaverRPGForge {
         // 注册 Config Screen
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory((mc, screen) -> ConfigScreenBuilder.create(screen)));
+        
+        // 初始化魔法模组兼容层
+        net.shiroha233.roadweaverpg.forge.compat.magic.MagicCompatInitForge.init();
         
         // 检查前置依赖
         if (!RoadWeaverRPG.isRoadWeaverAvailable()) {
@@ -92,6 +96,10 @@ public class RoadWeaverRPGForge {
         // 注册玩家等级数据加载器
         event.addListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerLevelManager());
         event.addListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerExpSourceManager());
+        // 注册货币战利品配置加载器
+        event.addListener(new net.shiroha233.roadweaverpg.loot.CoinLootConfigManager());
+        // 注册属性分配配置加载器
+        event.addListener(new net.shiroha233.roadweaverpg.stats.StatAllocationConfig());
     }
     
     @Mod.EventBusSubscriber(modid = RoadWeaverRPG.MOD_ID)
@@ -123,10 +131,9 @@ public class RoadWeaverRPGForge {
         public static void onLivingDeath(LivingDeathEvent event) {
             if (event.getSource().getEntity() instanceof ServerPlayer killer) {
                 QuestEventHandler.onEntityKilled(killer, event.getEntity());
-                // 冒险等级经验
+                // 冒险等级经验（击杀怪物）
                 net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.onEntityKilled(event.getEntity(), killer);
-                // 玩家等级经验
-                net.shiroha233.roadweaverpg.playerlevel.PlayerLevelEventHandler.onEntityKilled(event.getEntity(), killer);
+                // 玩家等级不再通过击杀怪物获得，改为完成委托获得
             }
         }
         
@@ -193,6 +200,8 @@ public class RoadWeaverRPGForge {
         @SubscribeEvent
         public static void onRegisterCommands(RegisterCommandsEvent event) {
             QuestDebugCommand.register(event.getDispatcher());
+            net.shiroha233.roadweaverpg.command.StatEffectCommand.register(event.getDispatcher());
+            net.shiroha233.roadweaverpg.command.StatPointCommand.register(event.getDispatcher());
         }
     }
 }

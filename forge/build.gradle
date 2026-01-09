@@ -12,6 +12,10 @@ loom {
     forge {
         mixinConfig "roadweaver_rpg.mixins.json"
     }
+    // 添加 Mixin refmap 配置
+    mixin {
+        defaultRefmapName = "roadweaver_rpg.refmap.json"
+    }
 }
 
 configurations {
@@ -26,6 +30,32 @@ repositories {
     maven {
         url = "https://maven.shedaniel.me/"
         name "Shedaniel Maven"
+    }
+    maven {
+        url = "https://api.modrinth.com/maven"
+        name "Modrinth Maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+    maven {
+        url = "https://maven.blamejared.com"
+        name "BlameJared Maven"
+    }
+    maven {
+        url = "https://www.cursemaven.com"
+        name "CurseMaven"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        url = "https://maven.kosmx.dev/"
+        name "KosmX's Maven"
+    }
+    maven {
+        name = 'Sponge'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
     }
 }
 
@@ -46,6 +76,28 @@ dependencies {
     // Cloth Config API - 使用 Shedaniel Maven 的官方版本并打包到模组中
     modApi("me.shedaniel.cloth:cloth-config-forge:11.1.136")
     include("me.shedaniel.cloth:cloth-config-forge:11.1.136")
+    
+    // 魔法模组兼容依赖（编译时依赖）
+    modCompileOnly("maven.modrinth:irons-spells-n-spellbooks:1.20.1-3.15.0")
+    modCompileOnly("maven.modrinth:ars-nouveau:4.12.6-forge,1.20.1")
+    modCompileOnly("maven.modrinth:goety:2.5.37.0-forge,1.20.1")
+    
+    // 开发环境运行时依赖 - 完全参考 Touhou-Little-Maid-Spell 配置
+    // 使用与参考项目相同的依赖源（MR 或 CF）
+    modImplementation("maven.modrinth:caelus:3.2.0+1.20.1-forge")
+    modImplementation("maven.modrinth:playeranimator:1.0.2-rc1+1.20-forge")
+    //modImplementation("maven.modrinth:geckolib:4.8.2")
+    modImplementation("maven.modrinth:curios:5.14.1+1.20.1-forge")
+    
+    // Iron's Spells & Spellbooks - 使用 CurseForge 版本
+    //modImplementation("maven.modrinth:irons-spells-n-spellbooks:1.20.1-3.4.0.9")
+    
+    // Ars Nouveau 及其依赖（可选）
+    //modRuntimeOnly("maven.modrinth:ars-nouveau:4.12.6-forge,1.20.1")
+    //modRuntimeOnly("maven.modrinth:patchouli:1.20.1-84.1-forge")
+    
+    // Goety-2（可选）
+    //modRuntimeOnly("maven.modrinth:goety:2.5.37.0-forge,1.20.1")
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -85,6 +137,24 @@ remapJar {
 jar {
     archiveClassifier.set("dev")
 }
+
+// 构建完成后复制到本地mods文件夹
+tasks.register('copyToMods') {
+    dependsOn remapJar
+    doLast {
+        def modsDir = new File("C:/MC/versions/1.20.1-Forge-tese/mods")
+        if (!modsDir.exists()) {
+            modsDir.mkdirs()
+        }
+        copy {
+            from remapJar.archiveFile
+            into modsDir
+        }
+        println "✓ 模组已复制到: ${modsDir.absolutePath}"
+    }
+}
+
+build.finalizedBy copyToMods
 
 // Source JAR 组装（合并 common 源码）
 sourcesJar {

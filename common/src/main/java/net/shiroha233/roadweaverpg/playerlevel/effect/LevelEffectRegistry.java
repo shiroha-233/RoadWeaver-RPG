@@ -23,10 +23,21 @@ public final class LevelEffectRegistry {
     private LevelEffectRegistry() {}
     
     static {
-        // 注册所有效果类型
+        // 原版属性效果
         register(LevelEffectType.MAX_HEALTH, MaxHealthEffect::fromJson, MaxHealthEffect::fromNetwork);
         register(LevelEffectType.ATTACK_DAMAGE, AttackDamageEffect::fromJson, AttackDamageEffect::fromNetwork);
         register(LevelEffectType.ARMOR, ArmorEffect::fromJson, ArmorEffect::fromNetwork);
+        register(LevelEffectType.MOVEMENT_SPEED, MovementSpeedEffect::fromJson, MovementSpeedEffect::fromNetwork);
+        register(LevelEffectType.ATTACK_SPEED, AttackSpeedEffect::fromJson, AttackSpeedEffect::fromNetwork);
+        
+        // 魔法属性效果
+        register(LevelEffectType.SPELL_POWER, SpellPowerEffect::fromJson, SpellPowerEffect::fromNetwork);
+        register(LevelEffectType.MAX_MANA, MaxManaEffect::fromJson, MaxManaEffect::fromNetwork);
+        register(LevelEffectType.MANA_REGEN, ManaRegenEffect::fromJson, ManaRegenEffect::fromNetwork);
+        register(LevelEffectType.COOLDOWN_REDUCTION, CooldownReductionEffect::fromJson, CooldownReductionEffect::fromNetwork);
+        register(LevelEffectType.SPELL_RESIST, SpellResistEffect::fromJson, SpellResistEffect::fromNetwork);
+        
+        // 特殊效果
         register(LevelEffectType.POTION, PotionLevelEffect::fromJson, PotionLevelEffect::fromNetwork);
         register(LevelEffectType.COMMAND, CommandEffect::fromJson, CommandEffect::fromNetwork);
     }

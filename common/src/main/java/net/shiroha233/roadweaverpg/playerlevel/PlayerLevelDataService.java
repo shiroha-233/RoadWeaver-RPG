@@ -3,17 +3,22 @@ package net.shiroha233.roadweaverpg.playerlevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
+import net.shiroha233.roadweaverpg.adventure.AdventureDataService;
 import net.shiroha233.roadweaverpg.data.PlayerQuestData;
 import net.shiroha233.roadweaverpg.data.QuestDataAccessor;
-import net.shiroha233.roadweaverpg.playerlevel.effect.LevelEffect;
 import net.shiroha233.roadweaverpg.quest.reward.QuestReward;
+import net.shiroha233.roadweaverpg.stats.StatAllocationService;
 
 import java.util.function.BiConsumer;
 
 /**
  * 玩家等级数据服务
- * 处理经验增加、等级提升、效果应用和奖励发放
+ * 处理经验增加、等级提升和技能点发放
  * 遵循单一职责原则，专注于玩家等级业务逻辑
+ * 
+ * 改动说明：
+ * - 移除了旧的效果系统（effects），改为技能点系统
+ * - 升级时发放技能点，由玩家自由分配属性
  */
 public class PlayerLevelDataService {
     
@@ -65,6 +70,7 @@ public class PlayerLevelDataService {
     
     /**
      * 检查并处理等级提升
+     * 玩家等级不能超过冒险等级上限
      */
     private void checkPlayerLevelUp(ServerPlayer player, PlayerQuestData data, int oldLevel) {
         if (!PlayerLevelManager.isInitialized()) return;
@@ -73,31 +79,50 @@ public class PlayerLevelDataService {
         int currentXp = data.getPlayerExp();
         int newLevel = manager.getLevelForExperience(currentXp);
         
+        // 获取冒险等级作为玩家等级上限
+        int adventureLevel = AdventureDataService.getInstance().getAdventureLevel(player);
+        int maxPlayerLevel = Math.max(1, adventureLevel); // 至少为1级
+        
+        // 限制玩家等级不超过冒险等级
+        if (newLevel > maxPlayerLevel) {
+            newLevel = maxPlayerLevel;
+            // 提示玩家需要提升冒险等级
+            if (newLevel == oldLevel) {
+                player.sendSystemMessage(Component.translatable(
+                        "message.roadweaver_rpg.player_level_capped", maxPlayerLevel));
+            }
+        }
+        
         if (newLevel > oldLevel) {
-            // 逐级发放奖励和应用效果
+            // 逐级发放奖励和技能点
             for (int i = oldLevel + 1; i <= newLevel; i++) {
-                grantLevelRewards(player, i);
+                grantLevelRewards(player, data, i);
                 player.sendSystemMessage(Component.translatable(
                         "message.roadweaver_rpg.player_level_up", i));
             }
             data.setPlayerLevel(newLevel);
-            
-            // 应用累积效果
-            applyAllEffects(player, newLevel);
             dataAccessor.markDirty(player);
         }
     }
     
     /**
-     * 发放等级奖励（一次性奖励）
+     * 发放等级奖励（技能点和一次性奖励）
      */
-    private void grantLevelRewards(ServerPlayer player, int level) {
+    private void grantLevelRewards(ServerPlayer player, PlayerQuestData data, int level) {
         if (!PlayerLevelManager.isInitialized()) return;
         
         PlayerLevelManager manager = PlayerLevelManager.getInstance();
         PlayerLevel levelInfo = manager.getLevelInfo(level);
         
         if (levelInfo == null) return;
+        
+        // 发放技能点
+        int skillPoints = levelInfo.getSkillPoints();
+        if (skillPoints > 0) {
+            data.getStatAllocationData().addAvailablePoints(skillPoints);
+            player.sendSystemMessage(Component.translatable(
+                    "message.roadweaver_rpg.skill_points_gained", skillPoints));
+        }
         
         // 发放一次性奖励
         for (QuestReward reward : levelInfo.getRewards()) {
@@ -110,121 +135,15 @@ public class PlayerLevelDataService {
                         level, e.getMessage());
             }
         }
-        
-        // 执行命令效果（仅在升级时执行一次）
-        for (LevelEffect effect : levelInfo.getEffects()) {
-            if ("command".equals(effect.getTypeId())) {
-                try {
-                    effect.apply(player, level);
-                } catch (Exception e) {
-                    RoadWeaverRPG.LOGGER.error("Failed to apply command effect at level {}: {}", 
-                            level, e.getMessage());
-                }
-            }
-        }
-    }
-    
-    /**
-     * 应用所有累积效果（属性加成等）
-     * 原理：遍历所有已达到的等级，累加效果
-     */
-    public void applyAllEffects(ServerPlayer player, int currentLevel) {
-        if (!PlayerLevelManager.isInitialized()) return;
-        
-        PlayerLevelManager manager = PlayerLevelManager.getInstance();
-        
-        // 先移除所有旧效果
-        removeAllEffects(player);
-        
-        // 计算累积效果值
-        double totalMaxHealth = 0;
-        double totalAttackDamage = 0;
-        double totalArmor = 0;
-        
-        for (int i = 1; i <= currentLevel; i++) {
-            PlayerLevel levelInfo = manager.getLevelInfo(i);
-            if (levelInfo == null) continue;
-            
-            for (LevelEffect effect : levelInfo.getEffects()) {
-                // 跳过命令效果（已在升级时执行）
-                if ("command".equals(effect.getTypeId())) continue;
-                
-                // 累加属性效果
-                switch (effect.getTypeId()) {
-                    case "max_health" -> totalMaxHealth += extractAmount(effect);
-                    case "attack_damage" -> totalAttackDamage += extractAmount(effect);
-                    case "armor" -> totalArmor += extractAmount(effect);
-                    default -> {
-                        // 其他效果直接应用（如药水效果）
-                        try {
-                            effect.apply(player, currentLevel);
-                        } catch (Exception e) {
-                            RoadWeaverRPG.LOGGER.error("Failed to apply effect: {}", e.getMessage());
-                        }
-                    }
-                }
-            }
-        }
-        
-        // 应用累积的属性效果
-        if (totalMaxHealth > 0) {
-            new net.shiroha233.roadweaverpg.playerlevel.effect.impl.MaxHealthEffect(
-                    totalMaxHealth, 
-                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION
-            ).apply(player, currentLevel);
-        }
-        if (totalAttackDamage > 0) {
-            new net.shiroha233.roadweaverpg.playerlevel.effect.impl.AttackDamageEffect(
-                    totalAttackDamage,
-                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION
-            ).apply(player, currentLevel);
-        }
-        if (totalArmor > 0) {
-            new net.shiroha233.roadweaverpg.playerlevel.effect.impl.ArmorEffect(
-                    totalArmor,
-                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION
-            ).apply(player, currentLevel);
-        }
-        
-        RoadWeaverRPG.LOGGER.debug("Applied level effects to {}: HP+{}, ATK+{}, DEF+{}", 
-                player.getName().getString(), totalMaxHealth, totalAttackDamage, totalArmor);
-    }
-    
-    /**
-     * 从效果中提取数值（用于累加计算）
-     */
-    private double extractAmount(LevelEffect effect) {
-        try {
-            var json = effect.toJson();
-            return json.has("amount") ? json.get("amount").getAsDouble() : 0;
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-    
-    /**
-     * 移除所有等级效果
-     */
-    public void removeAllEffects(ServerPlayer player) {
-        // 移除属性修改器
-        new net.shiroha233.roadweaverpg.playerlevel.effect.impl.MaxHealthEffect(0, 
-                net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION).remove(player);
-        new net.shiroha233.roadweaverpg.playerlevel.effect.impl.AttackDamageEffect(0,
-                net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION).remove(player);
-        new net.shiroha233.roadweaverpg.playerlevel.effect.impl.ArmorEffect(0,
-                net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION).remove(player);
     }
     
     /**
      * 刷新玩家效果（登录时调用）
+     * 重新应用技能点分配的属性加成
      */
     public void refreshEffects(ServerPlayer player) {
         try {
-            PlayerQuestData data = dataAccessor.getPlayerData(player);
-            int level = data.getPlayerLevel();
-            if (level > 0) {
-                applyAllEffects(player, level);
-            }
+            StatAllocationService.getInstance().refreshAllStats(player);
         } catch (Exception e) {
             RoadWeaverRPG.LOGGER.error("Failed to refresh effects for {}: {}", 
                     player.getName().getString(), e.getMessage());

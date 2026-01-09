@@ -1,43 +1,15 @@
 package net.shiroha233.roadweaverpg.playerlevel;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 
 /**
  * 玩家等级事件处理器
- * 处理击杀怪物获得经验等事件
+ * 玩家等级通过完成委托和使用经验书升级，不再通过击杀怪物
  */
 public final class PlayerLevelEventHandler {
     
     private PlayerLevelEventHandler() {}
-    
-    /**
-     * 处理实体死亡事件
-     * 当玩家击杀怪物时给予玩家经验
-     */
-    public static void onEntityKilled(LivingEntity entity, Player killer) {
-        if (!(killer instanceof ServerPlayer serverPlayer)) return;
-        if (entity instanceof Player) return; // 不计算击杀玩家
-        
-        try {
-            if (!PlayerExpSourceManager.isInitialized()) return;
-            
-            ResourceLocation entityType = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
-            
-            PlayerExpSourceManager sourceManager = PlayerExpSourceManager.getInstance();
-            int exp = sourceManager.getExpForEntity(entityType);
-            
-            if (exp > 0) {
-                PlayerLevelDataService.getInstance().addPlayerExp(serverPlayer, exp);
-            }
-        } catch (Exception e) {
-            RoadWeaverRPG.LOGGER.error("Error processing entity kill for player exp: {}", e.getMessage());
-        }
-    }
     
     /**
      * 处理玩家登录事件
@@ -47,11 +19,12 @@ public final class PlayerLevelEventHandler {
         try {
             // 同步等级定义
             syncPlayerLevelDefinitions(player);
-            // 同步经验来源（可选）
             // 同步玩家数据
             syncPlayerLevelData(player);
             // 刷新效果
             PlayerLevelDataService.getInstance().refreshEffects(player);
+            // 同步技能点分配数据并刷新属性效果
+            syncStatAllocationData(player);
         } catch (Exception e) {
             RoadWeaverRPG.LOGGER.error("Error syncing player level data on login: {}", e.getMessage());
         }
@@ -59,13 +32,15 @@ public final class PlayerLevelEventHandler {
     
     /**
      * 处理玩家重生事件
-     * 重新应用等级效果
+     * 重新应用等级效果和技能点属性
      */
     public static void onPlayerRespawn(ServerPlayer player) {
         try {
             // 延迟一tick应用效果，确保玩家状态已重置
             player.getServer().execute(() -> {
                 PlayerLevelDataService.getInstance().refreshEffects(player);
+                // 重新应用技能点属性
+                net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance().refreshAllStats(player);
             });
         } catch (Exception e) {
             RoadWeaverRPG.LOGGER.error("Error refreshing effects on respawn: {}", e.getMessage());
@@ -86,5 +61,14 @@ public final class PlayerLevelEventHandler {
      */
     public static void syncPlayerLevelData(ServerPlayer player) {
         PlayerLevelDataService.getInstance().syncToClient(player);
+    }
+    
+    /**
+     * 同步技能点分配数据到客户端并刷新属性效果
+     */
+    public static void syncStatAllocationData(ServerPlayer player) {
+        var service = net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance();
+        service.refreshAllStats(player);
+        service.syncToClient(player);
     }
 }

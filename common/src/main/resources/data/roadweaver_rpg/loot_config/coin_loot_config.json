@@ -1,0 +1,33 @@
+{
+  "enabled": true,
+  "coins": [
+    {
+      "type": "copper",
+      "item": "roadweaver_rpg:copper_coin",
+      "probability": 0.4,
+      "count_min": 5,
+      "count_max": 20
+    },
+    {
+      "type": "silver",
+      "item": "roadweaver_rpg:silver_coin",
+      "probability": 0.1,
+      "count_min": 1,
+      "count_max": 5
+    },
+    {
+      "type": "gold",
+      "item": "roadweaver_rpg:gold_coin",
+      "probability": 0.05,
+      "count_min": 1,
+      "count_max": 2
+    },
+    {
+      "type": "emerald",
+      "item": "roadweaver_rpg:emerald_coin",
+      "probability": 0.01,
+      "count_min": 1,
+      "count_max": 1
+    }
+  ]
+}

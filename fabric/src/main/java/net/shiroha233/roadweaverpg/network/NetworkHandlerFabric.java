@@ -66,6 +66,51 @@ public class NetworkHandlerFabric {
         registerShopReceivers();
         registerInteractionReceivers();
         registerDialogReceivers();
+        registerStatAllocationReceivers();
+    }
+    
+    /**
+     * 注册属性分配（技能点）系统相关的服务端接收器
+     */
+    public static void registerStatAllocationReceivers() {
+        // 处理分配技能点请求
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.ALLOCATE_STAT_POINT, 
+                (server, player, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.packet.stats.AllocateStatPointPacket.decode(buf);
+            server.execute(() -> {
+                var statType = packet.getStatType();
+                if (statType != null) {
+                    net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance()
+                            .allocatePoint(player, statType);
+                }
+            });
+        });
+        
+        // 处理减少技能点请求
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.DEALLOCATE_STAT_POINT, 
+                (server, player, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.packet.stats.DeallocateStatPointPacket.decode(buf);
+            server.execute(() -> {
+                var statType = packet.getStatType();
+                if (statType != null) {
+                    net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance()
+                            .deallocatePoint(player, statType);
+                }
+            });
+        });
+        
+        // 处理重置属性分配请求
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.RESET_STAT_ALLOCATION, 
+                (server, player, handler, buf, responseSender) -> {
+            server.execute(() -> {
+                net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance()
+                        .resetAllocation(player);
+            });
+        });
+        
+        // 初始化同步回调
+        net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance().setOnSyncCallback(
+                (p, data) -> sendStatAllocation(p, data));
     }
     
     /**
@@ -382,5 +427,17 @@ public class NetworkHandlerFabric {
             server.execute(() -> ShopPacketHandler.handlePurchase(
                     player, packet, (p, syncPacket) -> sendSyncCoins(p, syncPacket.coins())));
         });
+    }
+    
+    // ==================== 属性分配（技能点）系统网络方法 ====================
+    
+    /**
+     * 发送属性分配数据到客户端
+     */
+    public static void sendStatAllocation(ServerPlayer player, 
+            net.shiroha233.roadweaverpg.stats.StatAllocationData data) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        net.shiroha233.roadweaverpg.network.packet.sync.SyncStatAllocationPacket.fromData(data).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.SYNC_STAT_ALLOCATION, buf);
     }
 }

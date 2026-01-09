@@ -1,4 +1,4 @@
-package net.shiroha233.roadweaverpg.mixin;
+package net.shiroha233.roadweaverpg.forge.mixin;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * 容器点击Mixin - 实现在容器界面Shift+左键货币存入钱包
+ * Forge 专用版本
  * 
  * 原理：Minecraft的Shift+左键会触发QUICK_MOVE类型
  * 我们拦截这个操作，当目标是货币时改为存入钱包
@@ -20,8 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AbstractContainerMenu.class)
 public class ContainerClickMixin {
     
-    @Inject(method = "doClick", at = @At("HEAD"), cancellable = true)
-    private void onDoClick(int slotId, int button, ClickType clickType, Player player, CallbackInfo ci) {
+    @Inject(method = "clicked", at = @At("HEAD"), cancellable = true)
+    private void onClicked(int slotId, int button, ClickType clickType, Player player, CallbackInfo ci) {
         // Shift+左键触发QUICK_MOVE，button=0
         if (clickType != ClickType.QUICK_MOVE) return;
         if (!(player instanceof ServerPlayer serverPlayer)) return;

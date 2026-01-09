@@ -89,6 +89,9 @@ public class ClientNetworkHandlerFabric {
         // 注册冒险等级接收器
         registerAdventureReceivers();
         
+        // 注册属性分配（技能点）接收器
+        registerStatAllocationReceivers();
+        
         // 注册钱包系统接收器
         registerWalletReceivers();
         
@@ -125,6 +128,44 @@ public class ClientNetworkHandlerFabric {
             client.execute(() -> Minecraft.getInstance().setScreen(
                     new net.shiroha233.roadweaverpg.client.gui.adventure.AdventureLevelScreen()));
         });
+    }
+    
+    // ==================== 属性分配（技能点）系统客户端处理 ====================
+    
+    private static void registerStatAllocationReceivers() {
+        // 处理同步属性分配数据
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_STAT_ALLOCATION, (client, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.packet.sync.SyncStatAllocationPacket.decode(buf);
+            client.execute(() -> ClientStatAllocationCache.update(
+                    packet.availablePoints(), packet.allocatedPoints()));
+        });
+    }
+    
+    /**
+     * 发送分配技能点请求到服务端
+     */
+    public static void sendAllocateStatPoint(net.shiroha233.roadweaverpg.stats.StatType type) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new net.shiroha233.roadweaverpg.network.packet.stats.AllocateStatPointPacket(type.getId()).encode(buf);
+        ClientPlayNetworking.send(NetworkHandler.ALLOCATE_STAT_POINT, buf);
+    }
+    
+    /**
+     * 发送减少技能点请求到服务端
+     */
+    public static void sendDeallocateStatPoint(net.shiroha233.roadweaverpg.stats.StatType type) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new net.shiroha233.roadweaverpg.network.packet.stats.DeallocateStatPointPacket(type.getId()).encode(buf);
+        ClientPlayNetworking.send(NetworkHandler.DEALLOCATE_STAT_POINT, buf);
+    }
+    
+    /**
+     * 发送重置属性分配请求到服务端
+     */
+    public static void sendResetStatAllocation() {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new net.shiroha233.roadweaverpg.network.packet.stats.ResetStatAllocationPacket().encode(buf);
+        ClientPlayNetworking.send(NetworkHandler.RESET_STAT_ALLOCATION, buf);
     }
     
     // ==================== 对话系统客户端处理（原有） ====================

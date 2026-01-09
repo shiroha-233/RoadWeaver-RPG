@@ -35,7 +35,7 @@ public class NetworkHandlerForge {
     private static final String PROTOCOL_VERSION = "1";
     
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(RoadWeaverRPG.MOD_ID, "main"),
+            ResourceLocation.fromNamespaceAndPath(RoadWeaverRPG.MOD_ID, "main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals
@@ -177,6 +177,80 @@ public class NetworkHandlerForge {
         registerInteractionPackets();
         registerDialogPackets();
         registerAdventurePackets();
+        registerStatAllocationPackets();
+    }
+    
+    /**
+     * 注册属性分配（技能点）系统相关的网络包
+     */
+    public static void registerStatAllocationPackets() {
+        // 服务端 -> 客户端：同步属性分配数据
+        CHANNEL.registerMessage(packetId++, 
+                net.shiroha233.roadweaverpg.network.packet.sync.SyncStatAllocationPacket.class,
+                net.shiroha233.roadweaverpg.network.packet.sync.SyncStatAllocationPacket::encode,
+                net.shiroha233.roadweaverpg.network.packet.sync.SyncStatAllocationPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> ClientPacketHandler.handleSyncStatAllocation(packet));
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
+        // 客户端 -> 服务端：分配技能点请求
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.network.packet.stats.AllocateStatPointPacket.class,
+                net.shiroha233.roadweaverpg.network.packet.stats.AllocateStatPointPacket::encode,
+                net.shiroha233.roadweaverpg.network.packet.stats.AllocateStatPointPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> {
+                        ServerPlayer player = ctx.get().getSender();
+                        if (player != null) {
+                            var statType = packet.getStatType();
+                            if (statType != null) {
+                                net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance()
+                                        .allocatePoint(player, statType);
+                            }
+                        }
+                    });
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        
+        // 客户端 -> 服务端：重置属性分配请求
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.network.packet.stats.ResetStatAllocationPacket.class,
+                net.shiroha233.roadweaverpg.network.packet.stats.ResetStatAllocationPacket::encode,
+                net.shiroha233.roadweaverpg.network.packet.stats.ResetStatAllocationPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> {
+                        ServerPlayer player = ctx.get().getSender();
+                        if (player != null) {
+                            net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance()
+                                    .resetAllocation(player);
+                        }
+                    });
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        
+        // 客户端 -> 服务端：减少技能点请求
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.network.packet.stats.DeallocateStatPointPacket.class,
+                net.shiroha233.roadweaverpg.network.packet.stats.DeallocateStatPointPacket::encode,
+                net.shiroha233.roadweaverpg.network.packet.stats.DeallocateStatPointPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> {
+                        ServerPlayer player = ctx.get().getSender();
+                        if (player != null) {
+                            var statType = packet.getStatType();
+                            if (statType != null) {
+                                net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance()
+                                        .deallocatePoint(player, statType);
+                            }
+                        }
+                    });
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        
+        // 初始化同步回调
+        net.shiroha233.roadweaverpg.stats.StatAllocationService.getInstance().setOnSyncCallback(
+                (player, data) -> sendStatAllocation(player, data));
     }
     
     /**
@@ -583,5 +657,37 @@ public class NetworkHandlerForge {
                     });
                     ctx.get().setPacketHandled(true);
                 }, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+    }
+    
+    // ==================== 属性分配发送方法 ====================
+    
+    /**
+     * 发送属性分配数据到客户端
+     */
+    public static void sendStatAllocation(ServerPlayer player, 
+            net.shiroha233.roadweaverpg.stats.StatAllocationData data) {
+        var packet = net.shiroha233.roadweaverpg.network.packet.sync.SyncStatAllocationPacket.fromData(data);
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+    
+    /**
+     * 发送分配技能点请求到服务端
+     */
+    public static void sendAllocateStatPoint(net.shiroha233.roadweaverpg.stats.StatType type) {
+        CHANNEL.sendToServer(new net.shiroha233.roadweaverpg.network.packet.stats.AllocateStatPointPacket(type.getId()));
+    }
+    
+    /**
+     * 发送减少技能点请求到服务端
+     */
+    public static void sendDeallocateStatPoint(net.shiroha233.roadweaverpg.stats.StatType type) {
+        CHANNEL.sendToServer(new net.shiroha233.roadweaverpg.network.packet.stats.DeallocateStatPointPacket(type.getId()));
+    }
+    
+    /**
+     * 发送重置属性分配请求到服务端
+     */
+    public static void sendResetStatAllocation() {
+        CHANNEL.sendToServer(new net.shiroha233.roadweaverpg.network.packet.stats.ResetStatAllocationPacket());
     }
 }

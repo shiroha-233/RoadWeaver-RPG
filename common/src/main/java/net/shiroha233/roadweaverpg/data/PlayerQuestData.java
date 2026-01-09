@@ -7,6 +7,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.quest.instance.QuestInstance;
+import net.shiroha233.roadweaverpg.stats.StatAllocationData;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,9 +59,23 @@ public class PlayerQuestData {
     // 领取记录追踪（用于周期限制）- key: questId, value: 领取时间戳列表
     private final Map<ResourceLocation, List<Long>> acceptanceHistory = new ConcurrentHashMap<>();
     
+    // 属性分配数据（技能点系统）
+    private volatile StatAllocationData statAllocationData = new StatAllocationData();
+    
     public PlayerQuestData(UUID playerId) {
         this.playerId = playerId;
     }
+    
+    // region 属性分配数据
+    public StatAllocationData getStatAllocationData() {
+        return statAllocationData;
+    }
+    
+    public void setStatAllocationData(StatAllocationData data) {
+        this.statAllocationData = data;
+        incrementVersion();
+    }
+    // endregion
     
     // region Getters
     public UUID getPlayerId() { return playerId; }
@@ -409,6 +424,9 @@ public class PlayerQuestData {
         });
         tag.put("acceptanceHistory", historyTag);
         
+        // 属性分配数据（技能点系统）
+        tag.put("statAllocation", statAllocationData.toNbt());
+        
         return tag;
     }
     
@@ -542,6 +560,11 @@ public class PlayerQuestData {
                         RoadWeaverRPG.LOGGER.warn("Failed to load acceptance history for {}: {}", key, e.getMessage());
                     }
                 }
+            }
+            
+            // 属性分配数据（技能点系统）
+            if (tag.contains("statAllocation")) {
+                data.statAllocationData = StatAllocationData.fromNbt(tag.getCompound("statAllocation"));
             }
             
         } catch (Exception e) {

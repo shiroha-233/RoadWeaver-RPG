@@ -21,8 +21,24 @@
   "item.roadweaver_rpg.currency.tooltip": "公会商店通用货币",
   "item.roadweaver_rpg.currency.deposit_hint": "Shift+左键存入钱包（手持或容器内）",
   
+  "item.roadweaver_rpg.exp_book_small": "小型经验书",
+  "item.roadweaver_rpg.exp_book_medium": "中型经验书",
+  "item.roadweaver_rpg.exp_book_large": "大型经验书",
+  "item.roadweaver_rpg.exp_book_grand": "特大经验书",
+  "item.roadweaver_rpg.exp_book.tooltip": "使用后获得 %d 玩家经验",
+  "item.roadweaver_rpg.exp_book.use_hint": "右键使用",
+  
   "message.roadweaver_rpg.currency_deposited": "已存入 %s 到钱包",
   "message.roadweaver_rpg.coins_received": "+%s",
+  "message.roadweaver_rpg.skill_points_gained": "获得 %d 技能点",
+  "message.roadweaver_rpg.stat_allocated": "已提升 %s",
+  "message.roadweaver_rpg.stat_deallocated": "已降低 %s",
+  "message.roadweaver_rpg.stats_reset": "已重置所有属性分配",
+  "message.roadweaver_rpg.no_skill_points": "没有可用的技能点",
+  "message.roadweaver_rpg.stat_not_allocatable": "该属性无法分配技能点",
+  
+  "gui.roadweaver_rpg.skill_points": "可用技能点: %d",
+  "gui.roadweaver_rpg.reset_stats": "重置分配",
   
   "gui.roadweaver_rpg.dialog.title": "公会看板娘",
   "gui.roadweaver_rpg.dialog.who_are_you": "你是？",
@@ -111,6 +127,7 @@
   
   "message.roadweaver_rpg.player_exp_gained": "获得 %s 战斗经验",
   "message.roadweaver_rpg.player_level_up": "恭喜！你的等级已提升至 Lv.%d！",
+  "message.roadweaver_rpg.player_level_capped": "玩家等级已达到冒险等级上限 (Lv.%d)，请先提升冒险等级",
   "gui.roadweaver_rpg.player_level.title": "玩家等级",
   "gui.roadweaver_rpg.player_level.current_level": "当前等级：Lv.%d",
   "gui.roadweaver_rpg.player_level.current_exp": "当前经验：%d",
@@ -119,6 +136,13 @@
   "effect.roadweaver_rpg.max_health": "最大生命值 %s",
   "effect.roadweaver_rpg.attack_damage": "攻击伤害 %s",
   "effect.roadweaver_rpg.armor": "护甲值 %s",
+  "effect.roadweaver_rpg.movement_speed": "移动速度 %s",
+  "effect.roadweaver_rpg.attack_speed": "攻击速度 %s",
+  "effect.roadweaver_rpg.spell_power": "法术威力 %s",
+  "effect.roadweaver_rpg.max_mana": "最大魔力 %s",
+  "effect.roadweaver_rpg.mana_regen": "魔力回复 %s",
+  "effect.roadweaver_rpg.cooldown_reduction": "冷却缩减 %s",
+  "effect.roadweaver_rpg.spell_resist": "法术抗性 %s",
   "effect.roadweaver_rpg.potion": "%s Lv.%d",
   
   "gui.roadweaver_rpg.quest.accepted": "已接受委托：%s",
@@ -275,6 +299,36 @@
   
   "key.categories.roadweaver_rpg": "RoadWeaver RPG",
   "key.roadweaver_rpg.toggle_env_debug": "切换环境调试信息 (Z+V)",
+  "key.roadweaver_rpg.open_character": "打开角色界面 (J)",
+  
+  "gui.roadweaver_rpg.character.title": "角色",
+  "gui.roadweaver_rpg.character.drag_hint": "拖拽旋转模型",
+  
+  "stats.roadweaver_rpg.category.basic": "基础属性",
+  "stats.roadweaver_rpg.category.combat": "战斗属性",
+  "stats.roadweaver_rpg.category.special": "特殊属性",
+  
+  "stats.roadweaver_rpg.max_health": "生命值上限",
+  "stats.roadweaver_rpg.max_mana": "魔力值上限",
+  "stats.roadweaver_rpg.attack": "攻击力",
+  "stats.roadweaver_rpg.defense": "防御力",
+  "stats.roadweaver_rpg.magic_attack": "魔法攻击",
+  "stats.roadweaver_rpg.magic_defense": "魔法防御",
+  
+  "stats.roadweaver_rpg.crit_rate": "暴击率",
+  "stats.roadweaver_rpg.crit_damage": "暴击伤害",
+  "stats.roadweaver_rpg.hit_rate": "命中率",
+  "stats.roadweaver_rpg.dodge_rate": "闪避率",
+  "stats.roadweaver_rpg.attack_speed": "攻击速度",
+  "stats.roadweaver_rpg.move_speed": "移动速度",
+  "stats.roadweaver_rpg.health_regen": "生命回复",
+  "stats.roadweaver_rpg.mana_regen": "魔力回复",
+  
+  "stats.roadweaver_rpg.life_steal": "生命偷取",
+  "stats.roadweaver_rpg.mana_steal": "魔力偷取",
+  "stats.roadweaver_rpg.cooldown_reduction": "冷却缩减",
+  "stats.roadweaver_rpg.exp_bonus": "经验加成",
+  "stats.roadweaver_rpg.drop_bonus": "掉落加成",
 
   "config.roadweaver_rpg.title": "RoadWeaver RPG 配置",
   "config.roadweaver_rpg.category.wallet": "钱包系统",
@@ -289,5 +343,18 @@
 
   "config.roadweaver_rpg.option.enable_verbose_logging": "启用详细日志",
   "config.roadweaver_rpg.option.enable_performance_monitoring": "启用性能监控",
-  "config.roadweaver_rpg.option.enable_consistency_check": "启用一致性检查"
+  "config.roadweaver_rpg.option.enable_consistency_check": "启用一致性检查",
+
+  "tooltip.roadweaver_rpg.stat.base": "基础值",
+  "tooltip.roadweaver_rpg.stat.equipment": "装备加成",
+  "tooltip.roadweaver_rpg.stat.weapon": "武器加成",
+  "tooltip.roadweaver_rpg.stat.armor": "护甲加成",
+  "tooltip.roadweaver_rpg.stat.armor_toughness": "护甲韧性",
+  "tooltip.roadweaver_rpg.stat.skill_points": "技能点 (%d × %s)",
+  "tooltip.roadweaver_rpg.stat.total": "总计",
+
+  "command.roadweaver_rpg.point.add.success": "§a为 %s 添加了 %d 技能点",
+  "command.roadweaver_rpg.point.set.success": "§a设置 %s 的技能点为 %d",
+  "command.roadweaver_rpg.point.allocate.success": "§a为 %s 分配了 %d 点到 %s",
+  "command.roadweaver_rpg.point.reset.success": "§a已重置 %s 的所有属性分配"
 }

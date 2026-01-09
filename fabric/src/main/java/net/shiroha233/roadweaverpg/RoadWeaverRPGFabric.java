@@ -39,6 +39,11 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         // 注册物品
         ModItemsFabric.register();
         
+        // 初始化经验书回调
+        net.shiroha233.roadweaverpg.item.ExpBookItem.setUseExpBookHandler((player, expAmount) -> {
+            net.shiroha233.roadweaverpg.playerlevel.PlayerLevelDataService.getInstance().addPlayerExp(player, expAmount);
+        });
+        
         // 注册网络处理器
         NetworkHandlerFabric.registerServerReceivers();
         
@@ -67,6 +72,10 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerExpSourceManagerFabric());
         
+        // 注册属性分配配置加载器
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.stats.StatAllocationConfigFabric());
+        
         // 注册对话数据加载器（使用Fabric包装类）
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(net.shiroha233.roadweaverpg.dialog.DialogRegistryFabric.getInstance());
@@ -75,6 +84,13 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorLoaderFabric());
         
+        // 注册货币战利品配置加载器
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.loot.CoinLootConfigManagerFabric());
+        
+        // 初始化魔法模组兼容层
+        net.shiroha233.roadweaverpg.compat.magic.MagicCompatInitFabric.init();
+        
         // 注册委托事件监听
         QuestEventsFabric.register();
         CoinEventsFabric.register();
@@ -82,8 +98,11 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         registerServerTickEvents();
         
         // 注册调试指令
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> 
-                QuestDebugCommand.register(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            QuestDebugCommand.register(dispatcher);
+            net.shiroha233.roadweaverpg.command.StatEffectCommand.register(dispatcher);
+            net.shiroha233.roadweaverpg.command.StatPointCommand.register(dispatcher);
+        });
         
         // 检查前置依赖
         if (!RoadWeaverRPG.isRoadWeaverAvailable()) {

@@ -11,6 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.currency.CurrencyType;
 import net.shiroha233.roadweaverpg.item.CurrencyItem;
+import net.shiroha233.roadweaverpg.item.ExpBookItem;
 import net.shiroha233.roadweaverpg.item.ModItems;
 import net.shiroha233.roadweaverpg.item.QuestScrollItem;
 
@@ -42,6 +43,19 @@ public class ModItemsForge {
     public static final RegistryObject<Item> DIAMOND_COIN = ITEMS.register("diamond_coin",
             () -> new CurrencyItem(CurrencyType.DIAMOND, new Item.Properties()));
     
+    // 经验书物品
+    public static final RegistryObject<Item> EXP_BOOK_SMALL = ITEMS.register("exp_book_small",
+            () -> new ExpBookItem(ExpBookItem.Tier.SMALL, new Item.Properties()));
+    
+    public static final RegistryObject<Item> EXP_BOOK_MEDIUM = ITEMS.register("exp_book_medium",
+            () -> new ExpBookItem(ExpBookItem.Tier.MEDIUM, new Item.Properties()));
+    
+    public static final RegistryObject<Item> EXP_BOOK_LARGE = ITEMS.register("exp_book_large",
+            () -> new ExpBookItem(ExpBookItem.Tier.LARGE, new Item.Properties()));
+    
+    public static final RegistryObject<Item> EXP_BOOK_GRAND = ITEMS.register("exp_book_grand",
+            () -> new ExpBookItem(ExpBookItem.Tier.GRAND, new Item.Properties()));
+    
     /**
      * 初始化通用引用
      */
@@ -52,6 +66,11 @@ public class ModItemsForge {
                      GOLD_COIN,
                      EMERALD_COIN,
                      DIAMOND_COIN);
+        
+        ModItems.initExpBooks(EXP_BOOK_SMALL,
+                             EXP_BOOK_MEDIUM,
+                             EXP_BOOK_LARGE,
+                             EXP_BOOK_GRAND);
     }
     
     @SubscribeEvent
@@ -63,6 +82,10 @@ public class ModItemsForge {
             event.accept(GOLD_COIN.get());
             event.accept(EMERALD_COIN.get());
             event.accept(DIAMOND_COIN.get());
+            event.accept(EXP_BOOK_SMALL.get());
+            event.accept(EXP_BOOK_MEDIUM.get());
+            event.accept(EXP_BOOK_LARGE.get());
+            event.accept(EXP_BOOK_GRAND.get());
         }
     }
 }

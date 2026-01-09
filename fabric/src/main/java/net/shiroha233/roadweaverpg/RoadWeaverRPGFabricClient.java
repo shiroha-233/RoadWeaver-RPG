@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
+import net.shiroha233.roadweaverpg.client.CharacterKeyHandlerFabric;
 import net.shiroha233.roadweaverpg.client.ClientNetworkHandlerFabric;
 import net.shiroha233.roadweaverpg.client.DebugOverlayHandlerFabric;
 import net.shiroha233.roadweaverpg.client.ModEntityRenderersFabric;
@@ -40,6 +41,9 @@ public class RoadWeaverRPGFabricClient implements ClientModInitializer {
         
         // 注册调试覆盖层（Z+V切换）
         DebugOverlayHandlerFabric.register();
+        
+        // 注册角色界面按键（J键）
+        CharacterKeyHandlerFabric.register();
         
         // 注册金币获取通知HUD
         registerCoinNotificationHud();

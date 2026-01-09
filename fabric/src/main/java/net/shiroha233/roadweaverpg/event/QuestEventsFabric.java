@@ -19,10 +19,9 @@ public final class QuestEventsFabric {
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
             if (damageSource.getEntity() instanceof ServerPlayer killer) {
                 QuestEventHandler.onEntityKilled(killer, entity);
-                // 冒险等级经验
+                // 冒险等级经验（击杀怪物）
                 net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.onEntityKilled(entity, killer);
-                // 玩家等级经验
-                net.shiroha233.roadweaverpg.playerlevel.PlayerLevelEventHandler.onEntityKilled(entity, killer);
+                // 玩家等级不再通过击杀怪物获得，改为完成委托获得
             }
         });
         

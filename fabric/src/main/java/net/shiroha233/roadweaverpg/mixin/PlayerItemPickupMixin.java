@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * 玩家物品拾取Mixin - 拦截货币拾取，直接存入钱包（可配置）
+ * Fabric 专用版本
  */
 @Mixin(ItemEntity.class)
 public class PlayerItemPickupMixin {

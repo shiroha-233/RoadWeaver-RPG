@@ -18,6 +18,12 @@ public class ModItems {
     public static Supplier<Item> EMERALD_COIN;
     public static Supplier<Item> DIAMOND_COIN;
     
+    // 经验书物品
+    public static Supplier<Item> EXP_BOOK_SMALL;
+    public static Supplier<Item> EXP_BOOK_MEDIUM;
+    public static Supplier<Item> EXP_BOOK_LARGE;
+    public static Supplier<Item> EXP_BOOK_GRAND;
+    
     // 旧的金币引用（向后兼容，指向金币）
     @Deprecated
     public static Supplier<Item> COIN;
@@ -43,9 +49,29 @@ public class ModItems {
     }
     
     /**
+     * 初始化经验书物品引用（由平台调用）
+     */
+    public static void initExpBooks(Supplier<Item> small, 
+                                    Supplier<Item> medium,
+                                    Supplier<Item> large,
+                                    Supplier<Item> grand) {
+        EXP_BOOK_SMALL = small;
+        EXP_BOOK_MEDIUM = medium;
+        EXP_BOOK_LARGE = large;
+        EXP_BOOK_GRAND = grand;
+    }
+    
+    /**
      * 检查物品是否为货币
      */
     public static boolean isCurrency(Item item) {
         return item instanceof CurrencyItem;
+    }
+    
+    /**
+     * 检查物品是否为经验书
+     */
+    public static boolean isExpBook(Item item) {
+        return item instanceof ExpBookItem;
     }
 }

@@ -3,10 +3,7 @@
   "minVersion": "0.8",
   "package": "net.shiroha233.roadweaverpg.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "PlayerItemPickupMixin",
-    "ContainerClickMixin"
-  ],
+  "mixins": [],
   "client": [],
   "injectors": {
     "defaultRequire": 1

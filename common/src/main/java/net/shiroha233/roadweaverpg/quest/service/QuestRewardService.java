@@ -25,6 +25,7 @@ import net.shiroha233.roadweaverpg.quest.event.QuestEventBus;
 import net.shiroha233.roadweaverpg.quest.index.ObjectiveIndex;
 import net.shiroha233.roadweaverpg.quest.state.StateTransitionLog;
 import net.shiroha233.roadweaverpg.quest.sync.IncrementalSyncManager;
+import net.shiroha233.roadweaverpg.playerlevel.PlayerLevelDataService;
 import net.shiroha233.roadweaverpg.reputation.ReputationLevel;
 import net.shiroha233.roadweaverpg.reputation.ReputationManager;
 
@@ -124,6 +125,8 @@ public class QuestRewardService {
                 })
                 // 发放奖励（使用优先级队列）
                 .execute(() -> grantRewards(player, definition, instance.getDifficultyMultiplier()))
+                // 发放玩家等级经验
+                .execute(() -> grantPlayerExp(player, definition))
                 // 更新状态
                 .execute(() -> {
                     instance.setState(QuestState.TURNED_IN);
@@ -179,6 +182,19 @@ public class QuestRewardService {
                     }
                 }
             }
+        }
+    }
+    
+    /**
+     * 发放玩家等级经验
+     * 委托完成时根据定义中的 playerExpReward 发放经验
+     */
+    private void grantPlayerExp(ServerPlayer player, QuestDefinition definition) {
+        int expReward = definition.getPlayerExpReward();
+        if (expReward > 0) {
+            PlayerLevelDataService.getInstance().addPlayerExp(player, expReward);
+            RoadWeaverRPG.LOGGER.debug("Granted {} player exp for quest {}", 
+                    expReward, definition.getId());
         }
     }
     

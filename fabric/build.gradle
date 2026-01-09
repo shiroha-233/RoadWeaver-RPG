@@ -9,6 +9,10 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+    // 添加 Mixin refmap 配置
+    mixin {
+        defaultRefmapName = "roadweaver_rpg.refmap.json"
+    }
 }
 
 configurations {
