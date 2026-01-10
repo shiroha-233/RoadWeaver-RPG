@@ -1,0 +1,53 @@
+{
+  "name": "profession.roadweaver_rpg.warrior",
+  "description": "profession.roadweaver_rpg.warrior.desc",
+  "icon": "roadweaver_rpg:textures/gui/profession/warrior.png",
+  
+  "base_stats": {
+    "max_health": 30.0,
+    "max_mana": 50.0,
+    "attack": 3.0,
+    "defense": 2.0,
+    "magic_attack": 0.5,
+    "magic_defense": 1.0,
+    "crit_rate": 5.0,
+    "crit_damage": 150.0,
+    "move_speed": 100.0,
+    "health_regen": 0.5,
+    "mana_regen": 0.3
+  },
+  
+  "stat_growth": {
+    "max_health": 3.0,
+    "attack": 0.5,
+    "defense": 0.3
+  },
+  
+  "stat_bonus_multiplier": {
+    "max_health": 1.2,
+    "attack": 1.1,
+    "defense": 1.1,
+    "magic_attack": 0.7,
+    "magic_defense": 0.9
+  },
+  
+  "unlocked_stats": [
+    "max_health", "attack", "defense", 
+    "crit_rate", "crit_damage", 
+    "health_regen", "move_speed"
+  ],
+  
+  "starting_items": [
+    {"item": "minecraft:iron_sword", "count": 1},
+    {"item": "minecraft:iron_chestplate", "count": 1},
+    {"item": "minecraft:bread", "count": 16}
+  ],
+  
+  "requirements": {
+    "min_adventure_level": 1
+  },
+  
+  "tags": ["melee", "tank"],
+  "default": true,
+  "sort_order": 1
+}

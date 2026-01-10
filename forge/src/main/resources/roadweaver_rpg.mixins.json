@@ -6,7 +6,9 @@
   "refmap": "roadweaver_rpg.refmap.json",
   "mixins": [
     "PlayerItemPickupMixin",
-    "ContainerClickMixin"
+    "ContainerClickMixin",
+    "PlayerAttackMixin",
+    "LivingEntityDamageMixin"
   ],
   "client": [],
   "injectors": {

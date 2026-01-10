@@ -177,6 +177,11 @@ public final class QuestSystemInitializer {
     private static java.util.function.BiConsumer<ServerPlayer, Integer> onOpenShop;
     
     /**
+     * 打开职业选择界面的回调（由 Fabric/Forge 实现）
+     */
+    private static java.util.function.BiConsumer<ServerPlayer, Integer> onOpenProfessionSelection;
+    
+    /**
      * 设置显示委托看板的回调
      */
     public static void setOnShowQuestsBoard(java.util.function.BiConsumer<ServerPlayer, java.util.List<net.shiroha233.roadweaverpg.quest.definition.QuestDefinition>> callback) {
@@ -191,6 +196,13 @@ public final class QuestSystemInitializer {
     }
     
     /**
+     * 设置打开职业选择界面的回调
+     */
+    public static void setOnOpenProfessionSelection(java.util.function.BiConsumer<ServerPlayer, Integer> callback) {
+        onOpenProfessionSelection = callback;
+    }
+    
+    /**
      * 获取显示委托看板的回调
      */
     public static java.util.function.BiConsumer<ServerPlayer, java.util.List<net.shiroha233.roadweaverpg.quest.definition.QuestDefinition>> getOnShowQuestsBoard() {
@@ -202,6 +214,13 @@ public final class QuestSystemInitializer {
      */
     public static java.util.function.BiConsumer<ServerPlayer, Integer> getOnOpenShop() {
         return onOpenShop;
+    }
+    
+    /**
+     * 获取打开职业选择界面的回调
+     */
+    public static java.util.function.BiConsumer<ServerPlayer, Integer> getOnOpenProfessionSelection() {
+        return onOpenProfessionSelection;
     }
     
     /**

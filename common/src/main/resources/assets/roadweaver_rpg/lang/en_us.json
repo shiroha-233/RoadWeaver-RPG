@@ -98,6 +98,10 @@
   "gui.roadweaver_rpg.quest_progress.objectives": "Objectives",
   "gui.roadweaver_rpg.quest_progress.in_progress": "In Progress",
   "gui.roadweaver_rpg.quest_progress.completed": "Completed",
+  
+  "advancement.roadweaver_rpg.root.title": "Where am I?",
+  "advancement.roadweaver_rpg.root.description": "Forgot the front, forgot the middle, forgot the back, anyway I was hit by a truck.",
+  
   "gui.roadweaver_rpg.quest_progress.turned_in": "Turned In",
   "gui.roadweaver_rpg.quest_progress.expired": "Expired",
   "gui.roadweaver_rpg.quest_progress.failed": "Failed",
@@ -267,6 +271,14 @@
   "gui.roadweaver_rpg.interaction.title": "Interaction Menu",
   "gui.roadweaver_rpg.interaction.hint": "Select an action",
   "gui.roadweaver_rpg.interaction.chat": "Chat",
+  "gui.roadweaver_rpg.interaction.register_adventurer": "Register as Adventurer",
+  
+  "gui.roadweaver_rpg.profession_selection.title": "Select Profession",
+  "gui.roadweaver_rpg.profession_selection.confirm": "Confirm Selection",
+  "gui.roadweaver_rpg.profession_selection.select_hint": "Please select a profession",
+  "gui.roadweaver_rpg.profession.growth_stats": "Growth Stats (per level)",
+  
+  "message.roadweaver_rpg.already_adventurer": "You are already an adventurer",
   
   "key.categories.roadweaver_rpg": "RoadWeaver RPG",
   "key.roadweaver_rpg.toggle_env_debug": "Toggle Environment Debug (Z+V)",
@@ -292,7 +304,7 @@
   "stats.roadweaver_rpg.crit_damage": "CRIT DMG",
   "stats.roadweaver_rpg.hit_rate": "Hit Rate",
   "stats.roadweaver_rpg.dodge_rate": "Dodge Rate",
-  "stats.roadweaver_rpg.attack_speed": "ATK Speed",
+  "stats.roadweaver_rpg.attack_cooldown": "ATK Cooldown",
   "stats.roadweaver_rpg.move_speed": "Move Speed",
   "stats.roadweaver_rpg.health_regen": "HP Regen",
   "stats.roadweaver_rpg.mana_regen": "MP Regen",
@@ -323,16 +335,55 @@
   "stats.roadweaver_rpg.exp_bonus": "EXP Bonus",
   "stats.roadweaver_rpg.drop_bonus": "Drop Bonus",
 
-  "tooltip.roadweaver_rpg.stat.base": "Base",
-  "tooltip.roadweaver_rpg.stat.equipment": "Equipment",
-  "tooltip.roadweaver_rpg.stat.weapon": "Weapon",
-  "tooltip.roadweaver_rpg.stat.armor": "Armor",
-  "tooltip.roadweaver_rpg.stat.armor_toughness": "Armor Toughness",
-  "tooltip.roadweaver_rpg.stat.skill_points": "Skill Points (%d × %s)",
-  "tooltip.roadweaver_rpg.stat.total": "Total",
+  "tooltip.roadweaver_rpg.stat.current": "Current",
+  "tooltip.roadweaver_rpg.stat.allocated_points": "Allocated Points: %d",
+  "tooltip.roadweaver_rpg.stat.requires_magic_mod": "Requires a magic mod to be installed",
+
+  "combat.roadweaver_rpg.critical_hit": "Critical Hit",
 
   "command.roadweaver_rpg.point.add.success": "§aAdded %d skill points to %s",
   "command.roadweaver_rpg.point.set.success": "§aSet %s's skill points to %d",
   "command.roadweaver_rpg.point.allocate.success": "§aAllocated %d points to %s for %s",
-  "command.roadweaver_rpg.point.reset.success": "§aReset all stat allocations for %s"
+  "command.roadweaver_rpg.point.reset.success": "§aReset all stat allocations for %s",
+
+  "profession.roadweaver_rpg.warrior": "Warrior",
+  "profession.roadweaver_rpg.warrior.desc": "A melee specialist with high health and defense, excels in frontline combat.",
+  "profession.roadweaver_rpg.mage": "Mage",
+  "profession.roadweaver_rpg.mage.desc": "A magic specialist with high mana and spell power, excels in ranged magic attacks.",
+  "profession.roadweaver_rpg.archer": "Archer",
+  "profession.roadweaver_rpg.archer.desc": "A ranged physical class with high crit rate and movement speed, excels in precise strikes.",
+  "profession.roadweaver_rpg.assassin": "Assassin",
+  "profession.roadweaver_rpg.assassin.desc": "An agile melee class with extreme crit damage and attack speed, excels in quick kills.",
+
+  "gui.roadweaver_rpg.profession.title": "Select Profession",
+  "gui.roadweaver_rpg.profession.select": "Select",
+  "gui.roadweaver_rpg.profession.confirm": "Confirm Selection",
+  "gui.roadweaver_rpg.profession.cancel": "Cancel",
+  "gui.roadweaver_rpg.profession.current": "Current Profession",
+  "gui.roadweaver_rpg.profession.change": "Change Profession",
+  "gui.roadweaver_rpg.profession.base_stats": "Base Stats",
+  "gui.roadweaver_rpg.profession.growth": "Growth Stats",
+  "gui.roadweaver_rpg.profession.bonus_multiplier": "Bonus Multiplier",
+  "gui.roadweaver_rpg.profession.unlocked_stats": "Allocatable Stats",
+  "gui.roadweaver_rpg.profession.starting_items": "Starting Items",
+  "gui.roadweaver_rpg.profession.requirements": "Requirements",
+  "gui.roadweaver_rpg.profession.tags": "Tags",
+  "gui.roadweaver_rpg.profession.no_profession": "No Profession",
+  "gui.roadweaver_rpg.profession.select_hint": "Please select a profession to begin your adventure",
+
+  "message.roadweaver_rpg.profession_selected": "You have selected the %s profession!",
+  "message.roadweaver_rpg.profession_changed": "You have changed to %s!",
+  "message.roadweaver_rpg.profession_already_selected": "You have already selected a profession",
+  "message.roadweaver_rpg.profession_not_found": "Profession not found",
+  "message.roadweaver_rpg.profession_same": "You are already this profession",
+  "message.roadweaver_rpg.profession_level_required": "Requires adventure level %d to select this profession",
+  "message.roadweaver_rpg.profession_prerequisite_required": "Requires completing %s profession first",
+  "message.roadweaver_rpg.stat_locked_by_profession": "Your profession cannot allocate this stat",
+
+  "command.roadweaver_rpg.profession.set.success": "§aSet %s's profession to %s",
+  "command.roadweaver_rpg.profession.reset.success": "§aReset %s's profession",
+  "command.roadweaver_rpg.profession.info.header": "§6===== Profession Info =====",
+  "command.roadweaver_rpg.profession.info.player": "§ePlayer: §f%s",
+  "command.roadweaver_rpg.profession.info.profession": "§eCurrent Profession: §f%s",
+  "command.roadweaver_rpg.profession.info.no_profession": "§cNo profession selected"
 }

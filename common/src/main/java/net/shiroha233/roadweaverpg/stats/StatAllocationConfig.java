@@ -29,7 +29,7 @@ public class StatAllocationConfig extends SimpleJsonResourceReloadListener {
     // 每点技能点对应的属性增益
     private final Map<StatType, Double> bonusPerPoint = new EnumMap<>(StatType.class);
     
-    // 默认值（包含战斗属性）
+    // 默认值
     private static final Map<StatType, Double> DEFAULT_BONUS = new EnumMap<>(StatType.class);
     static {
         // 基础属性
@@ -42,9 +42,7 @@ public class StatAllocationConfig extends SimpleJsonResourceReloadListener {
         // 战斗属性
         DEFAULT_BONUS.put(StatType.CRIT_RATE, 0.5);       // 每点+0.5%暴击率
         DEFAULT_BONUS.put(StatType.CRIT_DAMAGE, 2.0);     // 每点+2%暴击伤害
-        DEFAULT_BONUS.put(StatType.HIT_RATE, 1.0);        // 每点+1%命中率
-        DEFAULT_BONUS.put(StatType.DODGE_RATE, 0.5);      // 每点+0.5%闪避率
-        DEFAULT_BONUS.put(StatType.ATTACK_SPEED, 1.0);    // 每点+1%攻击速度
+        DEFAULT_BONUS.put(StatType.ATTACK_COOLDOWN, 1.0); // 每点-1%攻击冷却
         DEFAULT_BONUS.put(StatType.MOVE_SPEED, 0.5);      // 每点+0.5%移动速度
         DEFAULT_BONUS.put(StatType.HEALTH_REGEN, 0.1);    // 每点+0.1生命回复
         DEFAULT_BONUS.put(StatType.MANA_REGEN, 0.2);      // 每点+0.2魔力回复

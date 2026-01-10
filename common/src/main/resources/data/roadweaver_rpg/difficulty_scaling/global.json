@@ -1,0 +1,73 @@
+{
+  "global": true,
+  "per_level": {
+    "armor": 0.5,
+    "health": 2.0,
+    "resistance": 0.02,
+    "health_regen": 0.1,
+    "physical_resistance": 0.01,
+    "magic_resistance": 0.01,
+    "damage": 0.5
+  },
+  "rarity_chance": {
+    "elite": 0.1,
+    "boss": 0.02,
+    "legendary": 0.005
+  },
+  "environment_bonuses": [
+    {
+      "id": "night_power",
+      "condition": {
+        "type": "time",
+        "value": "night"
+      },
+      "armor_bonus": 1.0,
+      "health_bonus": 5.0,
+      "damage_bonus": 1.0,
+      "resistance_bonus": 0.05
+    },
+    {
+      "id": "thunder_fury",
+      "condition": {
+        "type": "weather",
+        "value": "thunder"
+      },
+      "armor_bonus": 2.0,
+      "health_bonus": 10.0,
+      "damage_bonus": 2.0,
+      "resistance_bonus": 0.1
+    },
+    {
+      "id": "underground_dweller",
+      "condition": {
+        "type": "underground"
+      },
+      "armor_bonus": 1.5,
+      "health_bonus": 3.0,
+      "damage_bonus": 0.5,
+      "resistance_bonus": 0.03
+    },
+    {
+      "id": "nether_empowered",
+      "condition": {
+        "type": "dimension",
+        "value": "minecraft:the_nether"
+      },
+      "armor_bonus": 3.0,
+      "health_bonus": 15.0,
+      "damage_bonus": 3.0,
+      "resistance_bonus": 0.15
+    },
+    {
+      "id": "end_empowered",
+      "condition": {
+        "type": "dimension",
+        "value": "minecraft:the_end"
+      },
+      "armor_bonus": 5.0,
+      "health_bonus": 20.0,
+      "damage_bonus": 4.0,
+      "resistance_bonus": 0.2
+    }
+  ]
+}

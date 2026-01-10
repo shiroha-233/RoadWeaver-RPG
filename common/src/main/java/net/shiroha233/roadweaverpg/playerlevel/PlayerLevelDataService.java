@@ -101,6 +101,11 @@ public class PlayerLevelDataService {
                         "message.roadweaver_rpg.player_level_up", i));
             }
             data.setPlayerLevel(newLevel);
+            
+            // 应用职业成长属性
+            net.shiroha233.roadweaverpg.profession.ProfessionDataService.getInstance()
+                    .onPlayerLevelUp(player, oldLevel, newLevel);
+            
             dataAccessor.markDirty(player);
         }
     }
@@ -139,10 +144,14 @@ public class PlayerLevelDataService {
     
     /**
      * 刷新玩家效果（登录时调用）
-     * 重新应用技能点分配的属性加成
+     * 重新应用职业属性和技能点分配的属性加成
      */
     public void refreshEffects(ServerPlayer player) {
         try {
+            // 刷新职业效果
+            net.shiroha233.roadweaverpg.profession.ProfessionDataService.getInstance()
+                    .refreshProfessionEffects(player);
+            // 刷新技能点分配
             StatAllocationService.getInstance().refreshAllStats(player);
         } catch (Exception e) {
             RoadWeaverRPG.LOGGER.error("Failed to refresh effects for {}: {}", 

@@ -18,7 +18,7 @@ public class ShopMaidEntityFabric extends ShopMaidEntity {
     
     @Override
     protected void openInteractionMenu(ServerPlayer player) {
-        var entries = NPCInteractionRegistry.getEntries(this);
+        var entries = NPCInteractionRegistry.getFilteredEntries(getNPCType().getId(), player);
         NetworkHandlerFabric.sendOpenInteractionMenu(player, this.getId(), entries);
     }
     

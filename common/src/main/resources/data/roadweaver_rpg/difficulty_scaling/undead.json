@@ -1,0 +1,51 @@
+{
+  "global": false,
+  "target_mobs": [
+    "minecraft:zombie",
+    "minecraft:skeleton",
+    "minecraft:wither_skeleton",
+    "minecraft:stray",
+    "minecraft:husk",
+    "minecraft:drowned",
+    "minecraft:zombie_villager",
+    "minecraft:phantom"
+  ],
+  "per_level": {
+    "armor": 0.3,
+    "health": 1.5,
+    "resistance": 0.015,
+    "health_regen": 0.2,
+    "physical_resistance": 0.008,
+    "magic_resistance": 0.015,
+    "damage": 0.4
+  },
+  "rarity_chance": {
+    "elite": 0.12,
+    "boss": 0.025,
+    "legendary": 0.006
+  },
+  "environment_bonuses": [
+    {
+      "id": "undead_night_power",
+      "condition": {
+        "type": "time",
+        "value": "night"
+      },
+      "armor_bonus": 2.0,
+      "health_bonus": 8.0,
+      "damage_bonus": 2.0,
+      "resistance_bonus": 0.1
+    },
+    {
+      "id": "undead_full_moon",
+      "condition": {
+        "type": "time",
+        "value": "night"
+      },
+      "armor_bonus": 1.0,
+      "health_bonus": 5.0,
+      "damage_bonus": 1.5,
+      "resistance_bonus": 0.05
+    }
+  ]
+}

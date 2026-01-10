@@ -1,0 +1,46 @@
+{
+  "global": false,
+  "target_mobs": [
+    "minecraft:enderman",
+    "minecraft:endermite",
+    "minecraft:shulker"
+  ],
+  "per_level": {
+    "armor": 0.8,
+    "health": 3.0,
+    "resistance": 0.025,
+    "health_regen": 0.15,
+    "physical_resistance": 0.015,
+    "magic_resistance": 0.02,
+    "damage": 0.8
+  },
+  "rarity_chance": {
+    "elite": 0.15,
+    "boss": 0.03,
+    "legendary": 0.008
+  },
+  "environment_bonuses": [
+    {
+      "id": "end_native",
+      "condition": {
+        "type": "dimension",
+        "value": "minecraft:the_end"
+      },
+      "armor_bonus": 5.0,
+      "health_bonus": 25.0,
+      "damage_bonus": 5.0,
+      "resistance_bonus": 0.2
+    },
+    {
+      "id": "night_teleporter",
+      "condition": {
+        "type": "time",
+        "value": "night"
+      },
+      "armor_bonus": 2.0,
+      "health_bonus": 10.0,
+      "damage_bonus": 2.0,
+      "resistance_bonus": 0.1
+    }
+  ]
+}

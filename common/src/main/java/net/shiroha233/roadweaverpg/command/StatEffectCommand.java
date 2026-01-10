@@ -109,7 +109,7 @@ public class StatEffectCommand {
             case ARMOR -> StatEffectService.applyArmor(player, value);
             case ARMOR_TOUGHNESS -> StatEffectService.applyArmorToughness(player, value);
             case MOVEMENT_SPEED -> StatEffectService.applyMovementSpeed(player, value);
-            case ATTACK_SPEED -> StatEffectService.applyAttackSpeed(player, value);
+            case ATTACK_SPEED -> StatEffectService.applyAttackCooldown(player, value); // 攻击速度通过冷却缩减实现
             case KNOCKBACK_RESIST -> StatEffectService.applyKnockbackResistance(player, value);
             case LUCK -> StatEffectService.applyLuck(player, value);
             // 魔法属性

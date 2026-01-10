@@ -3,7 +3,9 @@ package net.shiroha233.roadweaverpg;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.shiroha233.roadweaverpg.client.CharacterKeyHandlerFabric;
 import net.shiroha233.roadweaverpg.client.ClientNetworkHandlerFabric;
@@ -12,6 +14,7 @@ import net.shiroha233.roadweaverpg.client.ModEntityRenderersFabric;
 import net.shiroha233.roadweaverpg.client.ModItemPropertiesFabric;
 import net.shiroha233.roadweaverpg.client.QuestScrollClientHandler;
 import net.shiroha233.roadweaverpg.client.gui.hud.CoinNotificationRenderer;
+import net.shiroha233.roadweaverpg.client.gui.hud.DamageIndicatorRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +51,9 @@ public class RoadWeaverRPGFabricClient implements ClientModInitializer {
         // 注册金币获取通知HUD
         registerCoinNotificationHud();
         
+        // 注册伤害飘字渲染
+        registerDamageIndicatorRenderer();
+        
         LOGGER.info("RoadWeaver RPG client initialized!");
     }
     
@@ -61,6 +67,31 @@ public class RoadWeaverRPGFabricClient implements ClientModInitializer {
                 CoinNotificationRenderer.render(graphics, 
                         mc.getWindow().getGuiScaledWidth(), 
                         mc.getWindow().getGuiScaledHeight());
+            }
+        });
+    }
+    
+    /**
+     * 注册伤害飘字渲染
+     */
+    private void registerDamageIndicatorRenderer() {
+        // 世界渲染事件
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player == null || mc.level == null) return;
+            
+            DamageIndicatorRenderer.render(
+                    context.matrixStack(),
+                    mc.renderBuffers().bufferSource(),
+                    context.camera(),
+                    context.tickDelta()
+            );
+        });
+        
+        // 客户端tick事件
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player != null && !client.isPaused()) {
+                DamageIndicatorRenderer.tick();
             }
         });
     }

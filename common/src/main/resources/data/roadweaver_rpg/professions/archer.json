@@ -1,0 +1,55 @@
+{
+  "name": "profession.roadweaver_rpg.archer",
+  "description": "profession.roadweaver_rpg.archer.desc",
+  "icon": "roadweaver_rpg:textures/gui/profession/archer.png",
+  
+  "base_stats": {
+    "max_health": 22.0,
+    "max_mana": 80.0,
+    "attack": 2.5,
+    "defense": 0.5,
+    "magic_attack": 1.0,
+    "magic_defense": 0.5,
+    "crit_rate": 10.0,
+    "crit_damage": 180.0,
+    "move_speed": 105.0,
+    "health_regen": 0.3,
+    "mana_regen": 0.5
+  },
+  
+  "stat_growth": {
+    "attack": 0.4,
+    "crit_rate": 0.2,
+    "crit_damage": 1.0
+  },
+  
+  "stat_bonus_multiplier": {
+    "max_health": 0.9,
+    "attack": 1.0,
+    "defense": 0.8,
+    "crit_rate": 1.3,
+    "crit_damage": 1.2,
+    "move_speed": 1.1
+  },
+  
+  "unlocked_stats": [
+    "max_health", "attack", 
+    "crit_rate", "crit_damage",
+    "move_speed", "attack_cooldown"
+  ],
+  
+  "starting_items": [
+    {"item": "minecraft:bow", "count": 1},
+    {"item": "minecraft:arrow", "count": 64},
+    {"item": "minecraft:leather_chestplate", "count": 1},
+    {"item": "minecraft:bread", "count": 16}
+  ],
+  
+  "requirements": {
+    "min_adventure_level": 1
+  },
+  
+  "tags": ["ranged", "dps"],
+  "default": true,
+  "sort_order": 3
+}

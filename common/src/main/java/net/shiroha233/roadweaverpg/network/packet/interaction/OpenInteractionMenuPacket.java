@@ -25,6 +25,7 @@ public record OpenInteractionMenuPacket(int npcEntityId, List<NPCInteractionEntr
             buf.writeVarInt(entry.priority());
             buf.writeUtf(entry.actionType());
             buf.writeResourceLocation(entry.actionData());
+            buf.writeUtf(entry.condition() != null ? entry.condition() : "");
         }
     }
     
@@ -41,9 +42,10 @@ public record OpenInteractionMenuPacket(int npcEntityId, List<NPCInteractionEntr
             int priority = buf.readVarInt();
             String actionType = buf.readUtf();
             ResourceLocation actionData = buf.readResourceLocation();
+            String condition = buf.readUtf();
             
             entries.add(new NPCInteractionEntry(
-                    id, displayName, description, iconType, priority, actionType, actionData
+                    id, displayName, description, iconType, priority, actionType, actionData, condition
             ));
         }
         

@@ -56,4 +56,22 @@ public interface IMagicModCompat {
     default void refresh(ServerPlayer player) {
         // 默认实现：先移除再重新应用
     }
+    
+    // ==================== 职业基础属性（默认空实现） ====================
+    
+    default void applyProfessionMaxMana(ServerPlayer player, double amount) {}
+    
+    default void applyProfessionSpellPower(ServerPlayer player, double amount) {}
+    
+    default void applyProfessionManaRegen(ServerPlayer player, double amount) {}
+    
+    // ==================== 职业成长属性（默认空实现） ====================
+    
+    default void applyGrowthMaxMana(ServerPlayer player, double amount) {}
+    
+    default void applyGrowthSpellPower(ServerPlayer player, double amount) {}
+    
+    default void addGrowthMaxMana(ServerPlayer player, double additionalAmount) {}
+    
+    default void addGrowthSpellPower(ServerPlayer player, double additionalAmount) {}
 }

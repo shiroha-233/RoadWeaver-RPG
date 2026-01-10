@@ -62,6 +62,10 @@ public class PlayerQuestData {
     // 属性分配数据（技能点系统）
     private volatile StatAllocationData statAllocationData = new StatAllocationData();
     
+    // 职业系统
+    private volatile ResourceLocation professionId = null;
+    private final Set<ResourceLocation> completedProfessions = ConcurrentHashMap.newKeySet();
+    
     public PlayerQuestData(UUID playerId) {
         this.playerId = playerId;
     }
@@ -73,6 +77,30 @@ public class PlayerQuestData {
     
     public void setStatAllocationData(StatAllocationData data) {
         this.statAllocationData = data;
+        incrementVersion();
+    }
+    // endregion
+    
+    // region 职业系统
+    public ResourceLocation getProfessionId() {
+        return professionId;
+    }
+    
+    public void setProfessionId(ResourceLocation id) {
+        this.professionId = id;
+        incrementVersion();
+    }
+    
+    public Set<ResourceLocation> getCompletedProfessions() {
+        return Collections.unmodifiableSet(completedProfessions);
+    }
+    
+    public boolean hasCompletedProfession(ResourceLocation profId) {
+        return completedProfessions.contains(profId);
+    }
+    
+    public void addCompletedProfession(ResourceLocation profId) {
+        completedProfessions.add(profId);
         incrementVersion();
     }
     // endregion
@@ -427,6 +455,16 @@ public class PlayerQuestData {
         // 属性分配数据（技能点系统）
         tag.put("statAllocation", statAllocationData.toNbt());
         
+        // 职业系统
+        if (professionId != null) {
+            tag.putString("professionId", professionId.toString());
+        }
+        ListTag completedProfList = new ListTag();
+        for (ResourceLocation id : completedProfessions) {
+            completedProfList.add(StringTag.valueOf(id.toString()));
+        }
+        tag.put("completedProfessions", completedProfList);
+        
         return tag;
     }
     
@@ -565,6 +603,25 @@ public class PlayerQuestData {
             // 属性分配数据（技能点系统）
             if (tag.contains("statAllocation")) {
                 data.statAllocationData = StatAllocationData.fromNbt(tag.getCompound("statAllocation"));
+            }
+            
+            // 职业系统
+            if (tag.contains("professionId")) {
+                try {
+                    data.professionId = new ResourceLocation(tag.getString("professionId"));
+                } catch (Exception e) {
+                    RoadWeaverRPG.LOGGER.warn("Failed to load profession id: {}", e.getMessage());
+                }
+            }
+            if (tag.contains("completedProfessions")) {
+                ListTag profList = tag.getList("completedProfessions", Tag.TAG_STRING);
+                for (int i = 0; i < profList.size(); i++) {
+                    try {
+                        data.completedProfessions.add(new ResourceLocation(profList.getString(i)));
+                    } catch (Exception e) {
+                        RoadWeaverRPG.LOGGER.warn("Failed to load completed profession at index {}: {}", i, e.getMessage());
+                    }
+                }
             }
             
         } catch (Exception e) {

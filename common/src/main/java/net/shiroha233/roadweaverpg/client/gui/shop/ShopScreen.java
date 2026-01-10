@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.shiroha233.roadweaverpg.client.gui.render.GuiRenderer;
+import net.shiroha233.roadweaverpg.currency.CurrencyUtils;
 import net.shiroha233.roadweaverpg.shop.ShopCategory;
 import net.shiroha233.roadweaverpg.shop.ShopItem;
 
@@ -30,7 +31,6 @@ public class ShopScreen extends Screen {
     private static final int GRID_INNER_PADDING = 12;
     private static final int PADDING = 20;       // 增加整体内边距
     private static final int COIN_COLOR = 0xFFFFD700;
-    private static final int COLOR_TEXT_SECONDARY = 0xFFB0B0B0;
     
     private final Map<ShopCategory, List<ShopItem>> itemsByCategory;
     private final List<ShopCategory> availableCategories;
@@ -102,20 +102,10 @@ public class ShopScreen extends Screen {
         super.render(graphics, mouseX, mouseY, partialTick);
     }
 
-    
+     
     private void renderMainPanel(GuiGraphics graphics) {
-        renderBackground(graphics); 
-        
-        // 主面板背景 - 更现代的半透明深色玻璃质感
-        // 使用更低的 Alpha (0xB0 -> ~70%)，增加通透感
-        // 圆角半径增大到 16
-        GuiRenderer.drawRoundedRect(graphics, guiLeft, guiTop, guiWidth, guiHeight, 16, 0xB0101218);
-        
-        // 叠加微弱的渐变，增加质感
-        GuiRenderer.drawVerticalGradient(graphics, guiLeft + 2, guiTop + 2, guiWidth - 4, guiHeight - 4, 0x15FFFFFF, 0x05000000);
-        
-        // 外边框 - 极细发光感
-        graphics.renderOutline(guiLeft, guiTop, guiWidth, guiHeight, 0x20FFFFFF);
+        graphics.fill(0, 0, width, height, 0xA0000000);
+        GuiRenderer.drawRoundedRect(graphics, guiLeft, guiTop, guiWidth, guiHeight, 12, 0x60101020);
     }
     
     // 移除独立的 renderTitle，标题可以在头部左侧显示，或者直接省略，因为Header很明显
@@ -134,37 +124,7 @@ public class ShopScreen extends Screen {
     
     private void renderStatusPanel(GuiGraphics graphics, Rect statusRect) {
         int repLevel = net.shiroha233.roadweaverpg.client.ClientReputationCache.getPlayerLevel("roadweaver_rpg:guild");
-        
-        String coinValue = String.valueOf(playerCoins);
-        
-        // 状态面板背景 - 胶囊状
-        GuiRenderer.drawRoundedRect(graphics, statusRect.x, statusRect.y, statusRect.w, statusRect.h, 12, 0x40000000);
-        graphics.renderOutline(statusRect.x, statusRect.y, statusRect.w, statusRect.h, 0x15FFFFFF);
-        
-        int padding = 10;
-        int currentX = statusRect.x + padding;
-        int centerY = statusRect.y + statusRect.h / 2;
-        
-        // 1. 金币图标和数值（使用金币作为代表）
-        if (net.shiroha233.roadweaverpg.item.ModItems.GOLD_COIN != null) {
-            ItemStack coinStack = new ItemStack(net.shiroha233.roadweaverpg.item.ModItems.GOLD_COIN.get());
-            graphics.renderItem(coinStack, currentX, centerY - 8);
-            currentX += 18;
-        }
-        
-        graphics.drawString(font, coinValue, currentX, centerY - 4, COIN_COLOR, false);
-        currentX += font.width(coinValue) + 12;
-        
-        // 分隔符 - 垂直细线
-        graphics.fill(currentX, centerY - 6, currentX + 1, centerY + 6, 0x30FFFFFF);
-        currentX += 12;
-        
-        // 2. 声望信息
-        graphics.drawString(font, "声望", currentX, centerY - 4, COLOR_TEXT_SECONDARY, false);
-        currentX += font.width("声望") + 4;
-        
-        String lvlStr = "Lv." + repLevel;
-        graphics.drawString(font, lvlStr, currentX, centerY - 4, 0xFF55FF55, false);
+        ShopStatusPanel.render(graphics, font, statusRect.x, statusRect.y, statusRect.w, statusRect.h, playerCoins, repLevel);
     }
     
     private void renderCategoryChips(GuiGraphics graphics, HeaderLayout header, int statusLeftX, int mouseX, int mouseY) {
@@ -295,7 +255,7 @@ public class ShopScreen extends Screen {
         // 价格背景条 (增强可读性)
         // graphics.pose().pushPose();
         // graphics.pose().translate(0, 0, 150);
-        // GuiRenderer.drawRoundedRect(graphics, x + ITEM_SIZE - font.width(priceStr)*0.7f - 4, y + ITEM_SIZE - 9, (int)(font.width(priceStr)*0.7f)+2, 8, 4, 0x80000000);
+        // GuiRenderer.drawRoundedRect(graphics, x + ITEM_SIZE - font.width(priceStr)*0.7f - 4, y + ITEM_SIZE - 9, (int)(font.width(priceStr)*0.7f)+2, 8, 0x80000000);
         // graphics.pose().popPose();
 
         graphics.pose().pushPose();
@@ -356,7 +316,7 @@ public class ShopScreen extends Screen {
         tooltip.add(Component.literal("  数量: " + hoveredItem.count()).withStyle(s -> s.withColor(0xAAAAAA)));
         
         int priceColor = playerCoins >= hoveredItem.price() ? 0x55FF55 : 0xFF5555;
-        tooltip.add(Component.literal("  价格: " + hoveredItem.price() + " 金币").withStyle(s -> s.withColor(priceColor)));
+        tooltip.add(Component.literal("  价格: " + CurrencyUtils.formatCurrencyCompact(hoveredItem.price())).withStyle(s -> s.withColor(priceColor)));
         
         int playerRep = net.shiroha233.roadweaverpg.client.ClientReputationCache.getPlayerLevel("roadweaver_rpg:guild");
         if (hoveredItem.requiredLevel() > 0) {
@@ -371,7 +331,7 @@ public class ShopScreen extends Screen {
         } else if (playerCoins >= hoveredItem.price()) {
             tooltip.add(Component.literal("点击购买").withStyle(s -> s.withColor(0x55FF55).withItalic(true)));
         } else {
-            tooltip.add(Component.literal("金币不足").withStyle(s -> s.withColor(0xFF5555).withItalic(true)));
+            tooltip.add(Component.literal("货币不足").withStyle(s -> s.withColor(0xFF5555).withItalic(true)));
         }
         
         graphics.renderTooltip(font, tooltip, stack.getTooltipImage(), mouseX, mouseY);
@@ -392,14 +352,8 @@ public class ShopScreen extends Screen {
     
     private Rect computeStatusPanelRect(HeaderLayout header) {
         int repLevel = net.shiroha233.roadweaverpg.client.ClientReputationCache.getPlayerLevel("roadweaver_rpg:guild");
-        
-        String coinValue = String.valueOf(playerCoins);
-        
-        // 估算宽度
-        int coinWidth = 18 + font.width(coinValue) + 12; // 图标+文字+间距
-        int repWidth = font.width("声望") + 4 + font.width("Lv." + repLevel);
-        
-        int panelW = coinWidth + repWidth + 24; // 总宽度 + padding
+
+        int panelW = ShopStatusPanel.measureWidth(font, playerCoins, repLevel);
         int panelH = header.headerH - 8;
         
         int panelX = header.headerX + header.headerW - panelW - 4;

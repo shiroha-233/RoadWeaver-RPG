@@ -48,6 +48,18 @@ public class NetworkHandler {
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_shop_dialog");
     public static final ResourceLocation SHOP_DIALOG_RESPONSE = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "shop_dialog_response");
+    
+    // 职业系统消息类型
+    public static final ResourceLocation SYNC_PROFESSIONS = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_professions");
+    public static final ResourceLocation SYNC_PLAYER_PROFESSION = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_player_profession");
+    public static final ResourceLocation SELECT_PROFESSION = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "select_profession");
+    public static final ResourceLocation CHANGE_PROFESSION = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "change_profession");
+    public static final ResourceLocation OPEN_PROFESSION_SELECTION = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_profession_selection");
     public static final ResourceLocation OPEN_SHOP = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "open_shop");
     public static final ResourceLocation SHOP_PURCHASE = 
@@ -102,6 +114,14 @@ public class NetworkHandler {
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "deallocate_stat_point");
     public static final ResourceLocation RESET_STAT_ALLOCATION = 
             new ResourceLocation(RoadWeaverRPG.MOD_ID, "reset_stat_allocation");
+    
+    // RPG属性同步
+    public static final ResourceLocation SYNC_RPG_STATS = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "sync_rpg_stats");
+    
+    // 战斗系统
+    public static final ResourceLocation DAMAGE_INDICATOR = 
+            new ResourceLocation(RoadWeaverRPG.MOD_ID, "damage_indicator");
     
     private NetworkHandler() {}
 }

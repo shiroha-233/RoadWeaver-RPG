@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "roadweaver_rpg:quest_scroll"
+    },
+    "title": {
+      "translate": "advancement.roadweaver_rpg.root.title"
+    },
+    "description": {
+      "translate": "advancement.roadweaver_rpg.root.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "enter_world": {
+      "trigger": "minecraft:location"
+    }
+  }
+}

@@ -25,6 +25,9 @@ public final class QuestEventsFabric {
             }
         });
         
+        // 注意：暴击伤害和伤害显示通过Mixin实现（PlayerAttackMixin）
+        // 不再使用ALLOW_DAMAGE事件，避免重复处理
+        
         // 玩家登录事件
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             QuestEventHandler.onPlayerLogin(handler.getPlayer());

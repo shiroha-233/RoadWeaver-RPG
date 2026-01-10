@@ -8,11 +8,10 @@
     "magic_defense": 1.0,
     "crit_rate": 0.5,
     "crit_damage": 2.0,
-    "hit_rate": 1.0,
-    "dodge_rate": 0.5,
-    "attack_speed": 1.0,
+    "attack_cooldown": 1.0,
     "move_speed": 0.5,
     "health_regen": 0.1,
     "mana_regen": 0.2
-  }
+  },
+  "_comment": "所有可分配属性的每点加成值。不可分配属性（hit_rate, dodge_rate, life_steal等）不需要配置。"
 }

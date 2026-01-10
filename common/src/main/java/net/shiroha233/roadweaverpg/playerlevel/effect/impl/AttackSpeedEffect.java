@@ -33,7 +33,8 @@ public class AttackSpeedEffect implements LevelEffect {
     
     @Override
     public void apply(ServerPlayer player, int level) {
-        StatEffectService.applyAttackSpeed(player, percent);
+        // 攻击速度效果通过攻击冷却缩减实现
+        StatEffectService.applyAttackCooldown(player, percent);
     }
     
     @Override

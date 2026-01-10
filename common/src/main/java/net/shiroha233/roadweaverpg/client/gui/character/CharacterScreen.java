@@ -5,16 +5,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import net.shiroha233.roadweaverpg.client.ClientAdventureCache;
 import net.shiroha233.roadweaverpg.client.ClientStatAllocationCache;
 import net.shiroha233.roadweaverpg.client.ClientStatsCache;
 import net.shiroha233.roadweaverpg.client.ClientWalletCache;
-import net.shiroha233.roadweaverpg.client.StatDetailCalculator;
 import net.shiroha233.roadweaverpg.client.gui.render.GuiRenderer;
 import net.shiroha233.roadweaverpg.currency.CurrencyUtils;
-import net.shiroha233.roadweaverpg.stats.PlayerStats;
 import net.shiroha233.roadweaverpg.stats.StatType;
 
 import java.util.List;
@@ -22,7 +18,7 @@ import java.util.function.Consumer;
 
 /**
  * 角色界面 - 支持技能点加点的RPG属性面板
- * 布局：左侧分类标签 + 中间玩家模型 + 右侧属性数值（带加减按钮）
+ * 布局：左侧分类标签 + 中间玩家模型 + 右侧属性数值
  */
 public class CharacterScreen extends Screen {
     
@@ -31,10 +27,7 @@ public class CharacterScreen extends Screen {
     private static final int TAB_WIDTH = 80;
     private static final int TAB_HEIGHT = 28;
     private static final int TAB_SPACING = 4;
-    private static final int STAT_LINE_HEIGHT = 24;
     private static final int PANEL_RADIUS = 12;
-    private static final int BUTTON_SIZE = 16;
-    private static final int VALUE_WIDTH = 70;
     
     // 颜色常量
     private static final int COLOR_BG = 0xA0000000;
@@ -43,29 +36,33 @@ public class CharacterScreen extends Screen {
     private static final int COLOR_TAB_HOVER = 0x60FFFFFF;
     private static final int COLOR_TAB_SELECTED = 0x80FFD700;
     private static final int COLOR_TITLE = 0xFFFFD700;
-    private static final int COLOR_STAT_NAME = 0xFFBBBBBB;
-    private static final int COLOR_STAT_VALUE = 0xFFFFFFFF;
-    private static final int COLOR_PLUS_NORMAL = 0x8044FF44;
-    private static final int COLOR_PLUS_HOVER = 0xC044FF44;
-    private static final int COLOR_MINUS_NORMAL = 0x80FF4444;
-    private static final int COLOR_MINUS_HOVER = 0xC0FF4444;
-    private static final int COLOR_BUTTON_DISABLED = 0x40888888;
     private static final int COLOR_SKILL_POINTS = 0xFF44FF44;
     
     // 滚动相关
     private float scrollOffset = 0;
     private float maxScroll = 0;
     
-    // 悬停的属性类型（用于tooltip）
-    private StatType hoveredStatType = null;
+    // 标签页类型
+    private enum TabType {
+        BASIC("基础"),
+        COMBAT("战斗"),
+        SPECIAL("特殊"),
+        PROFESSION("职业");
+        
+        private final String displayName;
+        TabType(String name) { this.displayName = name; }
+        public String getDisplayName() { return displayName; }
+    }
     
-    // 当前选中的属性分类
-    private int selectedCategory = 0;
-    private final List<StatType.StatCategory> categories = List.of(
-            StatType.StatCategory.BASIC,
-            StatType.StatCategory.COMBAT,
-            StatType.StatCategory.SPECIAL
+    // 当前选中的标签页
+    private int selectedTab = 0;
+    private final List<TabType> tabs = List.of(
+            TabType.BASIC, TabType.COMBAT, TabType.SPECIAL, TabType.PROFESSION
     );
+    
+    // 渲染器
+    private ProfessionTabRenderer professionTabRenderer;
+    private StatsTabRenderer statsTabRenderer;
     
     // 回调（静态，由平台特定代码设置）
     private static Consumer<StatType> staticOnAllocatePoint;
@@ -91,6 +88,8 @@ public class CharacterScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        professionTabRenderer = new ProfessionTabRenderer(font);
+        statsTabRenderer = new StatsTabRenderer(font);
     }
     
     @Override
@@ -102,7 +101,6 @@ public class CharacterScreen extends Screen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         ClientStatsCache.updateFromPlayer();
-        
         graphics.fill(0, 0, width, height, COLOR_BG);
         
         int panelWidth = Math.min(680, width - 40);
@@ -110,15 +108,11 @@ public class CharacterScreen extends Screen {
         int panelX = (width - panelWidth) / 2;
         int panelY = (height - panelHeight) / 2;
         
-        GuiRenderer.drawRoundedRect(graphics, panelX, panelY, panelWidth, panelHeight, 
-                PANEL_RADIUS, COLOR_PANEL_BG);
+        GuiRenderer.drawRoundedRect(graphics, panelX, panelY, panelWidth, panelHeight, PANEL_RADIUS, COLOR_PANEL_BG);
         
         renderHeader(graphics, panelX, panelY - 30, panelWidth);
         renderCategoryTabs(graphics, panelX + MARGIN, panelY + MARGIN, mouseX, mouseY);
-        
-        int modelX = panelX + TAB_WIDTH + MARGIN * 2 + 80;
-        int modelY = panelY + panelHeight / 2 + 20;
-        renderPlayerModel(graphics, modelX, modelY, mouseX, mouseY);
+        renderPlayerModel(graphics, panelX + TAB_WIDTH + MARGIN * 2 + 80, panelY + panelHeight / 2 + 20, mouseX, mouseY);
         
         int statsX = panelX + TAB_WIDTH + MARGIN * 2 + 160;
         int statsY = panelY + MARGIN;
@@ -128,10 +122,10 @@ public class CharacterScreen extends Screen {
         
         renderSkillPointsInfo(graphics, panelX, panelY + panelHeight + 5, panelWidth, mouseX, mouseY);
         
-        // 渲染tooltip（在最后渲染以确保在最上层）
-        if (hoveredStatType != null) {
-            List<Component> tooltip = StatDetailCalculator.getStatDetails(hoveredStatType);
-            graphics.renderComponentTooltip(font, tooltip, mouseX, mouseY);
+        // 渲染tooltip
+        StatType hoveredType = statsTabRenderer != null ? statsTabRenderer.getHoveredStatType() : null;
+        if (hoveredType != null) {
+            graphics.renderComponentTooltip(font, statsTabRenderer.getStatTooltip(hoveredType), mouseX, mouseY);
         }
         
         super.render(graphics, mouseX, mouseY, partialTick);
@@ -153,16 +147,16 @@ public class CharacterScreen extends Screen {
     }
     
     private void renderCategoryTabs(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
-        for (int i = 0; i < categories.size(); i++) {
+        for (int i = 0; i < tabs.size(); i++) {
             int tabY = y + i * (TAB_HEIGHT + TAB_SPACING);
-            boolean selected = i == selectedCategory;
+            boolean selected = i == selectedTab;
             boolean hovered = mouseX >= x && mouseX < x + TAB_WIDTH && 
                              mouseY >= tabY && mouseY < tabY + TAB_HEIGHT;
             
             int bgColor = selected ? COLOR_TAB_SELECTED : (hovered ? COLOR_TAB_HOVER : COLOR_TAB_NORMAL);
             GuiRenderer.drawRoundedRect(graphics, x, tabY, TAB_WIDTH, TAB_HEIGHT, 6, bgColor);
             
-            String name = getCategoryName(categories.get(i));
+            String name = tabs.get(i).getDisplayName();
             int textColor = selected ? 0xFFFFFFFF : (hovered ? 0xFFFFFFFF : 0xFFCCCCCC);
             graphics.drawString(font, name, x + (TAB_WIDTH - font.width(name)) / 2, 
                     tabY + (TAB_HEIGHT - 8) / 2, textColor, false);
@@ -172,7 +166,6 @@ public class CharacterScreen extends Screen {
     private void renderPlayerModel(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
-        
         InventoryScreen.renderEntityInInventoryFollowsMouse(
                 graphics, x, y, 55, (float)(x) - mouseX, (float)(y - 80) - mouseY, mc.player);
     }
@@ -180,94 +173,29 @@ public class CharacterScreen extends Screen {
     private void renderStatsPanel(GuiGraphics graphics, int x, int y, int areaWidth, int areaHeight,
                                    int mouseX, int mouseY) {
         GuiRenderer.drawRoundedRect(graphics, x, y, areaWidth, areaHeight, 8, 0x40000000);
-        
         graphics.enableScissor(x, y, x + areaWidth, y + areaHeight);
-        renderCategoryStats(graphics, x + 10, y + 10 - (int)scrollOffset, areaWidth - 20, mouseX, mouseY);
-        graphics.disableScissor();
         
-        maxScroll = Math.max(0, calculateContentHeight(categories.get(selectedCategory)) - areaHeight + 20);
-    }
-
-    
-    private void renderCategoryStats(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
-        PlayerStats stats = ClientStatsCache.getStats();
-        int currentY = y;
-        int availablePoints = ClientStatAllocationCache.getAvailablePoints();
-        
-        // 重置悬停状态
-        hoveredStatType = null;
-        
-        for (StatType type : StatType.values()) {
-            if (type.getCategory() != categories.get(selectedCategory)) continue;
-            
-            double value = getStatValue(stats, type);
-            String valueStr = formatStatValue(type, value);
-            
-            // 属性名称
-            String name = Component.translatable(type.getTranslationKey()).getString();
-            int nameWidth = font.width(name);
-            
-            // 检测属性名称区域悬停（用于tooltip）
-            boolean nameHovered = mouseX >= x && mouseX < x + nameWidth + 60 &&
-                                  mouseY >= currentY && mouseY < currentY + STAT_LINE_HEIGHT;
-            if (nameHovered) {
-                hoveredStatType = type;
-            }
-            
-            graphics.drawString(font, name, x, currentY + 4, nameHovered ? 0xFFFFFFFF : COLOR_STAT_NAME, false);
-            
-            // 计算右侧布局位置
-            int rightEdge = x + width;
-            int valueX = rightEdge - VALUE_WIDTH;
-            
-            if (type.isAllocatable()) {
-                int allocatedPoints = ClientStatAllocationCache.getAllocatedPoints(type);
-                
-                // 显示已分配点数
-                if (allocatedPoints > 0) {
-                    String pointsStr = "(+" + allocatedPoints + ")";
-                    graphics.drawString(font, pointsStr, x + font.width(name) + 5, currentY + 4, COLOR_SKILL_POINTS, false);
-                }
-                
-                // 减号按钮
-                int minusX = valueX - BUTTON_SIZE - 4;
-                int buttonY = currentY + 2;
-                boolean canDeallocate = allocatedPoints > 0;
-                boolean minusHovered = mouseX >= minusX && mouseX < minusX + BUTTON_SIZE &&
-                                       mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE;
-                
-                int minusColor = canDeallocate ? (minusHovered ? COLOR_MINUS_HOVER : COLOR_MINUS_NORMAL) : COLOR_BUTTON_DISABLED;
-                GuiRenderer.drawRoundedRect(graphics, minusX, buttonY, BUTTON_SIZE, BUTTON_SIZE, 3, minusColor);
-                
-                int minusTextColor = canDeallocate ? 0xFFFFFFFF : 0xFF888888;
-                int cx = minusX + BUTTON_SIZE / 2;
-                int cy = buttonY + BUTTON_SIZE / 2;
-                graphics.fill(cx - 4, cy - 1, cx + 4, cy + 1, minusTextColor);
-                
-                // 加号按钮
-                int plusX = minusX - BUTTON_SIZE - 2;
-                boolean canAllocate = availablePoints > 0;
-                boolean plusHovered = mouseX >= plusX && mouseX < plusX + BUTTON_SIZE &&
-                                      mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE;
-                
-                int plusColor = canAllocate ? (plusHovered ? COLOR_PLUS_HOVER : COLOR_PLUS_NORMAL) : COLOR_BUTTON_DISABLED;
-                GuiRenderer.drawRoundedRect(graphics, plusX, buttonY, BUTTON_SIZE, BUTTON_SIZE, 3, plusColor);
-                
-                int plusTextColor = canAllocate ? 0xFFFFFFFF : 0xFF888888;
-                cx = plusX + BUTTON_SIZE / 2;
-                graphics.fill(cx - 4, cy - 1, cx + 4, cy + 1, plusTextColor);
-                graphics.fill(cx - 1, cy - 4, cx + 1, cy + 4, plusTextColor);
-            }
-            
-            // 数值（右对齐）
-            int valueColor = value > 0 ? COLOR_STAT_VALUE : 0xFF888888;
-            graphics.drawString(font, valueStr, rightEdge - font.width(valueStr), currentY + 4, valueColor, false);
-            
-            // 分隔线
-            graphics.fill(x, currentY + 18, x + width, currentY + 19, 0x20FFFFFF);
-            
-            currentY += STAT_LINE_HEIGHT;
+        TabType currentTab = tabs.get(selectedTab);
+        if (currentTab == TabType.PROFESSION) {
+            professionTabRenderer.render(graphics, x + 10, y + 10 - (int)scrollOffset, areaWidth - 20);
+            maxScroll = Math.max(0, professionTabRenderer.calculateContentHeight() - areaHeight + 20);
+        } else {
+            StatType.StatCategory category = tabToCategory(currentTab);
+            statsTabRenderer.render(graphics, x + 10, y + 10 - (int)scrollOffset, areaWidth - 20, 
+                    mouseX, mouseY, category, scrollOffset);
+            maxScroll = Math.max(0, statsTabRenderer.calculateContentHeight(category) - areaHeight + 20);
         }
+        
+        graphics.disableScissor();
+    }
+    
+    private StatType.StatCategory tabToCategory(TabType tab) {
+        return switch (tab) {
+            case BASIC -> StatType.StatCategory.BASIC;
+            case COMBAT -> StatType.StatCategory.COMBAT;
+            case SPECIAL -> StatType.StatCategory.SPECIAL;
+            case PROFESSION -> null;
+        };
     }
     
     private void renderSkillPointsInfo(GuiGraphics graphics, int x, int y, int panelWidth, int mouseX, int mouseY) {
@@ -293,105 +221,6 @@ public class CharacterScreen extends Screen {
         }
     }
     
-    private double getStatValue(PlayerStats stats, StatType type) {
-        Minecraft mc = Minecraft.getInstance();
-        Player player = mc.player;
-        
-        if (player != null) {
-            return switch (type) {
-                case MAX_HEALTH -> player.getMaxHealth();
-                case ATTACK -> calculateTotalAttack(player);
-                case DEFENSE -> player.getArmorValue();
-                case MAGIC_DEFENSE -> player.getAttributeValue(Attributes.ARMOR_TOUGHNESS);
-                case ATTACK_SPEED -> player.getAttributeValue(Attributes.ATTACK_SPEED) * 100;
-                case MOVE_SPEED -> player.getAttributeValue(Attributes.MOVEMENT_SPEED) * 1000;
-                case MAX_MANA -> stats.getMaxMana();
-                case MAGIC_ATTACK -> calculateMagicAttack();
-                case CRIT_RATE -> stats.getCritRate();
-                case CRIT_DAMAGE -> stats.getCritDamage();
-                case HIT_RATE -> stats.getHitRate();
-                case DODGE_RATE -> stats.getDodgeRate();
-                case HEALTH_REGEN -> stats.getHealthRegen();
-                case MANA_REGEN -> stats.getManaRegen();
-                case LIFE_STEAL -> stats.getLifeSteal();
-                case MANA_STEAL -> stats.getManaSteal();
-                case COOLDOWN_REDUCTION -> stats.getCooldownReduction();
-                case EXP_BONUS -> stats.getExpBonus();
-                case DROP_BONUS -> stats.getDropBonus();
-            };
-        }
-        
-        return 0;
-    }
-    
-    /**
-     * 计算总攻击力 = 基础(1) + 武器 + 技能点
-     */
-    private double calculateTotalAttack(Player player) {
-        double base = 1.0;
-        double weapon = 0.0;
-        double skillBonus = ClientStatAllocationCache.getAllocatedPoints(StatType.ATTACK) * 1.0;
-        
-        // 从主手物品获取攻击力加成
-        var mainHandItem = player.getMainHandItem();
-        if (!mainHandItem.isEmpty()) {
-            var modifiers = mainHandItem.getAttributeModifiers(net.minecraft.world.entity.EquipmentSlot.MAINHAND);
-            var attackModifiers = modifiers.get(Attributes.ATTACK_DAMAGE);
-            for (var modifier : attackModifiers) {
-                if (modifier.getOperation() == net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION) {
-                    weapon += modifier.getAmount();
-                }
-            }
-        }
-        
-        return base + weapon + skillBonus;
-    }
-    
-    /**
-     * 计算魔法攻击力 = 基础(1) + 技能点
-     */
-    private double calculateMagicAttack() {
-        double base = 1.0;
-        double skillBonus = ClientStatAllocationCache.getAllocatedPoints(StatType.MAGIC_ATTACK) * 1.0;
-        return base + skillBonus;
-    }
-    
-    private String formatStatValue(StatType type, double value) {
-        if (isPercentageStat(type)) {
-            return String.format("%.1f%%", value);
-        }
-        if (type == StatType.MAX_HEALTH || type == StatType.MAX_MANA || 
-            type == StatType.DEFENSE || type == StatType.MAGIC_DEFENSE) {
-            return String.format("%.0f", value);
-        }
-        return String.format("%.1f", value);
-    }
-    
-    private boolean isPercentageStat(StatType type) {
-        return type == StatType.CRIT_RATE || type == StatType.CRIT_DAMAGE ||
-               type == StatType.HIT_RATE || type == StatType.DODGE_RATE ||
-               type == StatType.ATTACK_SPEED || type == StatType.MOVE_SPEED ||
-               type == StatType.LIFE_STEAL || type == StatType.MANA_STEAL ||
-               type == StatType.COOLDOWN_REDUCTION || type == StatType.EXP_BONUS ||
-               type == StatType.DROP_BONUS;
-    }
-    
-    private String getCategoryName(StatType.StatCategory category) {
-        return switch (category) {
-            case BASIC -> "基础";
-            case COMBAT -> "战斗";
-            case SPECIAL -> "特殊";
-        };
-    }
-    
-    private int calculateContentHeight(StatType.StatCategory category) {
-        int count = 0;
-        for (StatType type : StatType.values()) {
-            if (type.getCategory() == category) count++;
-        }
-        return count * STAT_LINE_HEIGHT + 20;
-    }
-    
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int panelWidth = Math.min(680, width - 40);
@@ -399,74 +228,38 @@ public class CharacterScreen extends Screen {
         int panelX = (width - panelWidth) / 2;
         int panelY = (height - panelHeight) / 2;
         
-        // 分类标签点击
+        // 标签页点击
         int tabX = panelX + MARGIN;
         int tabY = panelY + MARGIN;
-        for (int i = 0; i < categories.size(); i++) {
+        for (int i = 0; i < tabs.size(); i++) {
             int currentTabY = tabY + i * (TAB_HEIGHT + TAB_SPACING);
             if (mouseX >= tabX && mouseX < tabX + TAB_WIDTH && 
                 mouseY >= currentTabY && mouseY < currentTabY + TAB_HEIGHT) {
-                selectedCategory = i;
+                selectedTab = i;
                 scrollOffset = 0;
                 return true;
             }
         }
         
-        if (handleStatButtonClick(mouseX, mouseY, panelX, panelY, panelWidth, panelHeight)) {
-            return true;
+        // 属性按钮点击（非职业标签页）
+        TabType currentTab = tabs.get(selectedTab);
+        if (currentTab != TabType.PROFESSION) {
+            int statsX = panelX + TAB_WIDTH + MARGIN * 2 + 160;
+            int statsY = panelY + MARGIN;
+            int statsWidth = panelWidth - TAB_WIDTH - MARGIN * 3 - 160;
+            
+            if (statsTabRenderer.handleClick(mouseX, mouseY, statsX, statsY, statsWidth,
+                    tabToCategory(currentTab), scrollOffset, staticOnAllocatePoint, staticOnDeallocatePoint)) {
+                return true;
+            }
         }
         
+        // 重置按钮点击
         if (handleResetClick(mouseX, mouseY, panelX, panelY, panelWidth, panelHeight)) {
             return true;
         }
         
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-    
-    private boolean handleStatButtonClick(double mouseX, double mouseY, 
-                                           int panelX, int panelY, int panelWidth, int panelHeight) {
-        int statsX = panelX + TAB_WIDTH + MARGIN * 2 + 160;
-        int statsY = panelY + MARGIN;
-        int statsWidth = panelWidth - TAB_WIDTH - MARGIN * 3 - 160;
-        
-        int currentY = statsY + 10 - (int)scrollOffset;
-        int rightEdge = statsX + 10 + statsWidth - 20;
-        int valueX = rightEdge - VALUE_WIDTH;
-        
-        int availablePoints = ClientStatAllocationCache.getAvailablePoints();
-        
-        for (StatType type : StatType.values()) {
-            if (type.getCategory() != categories.get(selectedCategory)) continue;
-            
-            if (type.isAllocatable()) {
-                int allocatedPoints = ClientStatAllocationCache.getAllocatedPoints(type);
-                int buttonY = currentY + 2;
-                int minusX = valueX - BUTTON_SIZE - 4;
-                int plusX = minusX - BUTTON_SIZE - 2;
-                
-                // 加号点击
-                if (mouseX >= plusX && mouseX < plusX + BUTTON_SIZE &&
-                    mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE) {
-                    if (availablePoints > 0 && staticOnAllocatePoint != null) {
-                        staticOnAllocatePoint.accept(type);
-                    }
-                    return true;
-                }
-                
-                // 减号点击
-                if (mouseX >= minusX && mouseX < minusX + BUTTON_SIZE &&
-                    mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE) {
-                    if (allocatedPoints > 0 && staticOnDeallocatePoint != null) {
-                        staticOnDeallocatePoint.accept(type);
-                    }
-                    return true;
-                }
-            }
-            
-            currentY += STAT_LINE_HEIGHT;
-        }
-        
-        return false;
     }
     
     private boolean handleResetClick(double mouseX, double mouseY,

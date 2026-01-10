@@ -67,6 +67,7 @@ public class NetworkHandlerFabric {
         registerInteractionReceivers();
         registerDialogReceivers();
         registerStatAllocationReceivers();
+        registerProfessionReceivers();
     }
     
     /**
@@ -439,5 +440,80 @@ public class NetworkHandlerFabric {
         FriendlyByteBuf buf = PacketByteBufs.create();
         net.shiroha233.roadweaverpg.network.packet.sync.SyncStatAllocationPacket.fromData(data).encode(buf);
         ServerPlayNetworking.send(player, NetworkHandler.SYNC_STAT_ALLOCATION, buf);
+    }
+    
+    // ==================== 战斗系统网络方法 ====================
+    
+    /**
+     * 初始化战斗系统回调
+     */
+    public static void initializeCombatCallbacks() {
+        net.shiroha233.roadweaverpg.combat.CombatEventHandler.setDamageIndicatorCallback(
+                NetworkHandlerFabric::sendDamageIndicator);
+    }
+    
+    /**
+     * 发送伤害指示器到客户端
+     */
+    public static void sendDamageIndicator(ServerPlayer player, 
+            net.shiroha233.roadweaverpg.combat.DamageIndicatorData data) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new net.shiroha233.roadweaverpg.network.packet.combat.DamageIndicatorPacket(data).encode(buf);
+        ServerPlayNetworking.send(player, NetworkHandler.DAMAGE_INDICATOR, buf);
+    }
+    
+    // ==================== 职业系统网络方法 ====================
+    
+    /**
+     * 注册职业系统相关的服务端接收器
+     */
+    public static void registerProfessionReceivers() {
+        // 处理选择职业请求
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.SELECT_PROFESSION, 
+                (server, player, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.message.SelectProfessionMessage.decode(buf);
+            server.execute(() -> packet.handle(player));
+        });
+        
+        // 处理转职请求
+        ServerPlayNetworking.registerGlobalReceiver(NetworkHandler.CHANGE_PROFESSION, 
+                (server, player, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.message.ChangeProfessionMessage.decode(buf);
+            server.execute(() -> packet.handle(player));
+        });
+        
+        // 初始化同步回调
+        net.shiroha233.roadweaverpg.profession.ProfessionDataService.getInstance()
+                .setOnSyncProfession(NetworkHandlerFabric::sendPlayerProfession);
+        
+        // 初始化职业定义同步回调
+        net.shiroha233.roadweaverpg.profession.ProfessionEventHandler.setSyncDefinitionsCallback(
+                NetworkHandlerFabric::sendProfessionDefinitions);
+        
+        // 初始化打开职业选择界面回调
+        net.shiroha233.roadweaverpg.init.QuestSystemInitializer.setOnOpenProfessionSelection(
+                NetworkHandlerFabric::sendOpenProfessionSelection);
+    }
+    
+    /**
+     * 发送玩家职业数据到客户端
+     */
+    public static void sendPlayerProfession(ServerPlayer player, ResourceLocation professionId) {
+        net.shiroha233.roadweaverpg.network.message.SyncPlayerProfessionMessage.send(player, professionId);
+    }
+    
+    /**
+     * 发送职业定义到客户端
+     */
+    public static void sendProfessionDefinitions(ServerPlayer player, 
+            java.util.Collection<net.shiroha233.roadweaverpg.profession.ProfessionDefinition> definitions) {
+        net.shiroha233.roadweaverpg.network.message.SyncProfessionsMessage.send(player, definitions);
+    }
+    
+    /**
+     * 发送打开职业选择界面消息
+     */
+    public static void sendOpenProfessionSelection(ServerPlayer player, int npcEntityId) {
+        net.shiroha233.roadweaverpg.network.message.OpenProfessionSelectionMessage.send(player, npcEntityId);
     }
 }

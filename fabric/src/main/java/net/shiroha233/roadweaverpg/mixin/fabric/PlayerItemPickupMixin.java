@@ -1,4 +1,4 @@
-package net.shiroha233.roadweaverpg.mixin;
+package net.shiroha233.roadweaverpg.mixin.fabric;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;

@@ -1,8 +1,10 @@
 package net.shiroha233.roadweaverpg.interaction;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.entity.npc.INPCEntity;
+import net.shiroha233.roadweaverpg.profession.ProfessionDataService;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * NPC交互注册表
  * 职责：管理所有NPC类型的交互入口
- * 原理：注册表模式，支持动态注册和数据驱动
+ * 原理：注册表模式，支持动态注册、数据驱动和条件过滤
  */
 public final class NPCInteractionRegistry {
     
@@ -29,6 +31,8 @@ public final class NPCInteractionRegistry {
      */
     public static void init() {
         // 公会女仆的交互入口
+        
+        // 对话（始终可见）
         registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.dialog(
                 "chat",
                 "gui.roadweaver_rpg.interaction.chat",
@@ -36,45 +40,61 @@ public final class NPCInteractionRegistry {
                 0
         ));
         
-        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.function(
+        // 冒险家注册（仅未注册时显示）
+        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.functionWithCondition(
+                "register_adventurer",
+                "gui.roadweaver_rpg.interaction.register_adventurer",
+                NPCInteractionEntry.ICON_PROFESSION,
+                new ResourceLocation(RoadWeaverRPG.MOD_ID, "register_adventurer"),
+                5,
+                NPCInteractionEntry.CONDITION_NOT_ADVENTURER
+        ));
+        
+        // 以下入口仅已注册冒险家可见
+        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.functionWithCondition(
                 "show_quests",
                 "gui.roadweaver_rpg.dialog.show_quests",
                 NPCInteractionEntry.ICON_QUEST,
                 new ResourceLocation(RoadWeaverRPG.MOD_ID, "show_quests"),
-                10
+                10,
+                NPCInteractionEntry.CONDITION_IS_ADVENTURER
         ));
         
-        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.function(
+        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.functionWithCondition(
                 "complete_quest",
                 "gui.roadweaver_rpg.dialog.complete_quest",
                 NPCInteractionEntry.ICON_QUEST,
                 new ResourceLocation(RoadWeaverRPG.MOD_ID, "complete_quest"),
-                20
+                20,
+                NPCInteractionEntry.CONDITION_IS_ADVENTURER
         ));
         
-        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.function(
+        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.functionWithCondition(
                 "retrieve_scroll",
                 "gui.roadweaver_rpg.dialog.retrieve_scroll",
                 NPCInteractionEntry.ICON_QUEST,
                 new ResourceLocation(RoadWeaverRPG.MOD_ID, "retrieve_scroll"),
-                30
+                30,
+                NPCInteractionEntry.CONDITION_IS_ADVENTURER
         ));
         
-        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.function(
+        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.functionWithCondition(
                 "view_reputation",
                 "gui.roadweaver_rpg.dialog.view_reputation",
                 NPCInteractionEntry.ICON_REPUTATION,
                 new ResourceLocation(RoadWeaverRPG.MOD_ID, "view_reputation"),
-                40
+                40,
+                NPCInteractionEntry.CONDITION_IS_ADVENTURER
         ));
         
         // 查看冒险等级入口
-        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.function(
+        registerEntry(INPCEntity.NPCType.GUILD_MAID.getId(), NPCInteractionEntry.functionWithCondition(
                 "view_adventure_level",
                 "gui.roadweaver_rpg.dialog.view_adventure_level",
                 NPCInteractionEntry.ICON_REPUTATION,
                 new ResourceLocation(RoadWeaverRPG.MOD_ID, "view_adventure_level"),
-                45
+                45,
+                NPCInteractionEntry.CONDITION_IS_ADVENTURER
         ));
         
         // 商店女仆的交互入口
@@ -111,7 +131,7 @@ public final class NPCInteractionRegistry {
     }
     
     /**
-     * 获取NPC的所有交互入口（已排序）
+     * 获取NPC的所有交互入口（已排序，无条件过滤）
      */
     public static List<NPCInteractionEntry> getEntries(String npcType) {
         List<NPCInteractionEntry> result = new ArrayList<>();
@@ -129,6 +149,43 @@ public final class NPCInteractionRegistry {
         result.sort(Comparator.comparingInt(NPCInteractionEntry::priority));
         
         return result;
+    }
+    
+    /**
+     * 获取NPC的交互入口（带条件过滤，服务端使用）
+     * 
+     * @param npcType NPC类型
+     * @param player 玩家（用于条件检查）
+     * @return 过滤后的交互入口列表
+     */
+    public static List<NPCInteractionEntry> getFilteredEntries(String npcType, ServerPlayer player) {
+        List<NPCInteractionEntry> allEntries = getEntries(npcType);
+        List<NPCInteractionEntry> filtered = new ArrayList<>();
+        
+        boolean isAdventurer = ProfessionDataService.getInstance().hasProfession(player);
+        
+        for (NPCInteractionEntry entry : allEntries) {
+            if (checkCondition(entry, isAdventurer)) {
+                filtered.add(entry);
+            }
+        }
+        
+        return filtered;
+    }
+    
+    /**
+     * 检查入口条件是否满足
+     */
+    private static boolean checkCondition(NPCInteractionEntry entry, boolean isAdventurer) {
+        if (!entry.hasCondition()) {
+            return true; // 无条件，始终显示
+        }
+        
+        return switch (entry.condition()) {
+            case NPCInteractionEntry.CONDITION_IS_ADVENTURER -> isAdventurer;
+            case NPCInteractionEntry.CONDITION_NOT_ADVENTURER -> !isAdventurer;
+            default -> true; // 未知条件，默认显示
+        };
     }
     
     /**

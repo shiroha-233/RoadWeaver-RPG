@@ -296,4 +296,16 @@ public class ClientPacketHandler {
         NetworkHandlerForge.CHANNEL.sendToServer(
                 new net.shiroha233.roadweaverpg.network.packet.dialog.DialogAdvancePacket());
     }
+    
+    // ==================== 战斗系统客户端处理 ====================
+    
+    /**
+     * 处理伤害指示器
+     */
+    public static void handleDamageIndicator(
+            net.shiroha233.roadweaverpg.network.packet.combat.DamageIndicatorPacket packet) {
+        var data = packet.getData();
+        net.shiroha233.roadweaverpg.client.gui.hud.DamageIndicatorRenderer.addIndicator(
+                data.x(), data.y(), data.z(), data.damage(), data.isCritical());
+    }
 }

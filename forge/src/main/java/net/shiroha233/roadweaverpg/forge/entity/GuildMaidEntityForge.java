@@ -18,7 +18,7 @@ public class GuildMaidEntityForge extends GuildMaidEntity {
     
     @Override
     protected void openInteractionMenu(ServerPlayer player) {
-        var entries = NPCInteractionRegistry.getEntries(this);
+        var entries = NPCInteractionRegistry.getFilteredEntries(getNPCType().getId(), player);
         NetworkHandlerForge.sendOpenInteractionMenu(player, this.getId(), entries);
     }
     

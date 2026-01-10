@@ -177,5 +177,53 @@ public class GuiRenderer {
         graphics.fill(centerX + 25, y + 1, x + width, y + 1, color & 0x80FFFFFF);
     }
     
+    /**
+     * 绘制圆角矩形边框
+     */
+    public static void drawRoundedRectOutline(GuiGraphics graphics, int x, int y, int width, int height,
+                                               int radius, int color) {
+        int r = Math.min(radius, Math.min(width / 2, height / 2));
+        if (r <= 0) {
+            graphics.renderOutline(x, y, width, height, color);
+            return;
+        }
+        
+        // 上边
+        graphics.fill(x + r, y, x + width - r, y + 1, color);
+        // 下边
+        graphics.fill(x + r, y + height - 1, x + width - r, y + height, color);
+        // 左边
+        graphics.fill(x, y + r, x + 1, y + height - r, color);
+        // 右边
+        graphics.fill(x + width - 1, y + r, x + width, y + height - r, color);
+        
+        // 四个圆角边框
+        drawCornerOutline(graphics, x, y, r, 0, color);                 // 左上
+        drawCornerOutline(graphics, x + width - r, y, r, 1, color);     // 右上
+        drawCornerOutline(graphics, x, y + height - r, r, 2, color);    // 左下
+        drawCornerOutline(graphics, x + width - r, y + height - r, r, 3, color); // 右下
+    }
+    
+    /**
+     * 绘制圆角边框的单个角
+     */
+    private static void drawCornerOutline(GuiGraphics graphics, int x, int y, int r, int type, int color) {
+        for (int i = 0; i < r; i++) {
+            int limit = (int) Math.sqrt(r * r - (r - i - 1) * (r - i - 1));
+            int prevLimit = i > 0 ? (int) Math.sqrt(r * r - (r - i) * (r - i)) : 0;
+            
+            // 只绘制边缘像素
+            if (type == 0) { // 左上
+                graphics.fill(x + r - limit, y + i, x + r - prevLimit, y + i + 1, color);
+            } else if (type == 1) { // 右上
+                graphics.fill(x + prevLimit, y + i, x + limit, y + i + 1, color);
+            } else if (type == 2) { // 左下
+                graphics.fill(x + r - limit, y + r - 1 - i, x + r - prevLimit, y + r - i, color);
+            } else if (type == 3) { // 右下
+                graphics.fill(x + prevLimit, y + r - 1 - i, x + limit, y + r - i, color);
+            }
+        }
+    }
+    
     private GuiRenderer() {}
 }

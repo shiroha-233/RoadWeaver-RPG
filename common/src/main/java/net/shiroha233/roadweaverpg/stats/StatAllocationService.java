@@ -58,6 +58,12 @@ public class StatAllocationService {
             PlayerQuestData questData = dataAccessor.getPlayerData(player);
             StatAllocationData allocData = questData.getStatAllocationData();
             
+            // 检查职业是否解锁该属性
+            if (!allocData.isStatUnlocked(type)) {
+                player.sendSystemMessage(Component.translatable("message.roadweaver_rpg.stat_locked_by_profession"));
+                return false;
+            }
+            
             if (allocData.getAvailablePoints() <= 0) {
                 player.sendSystemMessage(Component.translatable("message.roadweaver_rpg.no_skill_points"));
                 return false;
@@ -183,24 +189,34 @@ public class StatAllocationService {
     
     /**
      * 应用属性加成（委托给StatEffectService）
+     * 支持职业加成倍率
      */
     private void applyStatBonus(ServerPlayer player, StatType type, int totalPoints) {
         if (!StatAllocationConfig.isInitialized()) return;
         
-        double bonus = StatAllocationConfig.getInstance().calculateBonus(type, totalPoints);
+        // 获取基础加成
+        double baseBonus = StatAllocationConfig.getInstance().calculateBonus(type, totalPoints);
+        
+        // 应用职业倍率
+        double multiplier = net.shiroha233.roadweaverpg.profession.ProfessionDataService
+                .getInstance().getStatBonusMultiplier(player, type);
+        double bonus = baseBonus * multiplier;
         
         switch (type) {
+            // 原版属性（直接应用）
             case MAX_HEALTH -> StatEffectService.applyMaxHealth(player, bonus);
             case ATTACK -> StatEffectService.applyAttackDamage(player, bonus);
             case DEFENSE -> StatEffectService.applyArmor(player, bonus);
             case MAGIC_DEFENSE -> StatEffectService.applyArmorToughness(player, bonus);
+            case MOVE_SPEED -> StatEffectService.applyMovementSpeed(player, bonus);
+            case ATTACK_COOLDOWN -> StatEffectService.applyAttackCooldown(player, bonus);
+            // 魔法属性（通过兼容层应用）
             case MAX_MANA -> StatEffectService.applyMaxMana(player, bonus);
             case MAGIC_ATTACK -> StatEffectService.applySpellPower(player, bonus);
-            case MOVE_SPEED -> StatEffectService.applyMovementSpeed(player, bonus);
-            case ATTACK_SPEED -> StatEffectService.applyAttackSpeed(player, bonus);
-            // 战斗属性暂存到PlayerStats缓存（客户端显示用）
-            case CRIT_RATE, CRIT_DAMAGE, HIT_RATE, DODGE_RATE, HEALTH_REGEN, MANA_REGEN -> {
-                // 这些属性通过RPG系统计算，不直接修改原版属性
+            case MANA_REGEN -> StatEffectService.applyManaRegen(player, bonus);
+            // 战斗属性（存储到玩家数据，用于伤害计算）
+            case CRIT_RATE, CRIT_DAMAGE, HEALTH_REGEN -> {
+                // 这些属性通过RPG伤害系统计算，数值已存储在StatAllocationData中
             }
             default -> {}
         }

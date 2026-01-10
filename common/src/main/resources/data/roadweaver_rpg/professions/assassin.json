@@ -1,0 +1,55 @@
+{
+  "name": "profession.roadweaver_rpg.assassin",
+  "description": "profession.roadweaver_rpg.assassin.desc",
+  "icon": "roadweaver_rpg:textures/gui/profession/assassin.png",
+  
+  "base_stats": {
+    "max_health": 18.0,
+    "max_mana": 70.0,
+    "attack": 2.0,
+    "defense": 0.0,
+    "magic_attack": 1.0,
+    "magic_defense": 0.0,
+    "crit_rate": 15.0,
+    "crit_damage": 200.0,
+    "move_speed": 110.0,
+    "health_regen": 0.2,
+    "mana_regen": 0.5
+  },
+  
+  "stat_growth": {
+    "attack": 0.3,
+    "crit_damage": 2.0,
+    "move_speed": 0.5
+  },
+  
+  "stat_bonus_multiplier": {
+    "max_health": 0.7,
+    "attack": 1.0,
+    "defense": 0.6,
+    "crit_rate": 1.2,
+    "crit_damage": 1.4,
+    "move_speed": 1.2,
+    "attack_cooldown": 1.3
+  },
+  
+  "unlocked_stats": [
+    "attack", 
+    "crit_rate", "crit_damage",
+    "move_speed", "attack_cooldown"
+  ],
+  
+  "starting_items": [
+    {"item": "minecraft:iron_sword", "count": 1},
+    {"item": "minecraft:leather_boots", "count": 1},
+    {"item": "minecraft:bread", "count": 16}
+  ],
+  
+  "requirements": {
+    "min_adventure_level": 1
+  },
+  
+  "tags": ["melee", "dps", "stealth"],
+  "default": true,
+  "sort_order": 4
+}

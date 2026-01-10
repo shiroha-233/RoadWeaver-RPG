@@ -116,9 +116,9 @@ public class ReputationOverviewScreen extends Screen {
         renderHeader(graphics);
         
         // 时间轴区域（横向）
-        int timelineLeft = 60;
-        int timelineRight = width - 20;
-        graphics.enableScissor(timelineLeft, 60, timelineRight, height - 20);
+        int timelineTop = 60;
+        int timelineBottom = height - 20;
+        graphics.enableScissor(0, timelineTop, width, timelineBottom);
         
         renderTimeline(graphics, mouseX, mouseY, partialTick);
         

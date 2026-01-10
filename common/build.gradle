@@ -30,3 +30,7 @@ java {
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
+ tasks.named('processResources', ProcessResources).configure {
+     exclude 'roadweaver_rpg.mixins.json'
+ }

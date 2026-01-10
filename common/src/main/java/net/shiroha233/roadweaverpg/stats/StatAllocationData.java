@@ -1,9 +1,14 @@
 package net.shiroha233.roadweaverpg.stats;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -19,6 +24,9 @@ public class StatAllocationData {
     // 已分配的点数（每个属性）
     private final Map<StatType, AtomicInteger> allocatedPoints = new EnumMap<>(StatType.class);
     
+    // 职业解锁的可加点属性（为空时使用默认规则）
+    private volatile Set<StatType> unlockedStats = null;
+    
     public StatAllocationData() {
         // 初始化所有可分配属性的点数为0
         for (StatType type : StatType.values()) {
@@ -27,6 +35,33 @@ public class StatAllocationData {
             }
         }
     }
+    
+    // region 可加点属性管理
+    
+    /**
+     * 设置职业解锁的可加点属性
+     */
+    public void setUnlockedStats(Set<StatType> stats) {
+        this.unlockedStats = stats != null ? EnumSet.copyOf(stats) : null;
+    }
+    
+    /**
+     * 获取可加点属性列表
+     */
+    public Set<StatType> getUnlockedStats() {
+        return unlockedStats;
+    }
+    
+    /**
+     * 检查属性是否可加点
+     */
+    public boolean isStatUnlocked(StatType type) {
+        if (!type.isAllocatable()) return false;
+        if (unlockedStats == null) return true; // 未设置限制时使用默认规则
+        return unlockedStats.contains(type);
+    }
+    
+    // endregion
     
     // ==================== 技能点操作 ====================
     
@@ -47,7 +82,7 @@ public class StatAllocationData {
      * @return 是否分配成功
      */
     public synchronized boolean allocatePoint(StatType type) {
-        if (!type.isAllocatable()) return false;
+        if (!isStatUnlocked(type)) return false;
         if (availablePoints.get() <= 0) return false;
         
         availablePoints.decrementAndGet();
@@ -60,7 +95,7 @@ public class StatAllocationData {
      * @return 是否减少成功
      */
     public synchronized boolean deallocatePoint(StatType type) {
-        if (!type.isAllocatable()) return false;
+        if (!isStatUnlocked(type)) return false;
         
         AtomicInteger points = allocatedPoints.get(type);
         if (points == null || points.get() <= 0) return false;
@@ -122,6 +157,15 @@ public class StatAllocationData {
         }
         tag.put("allocated", allocatedTag);
         
+        // 保存可加点属性限制
+        if (unlockedStats != null) {
+            ListTag unlockedTag = new ListTag();
+            for (StatType type : unlockedStats) {
+                unlockedTag.add(StringTag.valueOf(type.getId()));
+            }
+            tag.put("unlockedStats", unlockedTag);
+        }
+        
         return tag;
     }
     
@@ -140,6 +184,19 @@ public class StatAllocationData {
                     data.allocatedPoints.get(type).set(allocatedTag.getInt(key));
                 }
             }
+        }
+        
+        // 加载可加点属性限制
+        if (tag.contains("unlockedStats")) {
+            ListTag unlockedTag = tag.getList("unlockedStats", Tag.TAG_STRING);
+            Set<StatType> unlocked = EnumSet.noneOf(StatType.class);
+            for (int i = 0; i < unlockedTag.size(); i++) {
+                StatType type = StatType.fromId(unlockedTag.getString(i));
+                if (type != null) {
+                    unlocked.add(type);
+                }
+            }
+            data.unlockedStats = unlocked;
         }
         
         return data;

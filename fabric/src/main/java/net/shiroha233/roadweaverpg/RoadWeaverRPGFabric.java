@@ -33,6 +33,10 @@ public class RoadWeaverRPGFabric implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Loading RoadWeaver RPG for Fabric...");
         
+        // 初始化平台助手
+        net.shiroha233.roadweaverpg.platform.PlatformHelper.setImplementation(
+                new net.shiroha233.roadweaverpg.platform.PlatformHelperFabric());
+        
         // 注册实体
         ModEntitiesFabric.register();
         
@@ -88,20 +92,34 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new net.shiroha233.roadweaverpg.loot.CoinLootConfigManagerFabric());
         
+        // 注册世界难度配置加载器
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.worlddifficulty.DifficultyConfigManagerFabric());
+        
+        // 注册职业系统数据加载器
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new net.shiroha233.roadweaverpg.profession.ProfessionManagerFabric());
+        
         // 初始化魔法模组兼容层
         net.shiroha233.roadweaverpg.compat.magic.MagicCompatInitFabric.init();
         
         // 注册委托事件监听
         QuestEventsFabric.register();
         CoinEventsFabric.register();
+        net.shiroha233.roadweaverpg.event.WorldDifficultyEventsFabric.register();
         registerBlockEvents();
         registerServerTickEvents();
+        
+        // 初始化战斗系统回调
+        NetworkHandlerFabric.initializeCombatCallbacks();
         
         // 注册调试指令
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             QuestDebugCommand.register(dispatcher);
             net.shiroha233.roadweaverpg.command.StatEffectCommand.register(dispatcher);
             net.shiroha233.roadweaverpg.command.StatPointCommand.register(dispatcher);
+            net.shiroha233.roadweaverpg.command.WorldDifficultyCommand.register(dispatcher);
+            net.shiroha233.roadweaverpg.command.AdventureCommand.register(dispatcher);
         });
         
         // 检查前置依赖
@@ -142,6 +160,12 @@ public class RoadWeaverRPGFabric implements ModInitializer {
             for (ServerLevel level : server.getAllLevels()) {
                 QuestEventHandler.onServerLevelTick(level);
             }
+        });
+        
+        // 玩家登录事件 - 职业系统
+        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            ServerPlayer player = handler.getPlayer();
+            net.shiroha233.roadweaverpg.profession.ProfessionEventHandler.onPlayerLogin(player);
         });
     }
 }

@@ -26,7 +26,7 @@ public class PlayerStats {
     private double critDamage = 150.0;         // 暴击伤害 (%)
     private double hitRate = 100.0;            // 命中率 (%)
     private double dodgeRate = 0.0;            // 闪避率 (%)
-    private double attackSpeed = 100.0;        // 攻击速度 (%)
+    private double attackCooldown = 0.0;       // 攻击冷却缩减 (%)，越高攻击越快
     private double moveSpeed = 100.0;          // 移动速度 (%)
     private double healthRegen = 0.0;          // 生命回复/秒
     private double manaRegen = 1.0;            // 魔力回复/秒
@@ -54,7 +54,7 @@ public class PlayerStats {
     public double getCritDamage() { return critDamage; }
     public double getHitRate() { return hitRate; }
     public double getDodgeRate() { return dodgeRate; }
-    public double getAttackSpeed() { return attackSpeed; }
+    public double getAttackCooldown() { return attackCooldown; }
     public double getMoveSpeed() { return moveSpeed; }
     public double getHealthRegen() { return healthRegen; }
     public double getManaRegen() { return manaRegen; }
@@ -79,7 +79,7 @@ public class PlayerStats {
     public void setCritDamage(double v) { this.critDamage = Math.max(0, v); }
     public void setHitRate(double v) { this.hitRate = Math.max(0, v); }
     public void setDodgeRate(double v) { this.dodgeRate = Math.min(100, Math.max(0, v)); }
-    public void setAttackSpeed(double v) { this.attackSpeed = Math.max(0, v); }
+    public void setAttackCooldown(double v) { this.attackCooldown = Math.min(80, Math.max(0, v)); } // 最大80%冷却缩减
     public void setMoveSpeed(double v) { this.moveSpeed = Math.max(0, v); }
     public void setHealthRegen(double v) { this.healthRegen = v; }
     public void setManaRegen(double v) { this.manaRegen = v; }

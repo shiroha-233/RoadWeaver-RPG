@@ -103,9 +103,78 @@ public class ClientNetworkHandlerFabric {
         
         // 注册对话系统接收器
         registerDialogReceivers();
+        
+        // 注册战斗系统接收器
+        registerCombatReceivers();
+        
+        // 注册职业系统接收器
+        registerProfessionReceivers();
     }
     
-    // ==================== 对话系统客户端处理 ====================
+    // ==================== 职业系统客户端处理 ====================
+    
+    private static void registerProfessionReceivers() {
+        // 处理同步职业定义
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_PROFESSIONS, (client, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.message.SyncProfessionsMessage.decode(buf);
+            client.execute(() -> ClientProfessionCache.updateProfessions(packet.getProfessions()));
+        });
+        
+        // 处理同步玩家职业
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_PLAYER_PROFESSION, (client, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.message.SyncPlayerProfessionMessage.decode(buf);
+            client.execute(() -> ClientProfessionCache.setPlayerProfession(packet.getProfessionId()));
+        });
+        
+        // 处理同步RPG属性
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.SYNC_RPG_STATS, (client, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.message.SyncRpgStatsMessage.decode(buf);
+            client.execute(() -> ClientStatsCache.updateFromServer(
+                    packet.getMaxMana(), packet.getMagicAttack(), packet.getCritRate(), packet.getCritDamage(),
+                    packet.getHitRate(), packet.getDodgeRate(), packet.getHealthRegen(), packet.getManaRegen(),
+                    packet.getLifeSteal(), packet.getManaSteal(), packet.getCooldownReduction(),
+                    packet.getExpBonus(), packet.getDropBonus()
+            ));
+        });
+        
+        // 处理打开职业选择界面
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.OPEN_PROFESSION_SELECTION, (client, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.message.OpenProfessionSelectionMessage.decode(buf);
+            client.execute(() -> openProfessionSelectionScreen(packet.getNpcEntityId()));
+        });
+        
+        // 初始化职业选择界面回调
+        net.shiroha233.roadweaverpg.client.gui.profession.ProfessionSelectionScreen.setOnSelectProfession(
+                ClientNetworkHandlerFabric::sendSelectProfession);
+    }
+    
+    private static void openProfessionSelectionScreen(int npcEntityId) {
+        Minecraft.getInstance().setScreen(
+                new net.shiroha233.roadweaverpg.client.gui.profession.ProfessionSelectionScreen());
+    }
+    
+    /**
+     * 发送选择职业请求到服务端
+     */
+    public static void sendSelectProfession(ResourceLocation professionId) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        new net.shiroha233.roadweaverpg.network.message.SelectProfessionMessage(professionId).encode(buf);
+        ClientPlayNetworking.send(NetworkHandler.SELECT_PROFESSION, buf);
+    }
+    
+    // ==================== 战斗系统客户端处理 ====================
+    
+    private static void registerCombatReceivers() {
+        // 处理伤害指示器
+        ClientPlayNetworking.registerGlobalReceiver(NetworkHandler.DAMAGE_INDICATOR, (client, handler, buf, responseSender) -> {
+            var packet = net.shiroha233.roadweaverpg.network.packet.combat.DamageIndicatorPacket.decode(buf);
+            client.execute(() -> {
+                var data = packet.getData();
+                net.shiroha233.roadweaverpg.client.gui.hud.DamageIndicatorRenderer.addIndicator(
+                        data.x(), data.y(), data.z(), data.damage(), data.isCritical());
+            });
+        });
+    }
     
     // ==================== 冒险等级系统客户端处理 ====================
     

@@ -101,6 +101,25 @@ public final class UnifiedActionHandler {
                     }
                 });
         
+        // 职业系统功能 - 冒险家注册（打开职业选择界面）
+        registerWithAlias("register_adventurer",
+                new ResourceLocation(RoadWeaverRPG.MOD_ID, "register_adventurer"),
+                (player, npcId) -> {
+                    // 检查是否已注册
+                    if (net.shiroha233.roadweaverpg.profession.ProfessionDataService.getInstance().hasProfession(player)) {
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
+                                "message.roadweaver_rpg.already_adventurer"));
+                        return;
+                    }
+                    // 同步职业定义到客户端
+                    net.shiroha233.roadweaverpg.profession.ProfessionEventHandler.syncProfessionDefinitions(player);
+                    // 打开职业选择界面
+                    var callback = QuestSystemInitializer.getOnOpenProfessionSelection();
+                    if (callback != null) {
+                        callback.accept(player, npcId);
+                    }
+                });
+        
         RoadWeaverRPG.LOGGER.info("已注册 {} 个统一动作处理器", HANDLERS.size());
     }
     

@@ -178,6 +178,8 @@ public class NetworkHandlerForge {
         registerDialogPackets();
         registerAdventurePackets();
         registerStatAllocationPackets();
+        registerCombatPackets();
+        registerProfessionPackets();
     }
     
     /**
@@ -689,5 +691,125 @@ public class NetworkHandlerForge {
      */
     public static void sendResetStatAllocation() {
         CHANNEL.sendToServer(new net.shiroha233.roadweaverpg.network.packet.stats.ResetStatAllocationPacket());
+    }
+    
+    // ==================== 战斗系统网络方法 ====================
+    
+    /**
+     * 注册战斗系统相关的网络包
+     */
+    public static void registerCombatPackets() {
+        // 服务端 -> 客户端：伤害指示器
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.network.packet.combat.DamageIndicatorPacket.class,
+                net.shiroha233.roadweaverpg.network.packet.combat.DamageIndicatorPacket::encode,
+                net.shiroha233.roadweaverpg.network.packet.combat.DamageIndicatorPacket::decode,
+                (packet, ctx) -> {
+                    ctx.get().enqueueWork(() -> ClientPacketHandler.handleDamageIndicator(packet));
+                    ctx.get().setPacketHandled(true);
+                }, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
+        // 初始化战斗系统回调
+        net.shiroha233.roadweaverpg.combat.CombatEventHandler.setDamageIndicatorCallback(
+                NetworkHandlerForge::sendDamageIndicator);
+    }
+    
+    /**
+     * 发送伤害指示器到客户端
+     */
+    public static void sendDamageIndicator(ServerPlayer player, 
+            net.shiroha233.roadweaverpg.combat.DamageIndicatorData data) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
+                new net.shiroha233.roadweaverpg.network.packet.combat.DamageIndicatorPacket(data));
+    }
+    
+    // ==================== 职业系统网络方法 ====================
+    
+    /**
+     * 注册职业系统相关的网络包
+     */
+    public static void registerProfessionPackets() {
+        // 服务端 -> 客户端：同步职业定义
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.forge.network.message.SyncProfessionsMessage.class,
+                net.shiroha233.roadweaverpg.forge.network.message.SyncProfessionsMessage::encode,
+                net.shiroha233.roadweaverpg.forge.network.message.SyncProfessionsMessage::decode,
+                net.shiroha233.roadweaverpg.forge.network.message.SyncProfessionsMessage::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
+        // 服务端 -> 客户端：同步玩家职业
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.forge.network.message.SyncPlayerProfessionMessage.class,
+                net.shiroha233.roadweaverpg.forge.network.message.SyncPlayerProfessionMessage::encode,
+                net.shiroha233.roadweaverpg.forge.network.message.SyncPlayerProfessionMessage::decode,
+                net.shiroha233.roadweaverpg.forge.network.message.SyncPlayerProfessionMessage::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
+        // 服务端 -> 客户端：打开职业选择界面
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.forge.network.message.OpenProfessionSelectionMessage.class,
+                net.shiroha233.roadweaverpg.forge.network.message.OpenProfessionSelectionMessage::encode,
+                net.shiroha233.roadweaverpg.forge.network.message.OpenProfessionSelectionMessage::decode,
+                net.shiroha233.roadweaverpg.forge.network.message.OpenProfessionSelectionMessage::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        
+        // 客户端 -> 服务端：选择职业
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.forge.network.message.SelectProfessionMessage.class,
+                net.shiroha233.roadweaverpg.forge.network.message.SelectProfessionMessage::encode,
+                net.shiroha233.roadweaverpg.forge.network.message.SelectProfessionMessage::decode,
+                net.shiroha233.roadweaverpg.forge.network.message.SelectProfessionMessage::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        
+        // 客户端 -> 服务端：转职
+        CHANNEL.registerMessage(packetId++,
+                net.shiroha233.roadweaverpg.forge.network.message.ChangeProfessionMessage.class,
+                net.shiroha233.roadweaverpg.forge.network.message.ChangeProfessionMessage::encode,
+                net.shiroha233.roadweaverpg.forge.network.message.ChangeProfessionMessage::decode,
+                net.shiroha233.roadweaverpg.forge.network.message.ChangeProfessionMessage::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        
+        // 初始化同步回调
+        net.shiroha233.roadweaverpg.profession.ProfessionDataService.getInstance()
+                .setOnSyncProfession(NetworkHandlerForge::sendPlayerProfession);
+        
+        // 初始化职业定义同步回调
+        net.shiroha233.roadweaverpg.profession.ProfessionEventHandler.setSyncDefinitionsCallback(
+                NetworkHandlerForge::sendProfessionDefinitions);
+        
+        // 初始化打开职业选择界面回调
+        net.shiroha233.roadweaverpg.init.QuestSystemInitializer.setOnOpenProfessionSelection(
+                NetworkHandlerForge::sendOpenProfessionSelection);
+    }
+    
+    /**
+     * 发送玩家职业数据到客户端
+     */
+    public static void sendPlayerProfession(ServerPlayer player, ResourceLocation professionId) {
+        net.shiroha233.roadweaverpg.forge.network.message.SyncPlayerProfessionMessage.send(player, professionId);
+    }
+    
+    /**
+     * 发送职业定义到客户端
+     */
+    public static void sendProfessionDefinitions(ServerPlayer player, 
+            java.util.Collection<net.shiroha233.roadweaverpg.profession.ProfessionDefinition> definitions) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
+                new net.shiroha233.roadweaverpg.forge.network.message.SyncProfessionsMessage(definitions));
+    }
+    
+    /**
+     * 发送打开职业选择界面消息
+     */
+    public static void sendOpenProfessionSelection(ServerPlayer player, int npcEntityId) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
+                new net.shiroha233.roadweaverpg.forge.network.message.OpenProfessionSelectionMessage(npcEntityId));
+    }
+    
+    /**
+     * 通用发送方法（供消息类使用）
+     */
+    public static <MSG> void sendToPlayer(ServerPlayer player, MSG message) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 }

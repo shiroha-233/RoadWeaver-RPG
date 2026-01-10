@@ -125,6 +125,87 @@ public final class MagicModCompatRegistry {
         });
     }
     
+    // ==================== 职业基础属性 ====================
+    
+    public static void applyProfessionMaxMana(ServerPlayer player, double amount) {
+        COMPATS.values().forEach(compat -> {
+            try {
+                compat.applyProfessionMaxMana(player, amount);
+            } catch (Exception e) {
+                RoadWeaverRPG.LOGGER.error("Failed to apply profession max mana for {}: {}", 
+                        compat.getModId(), e.getMessage());
+            }
+        });
+    }
+    
+    public static void applyProfessionSpellPower(ServerPlayer player, double amount) {
+        COMPATS.values().forEach(compat -> {
+            try {
+                compat.applyProfessionSpellPower(player, amount);
+            } catch (Exception e) {
+                RoadWeaverRPG.LOGGER.error("Failed to apply profession spell power for {}: {}", 
+                        compat.getModId(), e.getMessage());
+            }
+        });
+    }
+    
+    public static void applyProfessionManaRegen(ServerPlayer player, double amount) {
+        COMPATS.values().forEach(compat -> {
+            try {
+                compat.applyProfessionManaRegen(player, amount);
+            } catch (Exception e) {
+                RoadWeaverRPG.LOGGER.error("Failed to apply profession mana regen for {}: {}", 
+                        compat.getModId(), e.getMessage());
+            }
+        });
+    }
+    
+    // ==================== 职业成长属性 ====================
+    
+    public static void applyGrowthMaxMana(ServerPlayer player, double amount) {
+        COMPATS.values().forEach(compat -> {
+            try {
+                compat.applyGrowthMaxMana(player, amount);
+            } catch (Exception e) {
+                RoadWeaverRPG.LOGGER.error("Failed to apply growth max mana for {}: {}", 
+                        compat.getModId(), e.getMessage());
+            }
+        });
+    }
+    
+    public static void applyGrowthSpellPower(ServerPlayer player, double amount) {
+        COMPATS.values().forEach(compat -> {
+            try {
+                compat.applyGrowthSpellPower(player, amount);
+            } catch (Exception e) {
+                RoadWeaverRPG.LOGGER.error("Failed to apply growth spell power for {}: {}", 
+                        compat.getModId(), e.getMessage());
+            }
+        });
+    }
+    
+    public static void addGrowthMaxMana(ServerPlayer player, double additionalAmount) {
+        COMPATS.values().forEach(compat -> {
+            try {
+                compat.addGrowthMaxMana(player, additionalAmount);
+            } catch (Exception e) {
+                RoadWeaverRPG.LOGGER.error("Failed to add growth max mana for {}: {}", 
+                        compat.getModId(), e.getMessage());
+            }
+        });
+    }
+    
+    public static void addGrowthSpellPower(ServerPlayer player, double additionalAmount) {
+        COMPATS.values().forEach(compat -> {
+            try {
+                compat.addGrowthSpellPower(player, additionalAmount);
+            } catch (Exception e) {
+                RoadWeaverRPG.LOGGER.error("Failed to add growth spell power for {}: {}", 
+                        compat.getModId(), e.getMessage());
+            }
+        });
+    }
+    
     /**
      * 获取所有已注册的模组ID
      */
