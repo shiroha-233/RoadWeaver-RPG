@@ -21,35 +21,32 @@ public final class CombatEventHandler {
     }
     
     /**
-     * 处理玩家攻击：计算暴击、修改伤害、发送显示
+     * 计算暴击伤害（不发送显示）
      */
-    public static float onPlayerAttack(ServerPlayer attacker, LivingEntity target, float originalDamage) {
+    public static CriticalHitService.CritResult calculateCriticalDamage(ServerPlayer attacker, float damage) {
         try {
-            RoadWeaverRPG.LOGGER.info("[Combat] onPlayerAttack called: damage={}", originalDamage);
-            
-            CriticalHitService.CritResult critResult = 
-                    CriticalHitService.calculateCriticalDamage(originalDamage, attacker);
-            
-            sendDamageIndicator(attacker, target, critResult.damage(), critResult.isCritical());
-            
-            return critResult.damage();
+            return CriticalHitService.calculateCriticalDamage(damage, attacker);
         } catch (Exception e) {
-            RoadWeaverRPG.LOGGER.error("[Combat] Error: {}", e.getMessage());
-            return originalDamage;
+            RoadWeaverRPG.LOGGER.error("[Combat] calculateCriticalDamage error: {}", e.getMessage());
+            return new CriticalHitService.CritResult(false, damage);
         }
     }
     
-    private static void sendDamageIndicator(ServerPlayer attacker, LivingEntity target, 
-                                             float damage, boolean isCritical) {
-        if (damageIndicatorCallback == null) {
-            RoadWeaverRPG.LOGGER.warn("[Combat] Callback is null!");
-            return;
+    /**
+     * 发送伤害显示（真实扣血量）
+     */
+    public static void sendDamageIndicator(ServerPlayer attacker, LivingEntity target, 
+                                            float actualDamage, boolean isCritical) {
+        if (damageIndicatorCallback == null) return;
+        
+        try {
+            double x = target.getX();
+            double y = target.getY() + target.getBbHeight() + 0.5;
+            double z = target.getZ();
+            
+            damageIndicatorCallback.accept(attacker, new DamageIndicatorData(x, y, z, actualDamage, isCritical));
+        } catch (Exception e) {
+            RoadWeaverRPG.LOGGER.error("[Combat] sendDamageIndicator error: {}", e.getMessage());
         }
-        
-        double x = target.getX();
-        double y = target.getY() + target.getBbHeight() + 0.5;
-        double z = target.getZ();
-        
-        damageIndicatorCallback.accept(attacker, new DamageIndicatorData(x, y, z, damage, isCritical));
     }
 }

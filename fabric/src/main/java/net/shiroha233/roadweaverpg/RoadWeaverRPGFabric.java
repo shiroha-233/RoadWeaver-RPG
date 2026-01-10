@@ -11,16 +11,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
-import net.shiroha233.roadweaverpg.entity.ModEntitiesFabric;
-import net.shiroha233.roadweaverpg.entity.NPCSoundProviderFabric;
-import net.shiroha233.roadweaverpg.event.CoinEventsFabric;
-import net.shiroha233.roadweaverpg.event.QuestEventsFabric;
-import net.shiroha233.roadweaverpg.item.ModItemsFabric;
-import net.shiroha233.roadweaverpg.network.NetworkHandlerFabric;
-import net.shiroha233.roadweaverpg.quest.QuestChainManagerFabric;
-import net.shiroha233.roadweaverpg.reputation.ReputationManagerFabric;
-import net.shiroha233.roadweaverpg.quest.QuestManagerFabric;
+import net.shiroha233.roadweaverpg.entity.fabric.ModEntitiesFabric;
+import net.shiroha233.roadweaverpg.entity.fabric.NPCSoundProviderFabric;
+import net.shiroha233.roadweaverpg.event.fabric.CoinEventsFabric;
+import net.shiroha233.roadweaverpg.event.fabric.QuestEventsFabric;
+import net.shiroha233.roadweaverpg.item.fabric.ModItemsFabric;
+import net.shiroha233.roadweaverpg.network.fabric.NetworkHandlerFabric;
 import net.shiroha233.roadweaverpg.quest.event.QuestEventHandler;
+import net.shiroha233.roadweaverpg.quest.fabric.QuestChainManagerFabric;
+import net.shiroha233.roadweaverpg.quest.fabric.QuestManagerFabric;
+import net.shiroha233.roadweaverpg.reputation.fabric.ReputationManagerFabric;
 import net.shiroha233.roadweaverpg.worldgen.VillagePoolInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         
         // 初始化平台助手
         net.shiroha233.roadweaverpg.platform.PlatformHelper.setImplementation(
-                new net.shiroha233.roadweaverpg.platform.PlatformHelperFabric());
+                new net.shiroha233.roadweaverpg.platform.fabric.PlatformHelperFabric());
         
         // 注册实体
         ModEntitiesFabric.register();
@@ -62,51 +62,51 @@ public class RoadWeaverRPGFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new ReputationManagerFabric());
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.shop.ShopManagerFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.shop.fabric.ShopManagerFabric());
         
         // 注册冒险等级数据加载器
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.adventure.AdventureLevelManagerFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.adventure.fabric.AdventureLevelManagerFabric());
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.adventure.AdventureExpSourceManagerFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.adventure.fabric.AdventureExpSourceManagerFabric());
         
         // 注册玩家等级数据加载器
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerLevelManagerFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.playerlevel.fabric.PlayerLevelManagerFabric());
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.playerlevel.PlayerExpSourceManagerFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.playerlevel.fabric.PlayerExpSourceManagerFabric());
         
         // 注册属性分配配置加载器
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.stats.StatAllocationConfigFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.stats.fabric.StatAllocationConfigFabric());
         
         // 注册对话数据加载器（使用Fabric包装类）
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(net.shiroha233.roadweaverpg.dialog.DialogRegistryFabric.getInstance());
+                .registerReloadListener(net.shiroha233.roadweaverpg.dialog.fabric.DialogRegistryFabric.getInstance());
         
         // 注册NPC行为数据加载器
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.entity.npc.data.NPCBehaviorLoaderFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.entity.fabric.npc.data.NPCBehaviorLoaderFabric());
         
         // 注册货币战利品配置加载器
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.loot.CoinLootConfigManagerFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.loot.fabric.CoinLootConfigManagerFabric());
         
         // 注册世界难度配置加载器
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.worlddifficulty.DifficultyConfigManagerFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.worlddifficulty.fabric.DifficultyConfigManagerFabric());
         
         // 注册职业系统数据加载器
         ResourceManagerHelper.get(PackType.SERVER_DATA)
-                .registerReloadListener(new net.shiroha233.roadweaverpg.profession.ProfessionManagerFabric());
+                .registerReloadListener(new net.shiroha233.roadweaverpg.profession.fabric.ProfessionManagerFabric());
         
         // 初始化魔法模组兼容层
-        net.shiroha233.roadweaverpg.compat.magic.MagicCompatInitFabric.init();
+        net.shiroha233.roadweaverpg.compat.fabric.magic.MagicCompatInitFabric.init();
         
         // 注册委托事件监听
         QuestEventsFabric.register();
         CoinEventsFabric.register();
-        net.shiroha233.roadweaverpg.event.WorldDifficultyEventsFabric.register();
+        net.shiroha233.roadweaverpg.event.fabric.WorldDifficultyEventsFabric.register();
         registerBlockEvents();
         registerServerTickEvents();
         

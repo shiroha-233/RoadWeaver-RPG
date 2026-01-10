@@ -122,10 +122,10 @@ public class CharacterScreen extends Screen {
         
         renderSkillPointsInfo(graphics, panelX, panelY + panelHeight + 5, panelWidth, mouseX, mouseY);
         
-        // 渲染tooltip
+        // 渲染tooltip（简化版：只显示属性名称）
         StatType hoveredType = statsTabRenderer != null ? statsTabRenderer.getHoveredStatType() : null;
         if (hoveredType != null) {
-            graphics.renderComponentTooltip(font, statsTabRenderer.getStatTooltip(hoveredType), mouseX, mouseY);
+            graphics.renderTooltip(font, Component.translatable(hoveredType.getTranslationKey()), mouseX, mouseY);
         }
         
         super.render(graphics, mouseX, mouseY, partialTick);

@@ -1,6 +1,7 @@
 package net.shiroha233.roadweaverpg.stats;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.shiroha233.roadweaverpg.data.PlayerQuestData;
 import net.shiroha233.roadweaverpg.data.QuestDataAccessor;
 import net.shiroha233.roadweaverpg.profession.ProfessionDefinition;
@@ -14,11 +15,13 @@ import java.util.function.Consumer;
  * 设计原则：
  * - 单一职责：只负责RPG属性的计算和同步
  * - 服务端计算所有属性值，客户端只负责显示
+ * 
+ * 注意：ATTACK_DAMAGE 在 Minecraft 中默认不同步到客户端，
+ * 所以我们需要手动同步攻击力
  */
 public class RpgStatsService {
     
     private static RpgStatsService instance;
-    private QuestDataAccessor dataAccessor;
     
     // 同步回调（由平台特定代码设置）
     private static Consumer<RpgStatsSyncData> syncCallback;
@@ -32,10 +35,6 @@ public class RpgStatsService {
         return instance;
     }
     
-    public void initialize(QuestDataAccessor accessor) {
-        this.dataAccessor = accessor;
-    }
-    
     public static void setSyncCallback(Consumer<RpgStatsSyncData> callback) {
         syncCallback = callback;
     }
@@ -44,10 +43,16 @@ public class RpgStatsService {
      * 计算并同步玩家的RPG属性
      */
     public void syncRpgStats(ServerPlayer player) {
-        if (dataAccessor == null || syncCallback == null) return;
+        if (syncCallback == null) return;
+        
+        QuestDataAccessor dataAccessor = QuestDataAccessor.getInstance();
+        if (dataAccessor == null) return;
         
         PlayerQuestData data = dataAccessor.getPlayerData(player);
         ProfessionDefinition profession = getPlayerProfession(data);
+        
+        // 从服务端实体读取原版属性（因为ATTACK_DAMAGE不会自动同步）
+        double attack = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
         
         // 计算所有RPG属性
         double maxMana = calculateStat(StatType.MAX_MANA, profession, data);
@@ -64,8 +69,8 @@ public class RpgStatsService {
         double expBonus = calculateStat(StatType.EXP_BONUS, profession, data);
         double dropBonus = calculateStat(StatType.DROP_BONUS, profession, data);
         
-        // 发送同步
-        syncCallback.accept(new RpgStatsSyncData(player, maxMana, magicAttack, critRate, critDamage,
+        // 发送同步（包含攻击力）
+        syncCallback.accept(new RpgStatsSyncData(player, attack, maxMana, magicAttack, critRate, critDamage,
                 hitRate, dodgeRate, healthRegen, manaRegen, lifeSteal, manaSteal,
                 cooldownReduction, expBonus, dropBonus));
     }
@@ -131,11 +136,11 @@ public class RpgStatsService {
     }
     
     /**
-     * RPG属性同步数据
+     * RPG属性同步数据（包含攻击力，因为ATTACK_DAMAGE不会自动同步）
      */
     public record RpgStatsSyncData(
             ServerPlayer player,
-            double maxMana, double magicAttack, double critRate, double critDamage,
+            double attack, double maxMana, double magicAttack, double critRate, double critDamage,
             double hitRate, double dodgeRate, double healthRegen, double manaRegen,
             double lifeSteal, double manaSteal, double cooldownReduction,
             double expBonus, double dropBonus

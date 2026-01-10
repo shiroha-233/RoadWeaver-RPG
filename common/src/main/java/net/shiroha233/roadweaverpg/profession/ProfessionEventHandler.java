@@ -51,6 +51,9 @@ public class ProfessionEventHandler {
             // 同步职业数据到客户端
             service.syncToClient(player);
             
+            // 同步RPG属性到客户端
+            net.shiroha233.roadweaverpg.stats.RpgStatsService.getInstance().syncRpgStats(player);
+            
         } catch (Exception e) {
             RoadWeaverRPG.LOGGER.error("Failed to handle profession login for {}: {}", 
                     player.getName().getString(), e.getMessage());
@@ -63,6 +66,8 @@ public class ProfessionEventHandler {
     public static void onPlayerRespawn(ServerPlayer player) {
         try {
             ProfessionDataService.getInstance().refreshProfessionEffects(player);
+            // 同步RPG属性到客户端
+            net.shiroha233.roadweaverpg.stats.RpgStatsService.getInstance().syncRpgStats(player);
         } catch (Exception e) {
             RoadWeaverRPG.LOGGER.error("Failed to refresh profession on respawn for {}: {}", 
                     player.getName().getString(), e.getMessage());

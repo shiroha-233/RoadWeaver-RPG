@@ -10,21 +10,22 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraft.server.level.ServerPlayer;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
 import net.shiroha233.roadweaverpg.command.QuestDebugCommand;
-import net.shiroha233.roadweaverpg.forge.entity.ModEntitiesForge;
-import net.shiroha233.roadweaverpg.forge.entity.NPCSoundProviderForge;
-import net.shiroha233.roadweaverpg.forge.item.ModItemsForge;
-import net.shiroha233.roadweaverpg.forge.network.NetworkHandlerForge;
+import net.shiroha233.roadweaverpg.entity.forge.ModEntitiesForge;
+import net.shiroha233.roadweaverpg.entity.forge.NPCSoundProviderForge;
+import net.shiroha233.roadweaverpg.item.forge.ModItemsForge;
+import net.shiroha233.roadweaverpg.network.forge.NetworkHandlerForge;
 import net.shiroha233.roadweaverpg.quest.chain.QuestChainManager;
 import net.shiroha233.roadweaverpg.quest.event.QuestEventHandler;
 import net.shiroha233.roadweaverpg.quest.service.QuestDefinitionLoader;
 import net.shiroha233.roadweaverpg.reputation.ReputationManager;
 import net.shiroha233.roadweaverpg.worldgen.VillagePoolInjector;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.shiroha233.roadweaverpg.client.config.ConfigScreenBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +38,13 @@ public class RoadWeaverRPGForge {
     
     private static final Logger LOGGER = LoggerFactory.getLogger("roadweaver_rpg");
     
-    public RoadWeaverRPGForge(IEventBus modEventBus, ModContainer modContainer) {
+    public RoadWeaverRPGForge() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         LOGGER.info("Loading RoadWeaver RPG for Forge...");
         
         // 初始化平台助手
         net.shiroha233.roadweaverpg.platform.PlatformHelper.setImplementation(
-                new net.shiroha233.roadweaverpg.platform.PlatformHelperForge());
+                new net.shiroha233.roadweaverpg.platform.forge.PlatformHelperForge());
         
         // 注册网络处理器
         NetworkHandlerForge.register();
@@ -61,23 +63,24 @@ public class RoadWeaverRPGForge {
         });
         
         // 初始化金币事件处理
-        net.shiroha233.roadweaverpg.forge.event.CoinEventsForge.init();
-        
+        net.shiroha233.roadweaverpg.event.forge.CoinEventsForge.init();
+
         // 注册数据包重载监听器
         MinecraftForge.EVENT_BUS.addListener(RoadWeaverRPGForge::onAddReloadListeners);
         
         // 初始化NPC声音事件提供者
         NPCSoundProviderForge.init();
         
-        // 注册 Config Screen
-        modContainer.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+        // 注册 Config Screen - 使用 ModLoadingContext 注册扩展点
+        ModLoadingContext.get().registerExtensionPoint(
+                ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory((mc, screen) -> ConfigScreenBuilder.create(screen)));
         
         // 初始化魔法模组兼容层
-        net.shiroha233.roadweaverpg.forge.compat.magic.MagicCompatInitForge.init();
+        net.shiroha233.roadweaverpg.magic.forge.MagicCompatInitForge.init();
         
         // 初始化世界难度事件
-        net.shiroha233.roadweaverpg.forge.event.WorldDifficultyEventsForge.init();
+        net.shiroha233.roadweaverpg.event.forge.WorldDifficultyEventsForge.init();
         
         // 检查前置依赖
         if (!RoadWeaverRPG.isRoadWeaverAvailable()) {
@@ -144,13 +147,9 @@ public class RoadWeaverRPGForge {
                 QuestEventHandler.onEntityKilled(killer, event.getEntity());
                 // 冒险等级经验（击杀怪物）
                 net.shiroha233.roadweaverpg.adventure.AdventureEventHandler.onEntityKilled(event.getEntity(), killer);
-                // 玩家等级不再通过击杀怪物获得，改为完成委托获得
             }
         }
-        
-        // 注意：暴击伤害和伤害显示通过Mixin实现（PlayerAttackMixin）
-        // 不再使用LivingHurtEvent，避免重复处理
-        
+
         @SubscribeEvent
         public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
             if (event.getEntity() instanceof ServerPlayer player) {
@@ -177,6 +176,25 @@ public class RoadWeaverRPGForge {
             }
         }
         
+        /**
+         * 监听玩家装备变更事件
+         * 当玩家切换手持物品时，重新同步攻击力到客户端
+         */
+        @SubscribeEvent
+        public static void onEquipmentChange(net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent event) {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                if (event.getSlot() == net.minecraft.world.entity.EquipmentSlot.MAINHAND ||
+                    event.getSlot() == net.minecraft.world.entity.EquipmentSlot.OFFHAND) {
+                    // 延迟2tick同步，确保属性修饰符已完全应用
+                    player.getServer().execute(() -> {
+                        player.getServer().execute(() -> {
+                            net.shiroha233.roadweaverpg.stats.RpgStatsService.getInstance().syncRpgStats(player);
+                        });
+                    });
+                }
+            }
+        }
+        
         @SubscribeEvent
         public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
             if (event.getEntity() instanceof ServerPlayer player) {
@@ -197,6 +215,8 @@ public class RoadWeaverRPGForge {
         public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
             if (event.phase == TickEvent.Phase.END && event.player instanceof ServerPlayer player) {
                 QuestEventHandler.onPlayerTick(player);
+                // 生命回复处理
+                net.shiroha233.roadweaverpg.stats.HealthRegenHandler.onPlayerTick(player);
             }
         }
         

@@ -84,8 +84,8 @@ dependencies {
     
     // 开发环境运行时依赖 - 完全参考 Touhou-Little-Maid-Spell 配置
     // 使用与参考项目相同的依赖源（MR 或 CF）
-    modImplementation("maven.modrinth:caelus:3.2.0+1.20.1-forge")
-    modImplementation("maven.modrinth:playeranimator:1.0.2-rc1+1.20-forge")
+    //modImplementation("maven.modrinth:caelus:3.2.0+1.20.1-forge")
+    //modImplementation("maven.modrinth:playeranimator:1.0.2-rc1+1.20-forge")
     //modImplementation("maven.modrinth:geckolib:4.8.2")
     modImplementation("maven.modrinth:curios:5.14.1+1.20.1-forge")
     

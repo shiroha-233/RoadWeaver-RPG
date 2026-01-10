@@ -73,6 +73,8 @@ public class StatAllocationService {
                 applyStatBonus(player, type, allocData.getAllocatedPoints(type));
                 dataAccessor.markDirty(player);
                 syncToClient(player);
+                // 同步RPG属性（暴击率、暴击伤害、生命回复等）
+                RpgStatsService.getInstance().syncRpgStats(player);
                 
                 player.sendSystemMessage(Component.translatable(
                         "message.roadweaver_rpg.stat_allocated", 
@@ -106,6 +108,8 @@ public class StatAllocationService {
                 applyStatBonus(player, type, allocData.getAllocatedPoints(type));
                 dataAccessor.markDirty(player);
                 syncToClient(player);
+                // 同步RPG属性（暴击率、暴击伤害、生命回复等）
+                RpgStatsService.getInstance().syncRpgStats(player);
                 
                 player.sendSystemMessage(Component.translatable(
                         "message.roadweaver_rpg.stat_deallocated", 
@@ -135,6 +139,8 @@ public class StatAllocationService {
             
             dataAccessor.markDirty(player);
             syncToClient(player);
+            // 同步RPG属性
+            RpgStatsService.getInstance().syncRpgStats(player);
             
             player.sendSystemMessage(Component.translatable("message.roadweaver_rpg.stats_reset"));
         } catch (Exception e) {

@@ -7,7 +7,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.shiroha233.roadweaverpg.RoadWeaverRPG;
-import net.shiroha233.roadweaverpg.adventure.AdventureDataService;
 import net.shiroha233.roadweaverpg.data.PlayerQuestData;
 import net.shiroha233.roadweaverpg.data.QuestDataAccessor;
 import net.shiroha233.roadweaverpg.stats.RpgStatsService;
@@ -158,14 +157,14 @@ public class ProfessionDataService {
      * 检查职业解锁条件
      */
     private boolean checkRequirements(ServerPlayer player, ProfessionDefinition profession) {
-        // 检查冒险等级
-        int adventureLevel = AdventureDataService.getInstance().getAdventureLevel(player);
-        if (adventureLevel < profession.getMinAdventureLevel()) {
-            player.sendSystemMessage(Component.translatable(
-                    "message.roadweaver_rpg.profession_level_required", 
-                    profession.getMinAdventureLevel()));
-            return false;
-        }
+        // 移除冒险等级限制，允许所有玩家注册冒险家
+        // int adventureLevel = AdventureDataService.getInstance().getAdventureLevel(player);
+        // if (adventureLevel < profession.getMinAdventureLevel()) {
+        //     player.sendSystemMessage(Component.translatable(
+        //             "message.roadweaver_rpg.profession_level_required", 
+        //             profession.getMinAdventureLevel()));
+        //     return false;
+        // }
         
         // 检查前置职业
         PlayerQuestData data = dataAccessor.getPlayerData(player);

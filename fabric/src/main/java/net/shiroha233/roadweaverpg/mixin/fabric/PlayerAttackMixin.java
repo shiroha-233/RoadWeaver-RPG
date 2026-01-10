@@ -12,17 +12,21 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * 玩家攻击Mixin - 拦截hurt方法中的actuallyHurt调用
+ * 玩家攻击Mixin - 计算暴击伤害并显示真实扣血量
  */
 @Mixin(LivingEntity.class)
 public class PlayerAttackMixin {
     
-    @Unique
-    private DamageSource roadweaver$currentSource;
+    @Unique private DamageSource roadweaver$currentSource;
+    @Unique private float roadweaver$healthBefore;
+    @Unique private boolean roadweaver$isCritical;
     
     @Inject(method = "hurt", at = @At("HEAD"))
-    private void roadweaver$captureSource(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void roadweaver$captureHealthBefore(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         this.roadweaver$currentSource = source;
+        this.roadweaver$isCritical = false;
+        LivingEntity self = (LivingEntity)(Object)this;
+        this.roadweaver$healthBefore = self.getHealth();
     }
     
     @ModifyArg(
@@ -32,9 +36,24 @@ public class PlayerAttackMixin {
     )
     private float roadweaver$modifyDamage(float amount) {
         if (roadweaver$currentSource != null && roadweaver$currentSource.getEntity() instanceof ServerPlayer attacker) {
-            LivingEntity self = (LivingEntity)(Object)this;
-            return CombatEventHandler.onPlayerAttack(attacker, self, amount);
+            var result = CombatEventHandler.calculateCriticalDamage(attacker, amount);
+            this.roadweaver$isCritical = result.isCritical();
+            return result.damage();
         }
         return amount;
+    }
+    
+    @Inject(method = "hurt", at = @At("RETURN"))
+    private void roadweaver$sendDamageIndicator(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (!cir.getReturnValue()) return;
+        if (roadweaver$currentSource == null) return;
+        if (!(roadweaver$currentSource.getEntity() instanceof ServerPlayer attacker)) return;
+        
+        LivingEntity self = (LivingEntity)(Object)this;
+        float actualDamage = roadweaver$healthBefore - self.getHealth();
+        
+        if (actualDamage > 0) {
+            CombatEventHandler.sendDamageIndicator(attacker, self, actualDamage, roadweaver$isCritical);
+        }
     }
 }

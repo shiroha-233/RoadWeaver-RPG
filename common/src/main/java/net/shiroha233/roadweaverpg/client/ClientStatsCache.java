@@ -43,6 +43,9 @@ public final class ClientStatsCache {
     /**
      * 从玩家实体更新原版属性
      * 每帧调用，读取玩家实体的最新属性值
+     * 
+     * 注意：攻击力(ATTACK_DAMAGE)不在这里更新，因为Minecraft默认不同步该属性到客户端
+     * 攻击力只从服务端通过 updateFromServer() 同步
      */
     public static void updateFromPlayer() {
         Minecraft mc = Minecraft.getInstance();
@@ -50,7 +53,8 @@ public final class ClientStatsCache {
         
         Player player = mc.player;
         maxHealth = player.getMaxHealth();
-        attack = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        // 攻击力不从客户端读取，因为ATTACK_DAMAGE不会同步到客户端
+        // attack 只通过 updateFromServer() 从服务端同步
         defense = player.getArmorValue();
         magicDefense = player.getAttributeValue(Attributes.ARMOR_TOUGHNESS);
         moveSpeed = player.getAttributeValue(Attributes.MOVEMENT_SPEED) * 1000.0;
@@ -58,13 +62,16 @@ public final class ClientStatsCache {
     }
     
     /**
-     * 从服务端同步RPG属性
+     * 从服务端同步RPG属性（包含攻击力）
      * 由网络消息调用
+     * 
+     * 注意：攻击力需要手动同步，因为ATTACK_DAMAGE在Minecraft中默认不同步
      */
-    public static void updateFromServer(double maxManaVal, double magicAttackVal, 
+    public static void updateFromServer(double attackVal, double maxManaVal, double magicAttackVal, 
             double critRateVal, double critDamageVal, double hitRateVal, double dodgeRateVal,
             double healthRegenVal, double manaRegenVal, double lifeStealVal, double manaStealVal,
             double cooldownReductionVal, double expBonusVal, double dropBonusVal) {
+        attack = attackVal;  // 从服务端同步攻击力
         maxMana = maxManaVal;
         magicAttack = magicAttackVal;
         critRate = critRateVal;

@@ -8,7 +8,8 @@
     "PlayerItemPickupMixin",
     "ContainerClickMixin",
     "PlayerAttackMixin",
-    "LivingEntityDamageMixin"
+    "LivingEntityDamageMixin",
+    "LivingEntityEquipmentMixin"
   ],
   "client": [],
   "injectors": {
